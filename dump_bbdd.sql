@@ -6,6 +6,9 @@
 -- Tiempo de generación: 10-04-2017 a las 18:45:35
 -- Versión del servidor: 5.6.35
 -- Versión de PHP: 7.1.1
+CREATE DATABASE pwgram;
+use pwgram;
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
