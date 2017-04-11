@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Albertpv
- * Date: 11/04/17
- * Time: 16:29
- */
+
 
 namespace pwgram\Model\Repository;
 
