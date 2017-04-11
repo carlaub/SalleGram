@@ -103,7 +103,7 @@ class PdoUserRepository implements PdoRepository {
     // Not checked
     public function validateUniqueExtra($username, $email) {
         $response = array(
-            'RESULT' => 'OK',
+            'STATUS' => 'OK',
             'username' => 'OK',
             'email'    => 'OK'
         );
@@ -113,14 +113,14 @@ class PdoUserRepository implements PdoRepository {
 
         $res = $userResult->fetch();
 
-        if (!$res) $response['RESULT'] = $response['username'] = 'KO';
+        if (!$res) $response['STATUS'] = $response['username'] = 'KO';
 
         $query = "SELECT id FROM `User` WHERE email = ?";
         $emailResult = $this->db->preparedQuery($query, [ $email ] );
 
         $res = $emailResult->fetch();
 
-        if (!$res) $response['RESULT'] = $response['email'] = 'KO';
+        if (!$res) $response['STATUS'] = $response['email'] = 'KO';
 
         return json_encode($response);
     }
