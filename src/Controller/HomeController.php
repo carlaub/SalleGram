@@ -10,7 +10,12 @@ use Symfony\Component\HttpFoundation\Response;
 class homeController {
 
     public function renderHome(Application $app, Request $request){
-        return $app['twig']->render('home.twig');
+        //TODO comprovar si logejat
+        $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
+        return $app['twig']->render('home.twig', array(
+            'logged'=>false,
+            'data'=>$TotaInfoDeFotos //SERA UN ARRAY
+        ));
 
     }
 }

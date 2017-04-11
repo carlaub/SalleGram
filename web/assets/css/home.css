@@ -25,7 +25,7 @@ body {
 p {font-size: 16px;}
 .margin {margin-bottom: 45px;}
 .bg-1 {
-    background-color: #1abc9c; /* Green */
+    background-color: #babcb8; /* Green */
     color: #ffffff;
 }
 .bg-2 {
@@ -43,4 +43,7 @@ p {font-size: 16px;}
 .container-fluid {
     padding-top: 70px;
     padding-bottom: 70px;
+}
+.conj-span{
+    padding: 10px;
 }

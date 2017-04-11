@@ -1,7 +1,132 @@
 {% extends "base.twig" %}
+
+
+{% block navbar %}
+
+    {#No logeado#}
+    {% if logged == false %}
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+            </ul>
+        </div>
+        {% endif %}
+
+    {#logeado#}
+    {% if logged == true %}
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/notifications"><span class="glyphicon glyphicon-bell" ></span> </a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <strong>Opciones</strong>
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/edit-profile">Editar perfil</a></li>
+                        <li><a href="/add-image">Añadir imagen</a></li>
+                        <li><a href="/edit-image">Editar imagen</a></li>
+                        <li><a href="/uplaod-images">Lista imagenes subidas</a></li>
+                        <li><a href="/logout">Cerrar sesion</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        {#<span class="glyphicon glyphicon-user"></span> #}
+                        <img  src="{{ asset('LSALLE.png','img') }}" height="25" width="25" >
+                        <strong>Nombre</strong>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+
+{% endblock navbar %}
+
+{#  src="{{ asset('LSALLE.png','img') }}    #}
 {% block content %}
     <div class="container-fluid bg-1 text-center">
-        {{ "HOLAAA ES LA PAG PRINCIPAL" }}
+        <div class="row">
 
+        {% if logged == true %}
+
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <a  href="/user/{id-user}" ><h4>Usuario</h4></a>
+                    </div>
+                    <img  src="{{ asset('LSALLE.png','img') }}" height="400" width="300" >
+                    <div class="caption">
+                        <a  href="/image/{id-image}" ><h2>Título de la imagen</h2></a>
+
+                        <p>
+                            <span class="intro-text conj-span">
+                                <span>0</span>
+                                <span class="glyphicon glyphicon-eye-open glyphicon-black" ></span>
+                            </span>
+
+                            <span class="intro-text conj-span">
+                                <span>0</span>
+                                <span class="glyphicon glyphicon-thumbs-up glyphicon-black" ></span>
+                            </span>
+
+                            <span class="intro-text conj-span">
+                                <span>1</span>
+                                <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
+                            </span>
+                        </p>
+
+                        <p>Esto es un comentario</p>
+
+                        <form accept-charset="UTF-8" action="" >
+                                <textarea class="form-control" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>
+                                <button class="btn btn-info" type="submit">Post New comment</button>
+                        </form>
+                        <p>
+                            <a href="/like/{id-image}" class="btn glyphicon glyphicon-heart-empty" role="button"></a>
+                        </p>
+                        <p>Subida hace nunca</p>
+
+                    </div>
+                </div>
+            </div>
+
+        {% endif %}
+        {% if logged == false %}
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <a  href="/user/{id-user}" ><h4>Usuario</h4></a>
+                    </div>
+                    <img  src="{{ asset('LSALLE.png','img') }}" height="400" width="300" >
+                    <div class="caption">
+                        <a  href="/image/{id-image}" ><h2>Título de la imagen</h2></a>
+                        <p>
+                            <span class="intro-text conj-span">
+                                <span>0</span>
+                                <span class="glyphicon glyphicon-eye-open glyphicon-black" ></span>
+                            </span>
+
+                            <span class="intro-text conj-span">
+                                <span>0</span>
+                                <span class="glyphicon glyphicon-thumbs-up glyphicon-black" ></span>
+                            </span>
+
+                            <span class="intro-text conj-span">
+                                <span>1</span>
+                                <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
+                            </span>
+                        </p>
+                        <p>Comentarios</p>
+                        <p>Subida hace nunca</p>
+
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        </div>
     </div>
-{% endblock %}
+
+
+{% endblock content %}
