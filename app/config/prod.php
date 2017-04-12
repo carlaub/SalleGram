@@ -1,4 +1,5 @@
 <?php
+use Silex\Provider\FormServiceProvider;
 
 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
@@ -18,3 +19,5 @@ $app->register(new Silex\Provider\AssetServiceProvider(), array(
     ),
 
 ));
+
+$app->register(new FormServiceProvider());

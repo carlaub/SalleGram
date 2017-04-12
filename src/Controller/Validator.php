@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Albertpv
- * Date: 11/04/17
- * Time: 20:30
- */
+
 
 namespace pwgram\Controller;
 use pwgram\lib\Database\Database;

@@ -22,48 +22,48 @@
 
             <div class="col-md-9 personal-info">
 
-                <form class="form-horizontal" role="form">
+                <form class="form-horizontal" id="registerUserForm" action="/register/user" method="POST">
                     <div class="form-group">
                         <label class="col-lg-3 control-label text-muted">Username</label>
                         <div class="col-lg-8">
-                            <input class="form-control " type="text" placeholder="Username">
+                            <input class="form-control " type="text" placeholder="Username" name="username">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-lg-3 control-label text-muted">Email: </label>
                         <div class="col-lg-8">
-                            <input class="form-control" type="email" placeholder="example@mail.com">
+                            <input class="form-control" type="email" placeholder="example@mail.com" name="mail">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-lg-3 control-label text-muted">Fecha nacimiento:</label>
                         <div class="col-lg-8">
-                            <input class="form-control" type="date" placeholder="dd/mm/yyyy">
+                            <input class="form-control" type="date" placeholder="dd/mm/yyyy" name="date">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-md-3 control-label text-muted">Contraseña:</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="password" placeholder="******">
+                            <input class="form-control" type="password" placeholder="******" name="password">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label text-muted">Confirmar contraseña:</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="password" placeholder="******">
+                            <input class="form-control" type="password" placeholder="******" name="confirm-password">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label text-muted">Imagen perfil:</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="text" placeholder="/">
+                            <input class="form-control" type="text" placeholder="/" name="img-path">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label text-muted"></label>
                         <div class="col-md-8">
-                            <input type="button" class="btn btn-primary" value="Registrar">
+                            <input type="submit" class="btn btn-primary" value="Registrar">
                         </div>
                     </div>
                 </form>

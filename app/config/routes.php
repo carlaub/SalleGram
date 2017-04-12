@@ -2,19 +2,20 @@
 
 use pwgram\Controller\homeController;
 
-$app->get('', 'pwgram\\Controller\\HomeController::renderHome');
+$app->get('', 'pwgram\\Controller\\RenderController::renderHome');
 
-$app->get('/login', 'pwgram\\Controller\\HomeController::renderLogin');
-$app->get('/register', 'pwgram\\Controller\\HomeController::renderRegistration');
+$app->get('/login', 'pwgram\\Controller\\RenderController::renderLogin');
+$app->get('/register', 'pwgram\\Controller\\RenderController::renderRegistration');
 
 
 
-$app->get('/notifications', 'pwgram\\Controller\\HomeController::renderHome');
-$app->get('/edit-profile', 'pwgram\\Controller\\HomeController::renderHome');
-$app->get('/edit-image', 'pwgram\\Controller\\HomeController::renderHome');
-$app->get('/add-image', 'pwgram\\Controller\\HomeController::renderHome');
-$app->get('/uplaod-images', 'pwgram\\Controller\\HomeController::renderHome');
-$app->get('/profile', 'pwgram\\Controller\\HomeController::renderHome');
+
+$app->get('/notifications', 'pwgram\\Controller\\RenderController::renderHome');
+$app->get('/edit-profile', 'pwgram\\Controller\\RenderController::renderHome');
+$app->get('/edit-image', 'pwgram\\Controller\\RenderController::renderHome');
+$app->get('/add-image', 'pwgram\\Controller\\RenderController::renderHome');
+$app->get('/uplaod-images', 'pwgram\\Controller\\RenderController::renderHome');
+$app->get('/profile', 'pwgram\\Controller\\RenderController::renderHome');
 
 
 
