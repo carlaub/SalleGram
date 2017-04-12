@@ -15,58 +15,61 @@
 {% block content %}
 
     <div class="container">
+        <h1 class="text-muted">Register</h1>
+        <hr>
         <div class="row">
-            <div class="col-md-6">
 
-                <form class="form-horizontal" action="" method="POST">
-                    <fieldset>
-                        <div id="legend">
-                            <legend class="">Register</legend>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label" for="username">Username</label>
-                            <div class="controls">
-                                <input type="text" id="username" name="username" placeholder="" class="form-control input-lg">
-                                <p class="help-block">Username can contain any letters or numbers, without spaces</p>
-                            </div>
-                        </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="email">E-mail</label>
-                            <div class="controls">
-                                <input type="email" id="email" name="email" placeholder="" class="form-control input-lg">
-                                <p class="help-block">Please provide your E-mail</p>
-                            </div>
-                        </div>
+            <div class="col-md-9 personal-info">
 
-                        <div class="control-group">
-                            <label class="control-label" for="password">Password</label>
-                            <div class="controls">
-                                <input type="password" id="password" name="password" placeholder="" class="form-control input-lg">
-                                <p class="help-block">Password should be at least 6 characters</p>
-                            </div>
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label text-muted">Username</label>
+                        <div class="col-lg-8">
+                            <input class="form-control " type="text" placeholder="Username">
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label text-muted">Email: </label>
+                        <div class="col-lg-8">
+                            <input class="form-control" type="email" placeholder="example@mail.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label text-muted">Fecha nacimiento:</label>
+                        <div class="col-lg-8">
+                            <input class="form-control" type="date" placeholder="dd/mm/yyyy">
+                        </div>
+                    </div>
 
-                        <div class="control-group">
-                            <label class="control-label" for="password_confirm">Password (Confirm)</label>
-                            <div class="controls">
-                                <input type="password" id="password_confirm" name="password_confirm" placeholder="" class="form-control input-lg">
-                                <p class="help-block">Please confirm password</p>
-                            </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-muted">Contraseña:</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="password" placeholder="******">
                         </div>
-
-                        <div class="control-group">
-                            <!-- Button -->
-                            <div class="controls">
-                                <button class="btn btn-success">Register</button>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-muted">Confirmar contraseña:</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="password" placeholder="******">
                         </div>
-                    </fieldset>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-muted">Imagen perfil:</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" placeholder="/">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-muted"></label>
+                        <div class="col-md-8">
+                            <input type="button" class="btn btn-primary" value="Registrar">
+                        </div>
+                    </div>
                 </form>
-
             </div>
         </div>
     </div>
-
+    <hr>
 
 {% endblock content %}

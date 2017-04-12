@@ -14,6 +14,42 @@
 
 {% block content %}
 
+    <div class="container">
+        <br>
+        <h1 class="text-muted">Login</h1>
+        <hr>
+        <div class="row">
+
+
+            <div class="col-md-9 personal-info">
+
+                <form class="form-horizontal" role="form">
+                    <br>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label text-muted">Username/Email</label>
+                        <div class="col-lg-8">
+                            <input class="form-control " type="text" placeholder="Username/example@mail.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-muted">Contraseña:</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="password" placeholder="******">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-muted"></label>
+                        <div class="col-md-8">
+                            <input type="button" class="btn btn-primary" value="Login">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br><br><br><hr><br>
 
 
 {% endblock content %}
