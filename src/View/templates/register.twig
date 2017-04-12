@@ -15,7 +15,7 @@
 {% block content %}
 
     <div class="container">
-        <h1 class="text-muted">Register</h1>
+        <h1 class="text-muted">Registro</h1>
         <hr>
         <div class="row">
 
@@ -24,46 +24,46 @@
 
                 <form class="form-horizontal" id="registerUserForm" action="/register/user" method="POST">
                     <div class="form-group">
-                        <label class="col-lg-3 control-label text-muted">Username</label>
+                        <label class="col-lg-4 control-label text-muted">Username</label>
                         <div class="col-lg-8">
-                            <input class="form-control " type="text" placeholder="Username" name="username">
+                            <input class="form-control " type="text" placeholder="Username" name="username" id="username">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-lg-3 control-label text-muted">Email: </label>
+                        <label class="col-lg-4 control-label text-muted">Email: </label>
                         <div class="col-lg-8">
-                            <input class="form-control" type="email" placeholder="example@mail.com" name="mail">
+                            <input class="form-control" type="email" placeholder="example@mail.com" name="mail" id="mail">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-lg-3 control-label text-muted">Fecha nacimiento:</label>
+                        <label class="col-lg-4 control-label text-muted">Fecha nacimiento:</label>
                         <div class="col-lg-8">
-                            <input class="form-control" type="date" placeholder="dd/mm/yyyy" name="date">
+                            <input class="form-control" type="date" placeholder="dd/mm/yyyy" name="date" id="date">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-3 control-label text-muted">Contraseña:</label>
+                        <label class="col-md-4 control-label text-muted">Contraseña:</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="password" placeholder="******" name="password">
+                            <input class="form-control" type="password" placeholder="******" name="password" id="password">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label text-muted">Confirmar contraseña:</label>
+                        <label class="col-md-4 control-label text-muted">Confirmar contraseña:</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="password" placeholder="******" name="confirm-password">
+                            <input class="form-control" type="password" placeholder="******" name="confirm-password" id="confirm-password">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label text-muted">Imagen perfil:</label>
+                        <label class="col-md-4 control-label text-muted">Imagen perfil:</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="text" placeholder="/" name="img-path">
+                            <input class="form-control" name="image-path" id="image-path" type="file" >
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label text-muted"></label>
+                        <label class="col-md-4 control-label text-muted"></label>
                         <div class="col-md-8">
-                            <input type="submit" class="btn btn-primary" value="Registrar">
+                            <button type="submit" class="btn our-btn">Registrar</button>
                         </div>
                     </div>
                 </form>

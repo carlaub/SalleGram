@@ -16,11 +16,20 @@ use pwgram\lib\Database\Database;
 $app = new Application();
 
 
+
+
 $app->post('/register/user', function (Application $app, Request $request) {
     $db = Database::getInstance("pwgram", "homestead", "secret");
 
     $formsController= new FormsController();
-    return $formsController->registerUser($app, $request);
+    return $formsController->registerUser($app, $request, $db);
+});
+
+$app->post('/login/form', function (Application $app, Request $request) {
+    $db = Database::getInstance("pwgram", "homestead", "secret");
+
+    $formsController= new FormsController();
+    return $formsController->loginUser($app, $request, $db);
 });
 
 
