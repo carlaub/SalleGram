@@ -92,14 +92,21 @@ class Validator
     }
 
     // checked
-    function validateDate($date, $format = 'Y-m-d')
-    {
+    function validateDate($date, $format = 'Y-m-d'){
         $today  = new DateTime();
         $today  = $today->format($format);
 
         $dateFormatted = DateTime::createFromFormat($format, $date);
 
         return $date && $dateFormatted->format($format) == $date && $date <= $today;
+    }
+
+    function validateProfileImage($size, $format) {
+        //Size lees than 5M and forman png or jpg
+        if ($size < 5000000000 && ($format == "jpg" || $format == "png")) {
+            return true;
+        }
+        return false;
     }
 
 }

@@ -127,8 +127,7 @@ $(document).ready(function() {
 
     function validateImagePath(imgPath) {
         var element = document.getElementById("img-path");
-        //TODO creo que no hay que hacer nada, si no hay nada es una por defecto
-        //TODO hay que mostrar la imagen que se ha escogido
+        //TODO imagen miniatura
         /*if(imgPath.empty()){
          element.placeholder = "Introduce el path de una imagen";
          element.value = "";
