@@ -3,6 +3,8 @@
 
 namespace pwgram\lib\Database;
 
+use Exception;
+
 //DB name
 
 //Case MAMP users
@@ -31,13 +33,12 @@ class Database {
 
     /**
      * @param $dbname
-     * @param $user
-     * @param $password
      * @return null|Database
      */
     public static function getInstance($dbname) {
 
         if (!self::$instance) {
+
             self::$instance = new self($dbname, USER, PASSWORD);
         }
         return self::$instance;
@@ -46,8 +47,6 @@ class Database {
     /**
      * Database constructor.
      * @param $dbname
-     * @param $user
-     * @param $password
      */
     private function __construct($dbname) {
 
@@ -90,4 +89,33 @@ class Database {
     private function __clone() {
 
     }
+
+    /**
+     * This method starts a transaction, so each query executed after this method
+     * will not be executed until the method @see commitTransaction is called.
+     */
+    public function initTransaction() {
+
+        $this->connection->beginTransaction();
+    }
+
+
+    /**
+     * Ends a transaction to the database. If any problem is found during the commit,
+     * a rollback is executed.
+     */
+    public function commitTransaction() {
+
+        try {
+            $this->connection->commit();
+
+        } catch (Exception $e) {
+
+            $this->connection->rollBack();
+            echo "Transaction error: ". $e->getMessage();
+        }
+    }
+
+
+
 }

@@ -22,7 +22,9 @@ use pwgram\Model\Entity\User;
  * @author Jorge Melguizo
  * @author Albert Pernía
  *
- * @version 1.0
+ * @version 1.0.1
+ *
+ * @see PdoRepository
  *
  * @package pwgram\Model\Repository
  */
@@ -33,12 +35,17 @@ class PdoUserRepository implements PdoRepository {
      */
     private $db;
 
+
     public function __construct(Database $db)
     {
         $this->db = $db;
     }
 
-
+    /**
+     * Adds a new user to the database.
+     *
+     * @param User $row     The new user to be added.
+     */
     public function add($row)
     {
         $query  = "INSERT INTO `User`(`username`, `email`, `birthdate`, `password`, `active`) VALUES(?, ?, ?, ?, ?)";
@@ -59,7 +66,7 @@ class PdoUserRepository implements PdoRepository {
     /**
      * Finds a user by id. This method does not obtain the password of the user.
      *
-     * @param $id   The id of the user to find.
+     * @param int $id   The id of the user to find.
      *
      * @return bool|User false if the user could not be found or the user in case it exists.
      */
@@ -82,16 +89,45 @@ class PdoUserRepository implements PdoRepository {
             $user["username"],
             $user["email"],
             $user["birthday"],
-            $user["active"]
+            $user["active"],
+            $user["id"]
         );
+    }
+
+
+    // not working, yeah.
+    public function getByField($field, $value) {
+
+        $query = "SELECT ? FROM `User` WHERE ? = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $field,
+                $field,
+                $value
+            ]
+        );
+
+        if (!$result) return false;
+
+        $res = $result->fetch();
+
+        if (!$res) return false;
+
+        return $res[$field];
     }
 
 
     /**
      * Checks if an username and/or email exists in the database.
      *
-     * @param $username The username to validate.
-     * @param $email    The email to validate.
+     * @param string $username The username to validate.
+     * @param string $email    The email to validate.
+     *
+     * Note: this method adds extra logic not "natural" for
+     *       the class. It will be practically moved to
+     *       validator when the fucking method getByField
+     *       starts to work.
      *
      * @return string Encoded JSON with the structure:
      *          {
@@ -132,8 +168,13 @@ class PdoUserRepository implements PdoRepository {
      * to know exactly whether the username nor email exists to give a detailed
      * message.
      *
-     * @param $username The username to validate.
-     * @param $email    The email to validate.
+     * @param string $username The username to validate.
+     * @param string $email    The email to validate.
+     *
+     * Note: this method adds extra logic not "natural" for
+     *       the class. It will be practically moved to
+     *       validator when the fucking method getByField
+     *       starts to work.
      *
      * @return bool true if there is no user with this username and email, false if not.
      */
@@ -157,7 +198,7 @@ class PdoUserRepository implements PdoRepository {
     /**
      * Updates an existing user with new information.
      *
-     * @param $row The updated user.
+     * @param User $row The updated user.
      */
     public function update($row)
     {
@@ -180,7 +221,7 @@ class PdoUserRepository implements PdoRepository {
     /**
      * Removes an existing username from the database.
      *
-     * @param $id The id of the user.
+     * @param int $id The id of the user.
      */
     public function remove($id)
     {
@@ -191,5 +232,17 @@ class PdoUserRepository implements PdoRepository {
                 $id
             ]
         );
+    }
+
+    public function length()
+    {
+        $query = "SELECT COUNT(*) AS total FROM `User`";
+        $result = $this->db->query($query);
+
+        if (!$result) return 0;
+
+        $total = $result->fetch();
+
+        return $total['total'];
     }
 }

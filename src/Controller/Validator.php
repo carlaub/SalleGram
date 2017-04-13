@@ -20,22 +20,26 @@ use \DateTime;
 class Validator
 {
 
+    const MAX_USERNAME  = 20;
+    const MIN_PASSWORD  = 6;
+    const MAX_PASSWORD  = 12;
+
     // not checked
     public function validateNewUser(User $user, $passwd2) {
 
         if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) return false;
 
         $length = strlen($user->getUsername());
-        if ($length == 0 || $length > 20)               return false;
+        if ($length == 0 || $length > Validator::MAX_USERNAME)               return false;
 
         $passwdLength = strlen($user->getPassword());
-        if ($passwdLength < 6 || $passwdLength > 12)    return false;
+        if ($passwdLength < Validator::MIN_PASSWORD || $passwdLength > Validator::MAX_PASSWORD)    return false;
 
         if ($user->getPassword() !== $passwd2)          return false;
 
         if (!$this->validateDate($user->getBirthday())) return false;
 
-        $db = Database::getInstance("pwgram", "pwgrammer", "secret");
+        $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
 
         if (!$pdoUser->validateUnique($user->getUsername(), $user->getEmail())) return false;
@@ -52,8 +56,9 @@ class Validator
             $response['STATUS'] = $response['email'] = 'KO';
             return json_encode($response);
         }
+
         $length = strlen($user->getUsername());
-        if ($length == 0 || $length > 20) {
+        if ($length == 0 || $length > Validator::MAX_USERNAME) {
 
             $response['STATUS']  = 'KO';
             $response['message'] = "User name must be between 1 and 20 characters.";
@@ -65,8 +70,9 @@ class Validator
             $response['message'] = "Passwords does not match";
             return json_encode($response);
         }
+
         $passwdLength = strlen($user->getPassword());
-        if ($passwdLength < 6 || $passwdLength > 12) {
+        if ($passwdLength < Validator::MIN_PASSWORD || $passwdLength > Validator::MAX_PASSWORD) {
 
             $response['message'] = "Password length must be between 6 and 12 characters";
             $response['STATUS'] = 'KO';
@@ -78,7 +84,7 @@ class Validator
             $response['STATUS'] = 'KO';
         }
 
-        $db = Database::getInstance("pwgram", "pwgrammer", "secret");
+        $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
         $response = $pdoUser->validateUniqueExtra($user->getUsername(), $user->getEmail());
 

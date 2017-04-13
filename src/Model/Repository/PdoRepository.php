@@ -14,5 +14,5 @@ interface PdoRepository {
 
     public function remove  ($id);
 
-
+    public function length  ();
 }

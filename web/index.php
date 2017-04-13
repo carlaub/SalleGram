@@ -11,6 +11,15 @@ require __DIR__.'/../app/config/prod.php';
 require __DIR__.'/../app/config/routes.php';
 
 
+use pwgram\Model\Entity\User;
+use pwgram\lib\Database\Database;
+use pwgram\Model\Repository\PdoUserRepository;
+
+
+$db = Database::getInstance("pwgram");
+
+$pdo = new PdoUserRepository($db);
+
 
 $app->run();
 

@@ -27,12 +27,13 @@ class User {
     private $active;
 
 
-    public function __construct($username, $email, $birthday, $active) {
+    public function __construct($username, $email, $birthday, $active, $id = -1) {
 
         $this->username = $username;
         $this->email    = $email;
         $this->birthday = $birthday;
         $this->active   = $active;
+        $this->id       = $id;
     }
 
     public static function withImgPath($username, $email, $birthday, $active, $imgPath) {

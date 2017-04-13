@@ -22,8 +22,9 @@ class Comment {
     private $fkImage;
 
 
-    public function __construct($content, $fkUser, $lastModified, $fkImage) {
+    public function __construct($content, $fkUser, $lastModified, $fkImage, $id = -1) {
 
+        $this->id           = $id;
         $this->content      = $content;
         $this->fkUser       = $fkUser;
         $this->lastModified = $lastModified;
@@ -38,21 +39,21 @@ class Comment {
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      */
     public function setId($id) {
         $this->id = $id;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getContent() {
         return $this->content;
     }
 
     /**
-     * @param mixed $content
+     * @param string $content
      */
     public function setContent($content) {
         $this->content = $content;
@@ -73,28 +74,28 @@ class Comment {
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getFkUser() {
         return $this->fkUser;
     }
 
     /**
-     * @param mixed $fkUser
+     * @param int $fkUser
      */
     public function setFkUser($fkUser) {
         $this->fkUser = $fkUser;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getFkImage() {
         return $this->fkImage;
     }
 
     /**
-     * @param mixed $fkImage
+     * @param int $fkImage
      */
     public function setFkImage($fkImage) {
         $this->fkImage = $fkImage;
