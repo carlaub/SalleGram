@@ -11,6 +11,7 @@ class RenderController {
         //TODO comprovar si logejat
         $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
         return $app['twig']->render('home.twig', array(
+            'app'=> ['name' => $app['app.name']],
             'logged'=>false,
             'data'=>$TotaInfoDeFotos //SERA UN ARRAY
         ));
@@ -21,6 +22,7 @@ class RenderController {
         //TODO comprovar si logejat
         $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
         return $app['twig']->render('login.twig', array(
+            'app'=> ['name' => $app['app.name']],
             'logged'=>false,
             'data'=>$TotaInfoDeFotos //SERA UN ARRAY
         ));
@@ -31,6 +33,7 @@ class RenderController {
         //TODO comprovar si logejat
         $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
         return $app['twig']->render('register.twig', array(
+            'app'=> ['name' => $app['app.name']],
             'logged'=>false,
             'data'=>$TotaInfoDeFotos //SERA UN ARRAY
         ));

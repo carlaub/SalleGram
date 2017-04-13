@@ -22,7 +22,7 @@
 
             <div class="col-md-9 personal-info">
 
-                <form class="form-horizontal" id="registerUserForm" action="/register/user" method="POST">
+                <form class="form-horizontal" id="registerUserForm" action="/register/form" method="POST">
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Username</label>
                         <div class="col-lg-8">
@@ -73,3 +73,7 @@
     <hr>
 
 {% endblock content %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>
+{% endblock javascripts %}

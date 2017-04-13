@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Albertpv
- * Date: 11/04/17
- * Time: 16:07
- */
+
 
 namespace pwgram\lib\Database;
 
+//DB name
+
+//Case MAMP users
+define('USER', "root");
+define('PASSWORD', "root");
+
+//Case Vagrant users
+//define('USER', "homestead");
+//define('PASSWORD', "secret");
 
 /**
  * Database
@@ -18,6 +22,7 @@ class Database {
      * @var PDO
      */
     public $connection;
+
     /**
      * @var null
      */
@@ -30,10 +35,10 @@ class Database {
      * @param $password
      * @return null|Database
      */
-    public static function getInstance($dbname, $user, $password) {
+    public static function getInstance($dbname) {
 
         if (!self::$instance) {
-            self::$instance = new self($dbname, $user, $password);
+            self::$instance = new self($dbname, USER, PASSWORD);
         }
         return self::$instance;
     }
@@ -44,12 +49,12 @@ class Database {
      * @param $user
      * @param $password
      */
-    private function __construct($dbname, $user, $password) {
+    private function __construct($dbname) {
 
         $this->connection = new \PDO(
             "mysql:host=localhost;dbname=$dbname;",
-            $user,
-            $password
+            USER,
+            PASSWORD
         );
         $this->connection->setAttribute(
             \PDO::ATTR_DEFAULT_FETCH_MODE,

@@ -11,8 +11,7 @@ $(document).ready(function() {
         var password2 = $("#confirm-password").val();
         var imgPath = $("#imgage-path").val();
 
-        if(validateName(username) === true && validateEmail(email) === true && validateDate(date) === true
-            && validatePassword(password, password2) === true && validateImagePath(imgPath) === true) {
+        if(validateDate(date) & validateName(username)  & validateEmail(email) && validatePassword(password, password2) && validateImagePath(imgPath)) {
             //alert("ok!");
 
         }else{
@@ -24,31 +23,39 @@ $(document).ready(function() {
     });
 
     function validateName(userName) {
-        //NO cumple longitud minima
+
         var element = document.getElementById("username");
 
-        if(userName.length > 21 || userName === null || userName.length < 1) {//menys de 20 caracters
-            element.placeholder = "Introduce username";
+        var regEx = /[a-zA-Z0-9]+$/;
+
+        if(userName.length <= 0) {
+            element.placeholder = "No has introducido ningún nombre";
+            element.value = "";
+            element.className = "form-control-red";
+            return false;
+        } else if (userName.length > 20){
+            element.placeholder = "El nombre demasiado largo";
+            element.value = "";
+            element.className = "form-control-red";
+            return false;
+        } else if (!regEx.test(userName)) {
+            element.placeholder = "El nombre ha de ser alfanumerico";
             element.value = "";
             element.className = "form-control-red";
             return false;
         }
-        else if(!userName.match(/^[A-Za-z0-9]+$/)) {//alfanumeric?
-            element.placeholder = "El nombre tiene que ser alfanumerico";
-            element.value = "";
-            element.className = "form-control-red";
-            return false;
-        }
+
         element.className = "form-control-green";
         return true;
+
     }
 
     function validateEmail(email) {
 
         var element = document.getElementById("mail");
 
-        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if(!email.match(re) || email.empty()) {
+        var regEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(!email.match(regEx) || email.length == 0) {
             element.className = "form-control-red";
             element.placeholder = "Mail incorrecto";
             element.value = "";
@@ -58,24 +65,33 @@ $(document).ready(function() {
             return true;
         }
     }
+    function checkdate (date) {
 
+        var act = new Date();
+        var d = new Date (date);
+        return d.getTime() <= act.getTime();
+    }
 
 
     function validateDate(date) {
         var element = document.getElementById("date");
+        var dateFragment = date.split("-");
 
-        //TODO SOLO MIRO QUE NO ESTE VACIO hay que hacer:  (no pot ser una data futura) i ha de seguir el format ISO 8601 (lo segon sera per php quan guardem a la bbdd).
-        if (date.length === 0 || date.empty()) {
-            element.placeholder = "Introduce una fecha valida dd/mm/yyyy";
+        if (date.length === 0 ) {
             element.className = "form-control-red";
             return false;
         }
-        else {
-            element.className = "form-control-green";
-            return true;
+
+        if(!checkdate(date)) {
+            element.className = "form-control-red";
+            return false;
         }
 
+        element.className = "form-control-green";
+        return true;
     }
+
+
 
     function validatePassword(password, password2) {
 
@@ -120,7 +136,7 @@ $(document).ready(function() {
          return false;
          }*/
 
-        element.className = "form-control-green";
+        //element.className = "form-control-green";
         return true;
     }
 
