@@ -178,7 +178,13 @@ class PdoUserRepository implements PdoRepository {
      *
      * @return bool true if there is no user with this username and email, false if not.
      */
-    // Not checked
+
+    /**
+     * Verify user isn't in DB
+     * @param $username
+     * @param $email
+     * @return bool
+     */
     public function validateUnique($username, $email) {
 
         $query = "SELECT id FROM `User` WHERE username = ? OR email = ?";
@@ -192,7 +198,10 @@ class PdoUserRepository implements PdoRepository {
 
         $res = $result->fetch();
 
-        return $res !== false;
+        //$res == false, user isn't in db
+        return $res == false;
+
+
     }
 
     /**

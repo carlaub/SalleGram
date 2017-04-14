@@ -27,9 +27,10 @@ class User {
     private $active;
 
 
-    public function __construct($username, $email, $birthday, $active, $id = -1) {
+    public function __construct($username, $password,  $email, $birthday, $active, $id = -1) {
 
         $this->username = $username;
+        $this->password = $password;
         $this->email    = $email;
         $this->birthday = $birthday;
         $this->active   = $active;

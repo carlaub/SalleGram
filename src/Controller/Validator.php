@@ -24,16 +24,27 @@ class Validator
     const MIN_PASSWORD  = 6;
     const MAX_PASSWORD  = 12;
 
-    // not checked
+    /**
+     * Verify that the user data is completely correct
+     * @param User $user
+     * @param $passwd2
+     * @return bool
+     */
     public function validateNewUser(User $user, $passwd2) {
 
         if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) return false;
 
         $length = strlen($user->getUsername());
-        if ($length == 0 || $length > Validator::MAX_USERNAME)               return false;
+        if ($length == 0 || $length > Validator::MAX_USERNAME
+            || !preg_match('/[a-zA-Z0-9]+$/', $user->getUsername())) return false;
 
         $passwdLength = strlen($user->getPassword());
-        if ($passwdLength < Validator::MIN_PASSWORD || $passwdLength > Validator::MAX_PASSWORD)    return false;
+        $uppercase = preg_match('@[A-Z]@', $user->getPassword());
+        $lowercase = preg_match('@[a-z]@', $user->getPassword());
+        $number = preg_match('@[0-9]@', $user->getPassword());
+
+      if ($passwdLength < Validator::MIN_PASSWORD || $passwdLength > Validator::MAX_PASSWORD
+       || !$uppercase || !$lowercase || !$number)    return false;
 
         if ($user->getPassword() !== $passwd2)          return false;
 
@@ -41,6 +52,7 @@ class Validator
 
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
+
 
         if (!$pdoUser->validateUnique($user->getUsername(), $user->getEmail())) return false;
 
@@ -92,8 +104,10 @@ class Validator
     }
 
     // checked
-    function validateDate($date, $format = 'Y-m-d'){
+    function validateDate($date){
+
         $today  = new DateTime();
+        $format = 'Y-m-d';
         $today  = $today->format($format);
 
         $dateFormatted = DateTime::createFromFormat($format, $date);
@@ -103,7 +117,8 @@ class Validator
 
     function validateProfileImage($size, $format) {
         //Size lees than 5M and forman png or jpg
-        if ($size < 5000000000 && ($format == "jpg" || $format == "png")) {
+        var_dump($format);
+        if ($size < 5000000000 && ($format == "jpg" || $format == "jpeg")) {
             return true;
         }
         return false;
