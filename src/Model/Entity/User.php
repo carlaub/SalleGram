@@ -26,6 +26,8 @@ class User {
 
     private $active;
 
+    private $profileImage; //Boolean
+
 
     public function __construct($username, $password,  $email, $birthday, $active, $id = -1) {
 
@@ -35,6 +37,7 @@ class User {
         $this->birthday = $birthday;
         $this->active   = $active;
         $this->id       = $id;
+        $this->profileImage = false; //Default
     }
 
     public static function withImgPath($username, $email, $birthday, $active, $imgPath) {
@@ -133,7 +136,9 @@ class User {
      * @return mixed
      */
     public function getActive() {
-        return $this->active;
+        //return $this->active;
+        if($this->active) return 1;
+        return 0;
     }
 
     /**
@@ -143,6 +148,20 @@ class User {
         $this->active = $active;
     }
 
+    /**
+     * @param $profileImage
+     */
+    public function setProfileImage($profileImage) {
+        $this->profileImage = $profileImage;
+    }
 
+    /**
+     * @return mixed $profileImage
+     */
+    public function getProfileImage() {
+        if($this->profileImage) return 1;
+        return 0;
+
+    }
 
 }

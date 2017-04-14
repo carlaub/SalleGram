@@ -48,7 +48,7 @@ class PdoUserRepository implements PdoRepository {
      */
     public function add($row)
     {
-        $query  = "INSERT INTO `User`(`username`, `email`, `birthdate`, `password`, `active`) VALUES(?, ?, ?, ?, ?)";
+        $query  = "INSERT INTO `User`(`username`, `email`, `birthdate`, `password`, `active`, `profile_image`) VALUES(?, ?, ?, ?, ?, ?)";
         $result = $this->db->preparedQuery(
             $query,
             [
@@ -56,7 +56,8 @@ class PdoUserRepository implements PdoRepository {
                 $row->getEmail(),
                 $row->getBirthday(),
                 $row->getPassword(),
-                $row->getActive()
+                $row->getActive(),
+                $row->getProfileImage()
             ]
         );
 
@@ -253,5 +254,24 @@ class PdoUserRepository implements PdoRepository {
         $total = $result->fetch();
 
         return $total['total'];
+    }
+
+    /**
+     * Return user id
+     * @param $userName
+     */
+    public function getId($userName) {
+        $query  = "SELECT id FROM `User` WHERE username = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $userName
+            ]
+        );
+        if (!$result) return false; // an error happened during the execution
+
+        $results = $result->fetch();
+
+        return $results['id'];
     }
 }

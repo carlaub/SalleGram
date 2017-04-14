@@ -11,24 +11,24 @@ namespace pwgram\Controller;
 class ImageProcessing {
     /**
      * Save image from form in to directory specified
-     * @param $userName
+     * @param $idUser
      * @param $path
      */
-    public function saveImage($userName, $extension, $path) {
+    public function saveImage($idUser, $extension, $path) {
         //TODO: redimension
 
-        $pathImgSave = "../web/assets/img/profile_img/" . $userName . ".". $extension;
+        $pathImgSave = "../web/assets/img/profile_img/" . $idUser . ".". $extension;
         move_uploaded_file($path, $pathImgSave);
-        $this->resizingProfileImage($userName, $extension, $pathImgSave);
+        $this->resizingProfileImage($idUser, $extension, $pathImgSave);
     }
 
     /**
      * Resizing profile image. Default 200x200.
-     * @param $userName
+     * @param $idUser
      * @param $extension
      * @param $path
      */
-    public function resizingProfileImage($userName, $extension, $pathImgSave) {
+    public function resizingProfileImage($idUser, $extension, $pathImgSave) {
         $imgOriginal = $pathImgSave;
         $imgResized = getimagesize($imgOriginal);
         $height = 200;

@@ -27,41 +27,38 @@ class FormsController {
 
         $newUser = new User($userName, $password, $mail, $date, 0, -1);
 
-        //TODO: Validacion del resto de parametros
-//        $img = $request->;
-        //TODO proces de registre usuari
-
         if ($validator->validateNewUser($newUser, $confirmPassword)) {
             //Image not null
             if($profileImage != null) {
                 //Image validation
                 if ($validator->validateProfileImage($profileImage->getClientSize(), $profileImage->getClientOriginalExtension())) {
-                    //Save user's profile image
-                    $imageProcessing->saveImage($userName, $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
-                    return $app['twig']->render('base.twig',array(
-                        'request'=>$request,
-                    ));
+                    $newUser->setProfileImage(true);
+
 
                 } else {
-                    //TODO: mostrar error de la imagen des de PHP
+                    //TODO: mostrar error de la imagen desde PHP en twig
                     return $app -> redirect('/register');
                 }
             }
-
-            return $app['twig']->render('base.twig',array(
-                'request'=>$request,
-            ));
-
         } else {
             //Data error
+            //TODO:mostrar errores del formulario des de PHP en twig
            return $app -> redirect('/register');
-//            return $app['twig']->render('base.twig',array(
-//                'request'=>$request,
-//            ));
         }
 
+        //All correct, register new user in DB
+        $db = Database::getInstance("pwgram");
+        $pdoUser = new PdoUserRepository($db);
+        $pdoUser->add($newUser);
+
+        //Save User profile image
+        $idUser = $pdoUser->getId($userName);
+        $imageProcessing->saveImage(strval($idUser), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
 
 
+        return $app['twig']->render('base.twig',array(
+            'request'=>$request,
+        ));
 
     }
 
