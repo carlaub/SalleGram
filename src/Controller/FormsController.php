@@ -55,6 +55,9 @@ class FormsController {
         $idUser = $pdoUser->getId($userName);
         $imageProcessing->saveImage(strval($idUser), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
 
+        //Send validation email
+        $emailManager = new EmailManager();
+        $emailManager->sendEmail("carlaurreablazquez@gmail.com", $idUser);
 
         return $app['twig']->render('base.twig',array(
             'request'=>$request,
