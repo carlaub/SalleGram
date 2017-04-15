@@ -275,6 +275,21 @@ class PdoUserRepository implements PdoRepository {
         return $results['id'];
     }
 
+    public function getActive($id) {
+        $query = "SELECT active FROM `User` WHERE id = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $id
+            ]
+        );
+        if (!$result) return false; // an error happened during the execution
+
+        $results = $result->fetch();
+
+        return $results['active'];
+    }
+
     /**
      * Update user's active state. Used when user click on validation link.
      * When an user it registers, by default his active value is 0 until he access
@@ -290,6 +305,10 @@ class PdoUserRepository implements PdoRepository {
                 $id
             ]
         );
+
         $results = $result->fetch();
+
+        if (!$results) return false;
+        return true;
     }
 }
