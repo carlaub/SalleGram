@@ -59,19 +59,32 @@ class FormsController {
         $emailManager = new EmailManager();
         $emailManager->sendEmail("carlaurreablazquez@gmail.com", $idUser);
 
-//        return $app['twig']->render('base.twig',array(
-//            'request'=>$request,
-//        ));
+        //TODO: Cambiarlo cuando el mail funcione
         return $app -> redirect('/validation/'.$idUser);
 
     }
 
     public function loginUser(Application $app, Request $request, Database $db) {
 
-        var_dump($request->request);
+        $userNameOrEmail = $request->request->get('usernameOrMail');
+        $password = $request->request->get('password');
+        var_dump($userNameOrEmail, $password);
 
-        //TODO proces de logejar usuari
+        $db = Database::getInstance("pwgram");
+        $pdoUser = new PdoUserRepository($db);
 
+        //Validate that de username or email exist
+        //TODO: Hashear password antes de verificarla con la de la bbdd
+        if($pdoUser->validateUserLogin($userNameOrEmail, $password)) {
+
+        } else {
+            //TODO:Boton de return al formulario en caso de error
+            return $app['twig']->render('error.twig',array(
+                'message'=>"El usuario o la contraseña no son correctos",
+            ));
+        }
+
+        //TODO set cookies e iniciar sesion
 
         return $app['twig']->render('base.twig',array(
             'request'=>$request,

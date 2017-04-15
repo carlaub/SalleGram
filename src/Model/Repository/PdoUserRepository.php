@@ -275,6 +275,12 @@ class PdoUserRepository implements PdoRepository {
         return $results['id'];
     }
 
+    /**
+     * Retrieves the value of the active flag. Util for validate if the user account
+     * is already validate
+     * @param $id
+     * @return bool|mixed
+     */
     public function getActive($id) {
         $query = "SELECT active FROM `User` WHERE id = ?";
         $result = $this->db->preparedQuery(
@@ -309,6 +315,24 @@ class PdoUserRepository implements PdoRepository {
         $results = $result->fetch();
 
         if (!$results) return false;
+        return true;
+    }
+
+    public function validateUserLogin($userNameOrEmail, $password) {
+        $query = "SELECT id FROM `User` WHERE (username = ? OR email = ?) AND password = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $userNameOrEmail,
+                $userNameOrEmail,
+                $password
+            ]
+        );
+        if (!$result) return false; // an error happened during the execution
+
+        $results = $result->fetch();
+        if (!$results) return false; // no user with these characteristics
+
         return true;
     }
 }

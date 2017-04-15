@@ -127,7 +127,6 @@ $(document).ready(function() {
 
     function validateImagePath(imgPath) {
         var element = document.getElementById("img-path");
-        //TODO imagen miniatura
         /*if(imgPath.empty()){
          element.placeholder = "Introduce el path de una imagen";
          element.value = "";
