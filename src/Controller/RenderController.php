@@ -40,9 +40,9 @@ class RenderController {
 
     }
 
-    public function renderValidation(Application $app, $id) {
+    public function renderValidation(Application $app) {
         return $app['twig']->render('validation.twig', array(
-            'id'=> $id
+
         ));
     }
 

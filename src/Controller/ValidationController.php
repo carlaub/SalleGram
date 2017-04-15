@@ -19,12 +19,9 @@ class validationController {
             ));
         }
         //Update user active state in db
-        if ($pdoUser->updateActiveState($id)){
-            //TODO: loggear usuario
-            return $app -> redirect('/');
-        }
-        return $app['twig']->render('error.twig',array(
-            'message'=>"El usuario no existe",
+        $pdoUser->updateActiveState($id);
+        //TODO: loggear usuario
+        return $app['twig']->render('welcome.twig',array(
         ));
     }
 }

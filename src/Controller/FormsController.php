@@ -57,10 +57,15 @@ class FormsController {
 
         //Send validation email
         $emailManager = new EmailManager();
-        $emailManager->sendEmail("carlaurreablazquez@gmail.com", $idUser);
+        $emailSentOK = $emailManager->sendEmail("carlaurreablazquez@gmail.com", $idUser);
 
-        //TODO: Cambiarlo cuando el mail funcione
-        return $app -> redirect('/validation/'.$idUser);
+        if ($emailSentOK) {
+            return $app -> redirect('/validation');
+        }
+        return $app['twig']->render('error.twig',array(
+            'message'=>"Ha sido imposible enviar el mail de verificacion. Vuelva a intentarlo.",
+        ));
+
 
     }
 
@@ -68,7 +73,6 @@ class FormsController {
 
         $userNameOrEmail = $request->request->get('usernameOrMail');
         $password = $request->request->get('password');
-        var_dump($userNameOrEmail, $password);
 
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);

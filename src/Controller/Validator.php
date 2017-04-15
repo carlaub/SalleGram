@@ -117,7 +117,6 @@ class Validator
 
     function validateProfileImage($size, $format) {
         //Size lees than 5M and forman png or jpg
-        var_dump($format);
         if ($size < 5000000000 && ($format == "jpg" || $format == "jpeg")) {
             return true;
         }

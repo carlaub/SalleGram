@@ -289,7 +289,7 @@ class PdoUserRepository implements PdoRepository {
                 $id
             ]
         );
-        if (!$result) return false; // an error happened during the execution
+        if (!$result) return true; // an error happened during the execution
 
         $results = $result->fetch();
 
@@ -313,7 +313,6 @@ class PdoUserRepository implements PdoRepository {
         );
 
         $results = $result->fetch();
-
         if (!$results) return false;
         return true;
     }
