@@ -32,6 +32,8 @@ class EmailManager {
     public function sendEmail($emailUser, $idUser) {
         $affair = "Bienvenid@ a PWGram";
         $result = mail("carlaurreablazquez@gmail.com", $affair, $this->emailBodyConstruct($idUser));
+
+        
         return $result;
     }
 }

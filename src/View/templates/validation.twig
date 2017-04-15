@@ -1,0 +1,25 @@
+{% extends "base.twig" %}
+
+{% block navbar %}
+
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right">
+        </ul>
+    </div>
+
+
+{% endblock navbar %}
+
+{% block content %}
+
+    <div class="container">
+        <br>
+        <h1 class="text-muted">Solo un último paso...</h1>
+        <hr>
+       <p class="text-body">Por favor verifique su cuenta accediendo al siquiente <a href="/dovalidation/{{ id }}">enlace</a></p>
+    </div>
+    <br><br><br><hr><br>
+
+
+{% endblock content %}
+

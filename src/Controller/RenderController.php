@@ -12,7 +12,7 @@ class RenderController {
         $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
         return $app['twig']->render('home.twig', array(
             'app'=> ['name' => $app['app.name']],
-            'logged'=>false,
+            'logged'=>true,
             'data'=>$TotaInfoDeFotos //SERA UN ARRAY
         ));
 
@@ -38,6 +38,12 @@ class RenderController {
             'data'=>$TotaInfoDeFotos //SERA UN ARRAY
         ));
 
+    }
+
+    public function renderValidation(Application $app, $id) {
+        return $app['twig']->render('validation.twig', array(
+            'id'=> $id
+        ));
     }
 
 }

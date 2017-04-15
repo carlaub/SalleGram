@@ -274,4 +274,22 @@ class PdoUserRepository implements PdoRepository {
 
         return $results['id'];
     }
+
+    /**
+     * Update user's active state. Used when user click on validation link.
+     * When an user it registers, by default his active value is 0 until he access
+     * the link validation via email or via web
+     * @param $id
+     */
+    public function updateActiveState($id) {
+        $query = "UPDATE `User` SET active = ? WHERE id = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                1,
+                $id
+            ]
+        );
+        $results = $result->fetch();
+    }
 }
