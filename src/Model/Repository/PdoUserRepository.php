@@ -334,4 +334,28 @@ class PdoUserRepository implements PdoRepository {
 
         return true;
     }
+
+    /**
+     * This functions return user password from the user name or email.
+     * In case that user don't exists in data base, the function will return "false"
+     * instead of the password.
+     *
+     * @param $userNameOrEmail
+     * @return bool|mixed
+     */
+    public function getPassword($userNameOrEmail) {
+        $query = "SELECT password FROM `User` WHERE (username = ? OR email = ?)";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $userNameOrEmail,
+                $userNameOrEmail,
+            ]
+        );
+        if (!$result) return false;
+        $results = $result->fetch();
+        if(!$results) return false;
+
+        return $results['password'];
+    }
 }

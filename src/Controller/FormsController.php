@@ -25,6 +25,8 @@ class FormsController {
         $confirmPassword = $request->request->get('confirm-password');
         $profileImage = $request->files->get('image-path');
 
+
+
         $newUser = new User($userName, $password, $mail, $date, 0, -1);
 
         if ($validator->validateNewUser($newUser, $confirmPassword)) {
@@ -45,6 +47,10 @@ class FormsController {
             //TODO:mostrar errores del formulario des de PHP en twig
            return $app -> redirect('/register');
         }
+
+        var_dump(crypt($password, '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
+        //Encrypt user password before insert in database
+        $newUser->setPassword(crypt($password, '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
 
         //All correct, register new user in DB
         $db = Database::getInstance("pwgram");
@@ -77,22 +83,39 @@ class FormsController {
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
 
-        //Validate that de username or email exist
-        //TODO: Hashear password antes de verificarla con la de la bbdd
-        if($pdoUser->validateUserLogin($userNameOrEmail, $password)) {
+        // Get user password from DB
+        $dbPassword = $pdoUser->getPassword($userNameOrEmail);
 
-        } else {
-            //TODO:Boton de return al formulario en caso de error
-            return $app['twig']->render('error.twig',array(
+
+
+        if ($dbPassword != false) {
+            //Compare password from db with password entered
+            if (crypt($password, $dbPassword) == $dbPassword) {
+                //Password are equals
+                //TODO: set coookies and sesion
+                return $app -> redirect('/');
+
+            }
+        }
+        return $app['twig']->render('error.twig',array(
                 'message'=>"El usuario o la contraseña no son correctos",
             ));
-        }
-
-        //TODO set cookies e iniciar sesion
-
-        return $app['twig']->render('base.twig',array(
-            'request'=>$request,
-        ));
+        //Validate that de username or email exist
+        //TODO: Hashear password antes de verificarla con la de la bbdd
+//        if($pdoUser->validateUserLogin($userNameOrEmail, $password)) {
+//
+//        } else {
+//            //TODO:Boton de return al formulario en caso de error
+//            return $app['twig']->render('error.twig',array(
+//                'message'=>"El usuario o la contraseña no son correctos",
+//            ));
+//        }
+//
+//        //TODO set cookies e iniciar sesion
+//
+//        return $app['twig']->render('base.twig',array(
+//            'request'=>$request,
+//        ));
 
     }
 
