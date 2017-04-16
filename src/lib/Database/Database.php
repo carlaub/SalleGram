@@ -8,12 +8,12 @@ use Exception;
 //DB name
 
 //Case MAMP users
-//define('USER', "root");
-//define('PASSWORD', "root");
+define('USER', "root");
+define('PASSWORD', "root");
 
 //Case Vagrant users
-define('USER', "homestead");
-define('PASSWORD', "secret");
+//define('USER', "homestead");
+//define('PASSWORD', "secret");
 
 /**
  * Database

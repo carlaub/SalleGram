@@ -1,0 +1,64 @@
+{% extends "base.twig" %}
+
+
+{% block navbar %}
+
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right">
+        </ul>
+    </div>
+
+
+{% endblock navbar %}
+
+{% block content %}
+
+    <div class="container">
+        <h1 class="text-muted">Registro</h1>
+        <hr>
+        <div class="row">
+
+
+            <div class="col-md-9 personal-info">
+
+                <form class="form-horizontal" enctype="multipart/form-data" id="registerUserForm" action="/register/form" method="POST">
+                    <div class="form-group">
+                        <label class="col-lg-4 control-label text-muted">Título: </label>
+                        <div class="col-lg-8">
+                            <input class="form-control " type="text" placeholder="Título" name="img-title" id="img-title">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-8">
+                            <label>
+                            <input class="form-control " type="checkbox" placeholder="Private" name="img-private" id="img-private"> Privada</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label text-muted">Imagen:</label>
+                        <div class="col-md-8">
+                            <input class="form-control" name="img-selected" id="img-selected" type="file" onchange="readURL(this);">
+                            <img id="img-preview" height="300" width="300" src="{{ asset('img_profile_default.jpg', 'img') }}" alt="your image">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-4 control-label text-muted"></label>
+                        <div class="col-md-8">
+                            <button type="submit" class="btn our-btn">Subir Imagen</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+{% endblock content %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>
+    <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
+{% endblock javascripts %}
