@@ -21,7 +21,7 @@
 
             <div class="col-md-9 personal-info">
 
-                <form class="form-horizontal" enctype="multipart/form-data" id="registerUserForm" action="/register/form" method="POST">
+                <form class="form-horizontal" enctype="multipart/form-data" id="registerUserForm" action="/uploadImage/form" method="POST">
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Título: </label>
                         <div class="col-lg-8">
@@ -32,7 +32,7 @@
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Privada: </label>
                         <div class="col-lg-8">
-                            <input class=" " type="checkbox" placeholder="Private" name="img-private" id="img-private">
+                            <input class="checkbox-info" type="checkbox" placeholder="Private" name="img-private" id="img-private">
                         </div>
                     </div>
 
@@ -40,7 +40,7 @@
                         <label class="col-md-4 control-label text-muted">Imagen:</label>
                         <div class="col-md-8">
                             <input class="form-control" name="img-selected" id="img-selected" type="file" onchange="readURL(this);">
-                            <img id="img-preview" height="300" width="300" src="{{ asset('img_profile_default.jpg', 'img') }}" alt="your image">
+                            <img id="img-preview"  src="" alt="your image">
                         </div>
                     </div>
 

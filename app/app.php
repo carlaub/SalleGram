@@ -32,5 +32,12 @@ $app->post('/login/form', function (Application $app, Request $request) {
     return $formsController->loginUser($app, $request, $db);
 });
 
+$app->post('/uploadImage/form', function (Application $app, Request $request) {
+    $db = Database::getInstance("pwgram");
+
+    $formsController= new FormsController();
+    return $formsController->uploadImage($app, $request, $db);
+});
+
 
 return $app;

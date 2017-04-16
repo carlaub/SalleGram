@@ -2,20 +2,25 @@
 
 namespace pwgram\Controller;
 
+use pwgram\lib\Database\Database;
+use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
 
 
 class RenderController {
 
     public function renderHome(Application $app) {
+        //TODO: Comprobar que el usuario de la sesion es correcto
         $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
         //var_dump($app['session']->get('user')['username']);
-        $image = 'img_profile_default';
+        $idUser = $this->verifySession($app);
+        $image = $this->getProfileImage($idUser);
+
         return $app['twig']->render('home.twig', array(
             'app'=> ['name' => $app['app.name']],
-            'name'=>$app['session']->get('user')['username'],
-            'img'=>$image,
-            'logged'=>$this->haveSession($app),
+            'name'=> $app['session']->get('user')['username'],
+            'img'=> $image,
+            'logged'=> $idUser,
             'data'=>$TotaInfoDeFotos //SERA UN ARRAY
         ));
 
@@ -73,4 +78,31 @@ class RenderController {
         ));
     }
 
+    /**
+     * @param $app
+     */
+    public function verifySession($app) {
+
+        if ($this->haveSession($app)) {
+            $db = Database::getInstance("pwgram");
+            $pdoUser = new PdoUserRepository($db);
+            $id = $pdoUser->validateUserSession($app['session']->get('user')['username'],
+                $app['session']->get('user')['password']);
+
+            if ($id != false) return $id;
+        }
+        return false;
+    }
+
+    /**
+     * @param $idUser
+     * @return string
+     */
+    public function getProfileImage($idUser){
+        if($idUser != false) {
+            return $idUser;
+        }
+        return "img_profile_default.jpg";
+    }
 }
+

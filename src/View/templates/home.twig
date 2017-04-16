@@ -14,7 +14,7 @@
         {% endif %}
 
     {#logeado#}
-    {% if logged == true %}
+    {% if logged != false %}
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/notifications"><span class="glyphicon glyphicon-bell" ></span> </a></li>
@@ -48,7 +48,7 @@
     <div class="container-fluid bg-1 text-center">
         <div class="row">
 
-        {% if logged == true %}
+        {% if logged != false %}
 
             <div class="col-sm-6 col-md-4">
                 <div class="thumbnail">

@@ -3,6 +3,7 @@
 namespace pwgram\Controller;
 
 use pwgram\lib\Database\Database;
+use pwgram\Model\Entity\Image;
 use pwgram\Model\Entity\User;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
@@ -14,6 +15,12 @@ class FormsController {
 
     private $request;
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param Database $db
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function registerUser(Application $app, Request $request, Database $db) {
 
         $validator = new Validator();
@@ -49,12 +56,10 @@ class FormsController {
            return $app -> redirect('/register');
         }
 
-        var_dump(crypt($password, '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
         //Encrypt user password before insert in database
         $newUser->setPassword(crypt($password, '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
 
         //All correct, register new user in DB
-        $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
         $pdoUser->add($newUser);
 
@@ -77,12 +82,18 @@ class FormsController {
 
     }
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param Database $db
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function loginUser(Application $app, Request $request, Database $db) {
 
         $userNameOrEmail = $request->request->get('usernameOrMail');
         $password = $request->request->get('password');
 
-        $db = Database::getInstance("pwgram");
+
         $pdoUser = new PdoUserRepository($db);
 
         // Get user password from DB
@@ -95,7 +106,8 @@ class FormsController {
             if (crypt($password, $dbPassword) == $dbPassword) {
                 //Password are equals
                 //TODO: set coookies and sesion
-                $this->setSession($app, $userNameOrEmail, $dbPassword);
+                $userName = $pdoUser->getUsername($userNameOrEmail);
+                $this->setSession($app, $userName, $dbPassword);
 
                 return $app -> redirect('/');
 
@@ -107,11 +119,24 @@ class FormsController {
 
     }
 
-    public function setSession(Application $app, $userNameOrEmail, $dbPassword) {
+
+    public function uploadImage(Application $app, Request $request, Database $db) {
+        //TODO: verificar campos de la imagen (tiulo existente, foto existente)
+        $title = $request->request->get('img-title');
+        $private = $request->request->get('img-private');
+         //TODO: redimension
+        $pdoUser = new PdoUserRepository($db);
+        $idUser = $pdoUser->getId($app['session']->get('user')['username']);
+
+
+    }
+
+    public function setSession(Application $app, $userName, $dbPassword) {
         // Only one session at the same time
         $app['session']->clear();
         // Save the session
-        $app['session']->set('user', array('username' => $userNameOrEmail, 'password' => $dbPassword));
+        $app['session']->set('user', array('username' => $userName, 'password' => $dbPassword));
     }
+
 
 }

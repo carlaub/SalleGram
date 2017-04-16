@@ -317,6 +317,11 @@ class PdoUserRepository implements PdoRepository {
         return true;
     }
 
+    /**
+     * @param $userNameOrEmail
+     * @param $password
+     * @return bool
+     */
     public function validateUserLogin($userNameOrEmail, $password) {
         $query = "SELECT id FROM `User` WHERE (username = ? OR email = ?) AND password = ?";
         $result = $this->db->preparedQuery(
@@ -336,6 +341,51 @@ class PdoUserRepository implements PdoRepository {
     }
 
     /**
+     * @param $userName
+     * @param $password HASHED!!!
+     */
+    public function validateUserSession($userName, $password) {
+        $query = "SELECT id FROM `User` WHERE username = ? AND password = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $userName,
+                $password
+
+            ]
+        );
+        if (!$result) return false; // an error happened during the execution
+
+        $results = $result->fetch();
+        if (!$results) return false; // no user with these characteristics
+
+        return $results['id'];
+    }
+
+    /**
+     * @param $userNameOrEmail
+     * @return bool|mixed
+     */
+
+    public function getUsername($userNameOrEmail) {
+        $query = "SELECT username FROM `User` WHERE username = ? OR email = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $userNameOrEmail,
+                $userNameOrEmail
+            ]
+        );
+        if (!$result) return false;
+        $results = $result->fetch();
+        if (!$results) return false;
+
+        return $results['username'];
+    }
+
+
+
+    /**
      * This functions return user password from the user name or email.
      * In case that user don't exists in data base, the function will return "false"
      * instead of the password.
@@ -349,7 +399,7 @@ class PdoUserRepository implements PdoRepository {
             $query,
             [
                 $userNameOrEmail,
-                $userNameOrEmail,
+                $userNameOrEmail
             ]
         );
         if (!$result) return false;
@@ -358,4 +408,23 @@ class PdoUserRepository implements PdoRepository {
 
         return $results['password'];
     }
+
+    /**
+     *
+     * @param $id
+     */
+    public function getProfileImage($id) {
+        $query = "SELECT profile_image FROM `User` WHERE id = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $id
+            ]
+        );
+        if (!$result) return false;
+        $results = $result->fetch();
+        if(!$results) return false;
+        return true;
+    }
+
 }
