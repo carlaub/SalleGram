@@ -90,10 +90,11 @@ class FormsController {
 
 
         if ($dbPassword != false) {
-            //Compare password from db with password entered
+            // Compare password from db with password entered
             if (crypt($password, $dbPassword) == $dbPassword) {
                 //Password are equals
                 //TODO: set coookies and sesion
+                $this->setSession($app, $userNameOrEmail, $dbPassword);
 
                 return $app -> redirect('/');
 
@@ -103,6 +104,13 @@ class FormsController {
                 'message'=>"El usuario o la contraseña no son correctos",
             ));
 
+    }
+
+    public function setSession(Application $app, $userNameOrEmail, $dbPassword) {
+        // Only one session at the same time
+        $app['session']->clear();
+        // Save the session
+        $app['session']->set('user', array('username' => $userNameOrEmail, 'password' => $dbPassword));
     }
 
 }

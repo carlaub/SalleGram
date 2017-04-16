@@ -13,6 +13,8 @@ $app->get('/validation', 'pwgram\\Controller\\RenderController::renderValidation
 $app->get('/dovalidation/{id}', 'pwgram\\Controller\\ValidationController::userValidation');
 
 /*Menu routes, loggef user*/
+$app->get('/logout', 'pwgram\\Controller\\RenderController::logout');
+
 $app->get('/notifications', 'pwgram\\Controller\\RenderController::renderHome');
 $app->get('/edit-profile', 'pwgram\\Controller\\RenderController::renderHome');
 $app->get('/edit-image', 'pwgram\\Controller\\RenderController::renderHome');
