@@ -64,6 +64,7 @@ class FormsController {
 
         //Send validation email
         $emailManager = new EmailManager();
+        //TODO: cambiar mail
         $emailSentOK = $emailManager->sendEmail("carlaurreablazquez@gmail.com", $idUser);
 
         if ($emailSentOK) {
