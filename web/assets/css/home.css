@@ -131,3 +131,7 @@ p {font-size: 16px;
     background-color: #071119;
     border-color: #000000;
 }
+
+.textarea-comment {
+    margin-bottom: 20px;
+}
