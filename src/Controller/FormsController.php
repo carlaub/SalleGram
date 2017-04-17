@@ -2,7 +2,7 @@
 
 namespace pwgram\Controller;
 
-session_start();
+session_start();//TODO ESTO?
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
@@ -155,7 +155,8 @@ class FormsController {
         $profileImage = $request->files->get('image-path');
 
 
-        // TODO: Check if user is logged?
+        // TODO Check if user is logged? CREO QUE NO, YA SE COMPRUEBA EN EL RENDER
+
         $userName = $app['session']->get('user')['username'];
 
         $pdo = new PdoUserRepository($db);
@@ -186,13 +187,18 @@ class FormsController {
                 }
             }
 
-            $pdo->update($userUpdate); // updates de database user row with the new data
+            //updates the info of the session
+            $this->setSession($app,$userUpdate->getUsername(), $userUpdate->getPassword());
+            // updates the database user row with the new data
+            $pdo->update($userUpdate);
+
             return $app -> redirect('/');
         }
 
         return $app['twig']->render('error.twig',array(
             'message'=>"No se han podido aplicar los cambios en el perfil.",
         ));
+
     }
 
     public function uploadImage(Application $app, Request $request, Database $db) {
@@ -202,6 +208,8 @@ class FormsController {
          //TODO: redimension
         $pdoUser = new PdoUserRepository($db);
         $idUser = $pdoUser->getId($app['session']->get('user')['username']);
+        return $app -> redirect('/');
+
 
 
     }
@@ -213,6 +221,7 @@ class FormsController {
         // Save the session
         $app['session']->set('user', array('username' => $userName, 'password' => $dbPassword));
     }
+
 
 
 }

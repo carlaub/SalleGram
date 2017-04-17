@@ -21,11 +21,11 @@
 
             <div class="col-md-9 personal-info">
 
-                <form class="form-horizontal" enctype="multipart/form-data" id="registerUserForm" action="/uploadImage/form" method="POST">
+                <form class="form-horizontal" enctype="multipart/form-data" id="uploadImageForm" action="/uploadImage/form" method="POST">
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Título: </label>
                         <div class="col-lg-8">
-                            <input class="form-control " type="text" placeholder="Título" name="img-title" id="img-title">
+                            <input class="form-control " type="text" placeholder="Título" name="img-title" id="img-title" >
                         </div>
                     </div>
 
@@ -39,11 +39,11 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted">Imagen:</label>
                         <div class="col-md-8">
-                            <input class="form-control" name="img-selected" id="img-selected" type="file" onchange="readURL(this);">
+                            <input class="form-control" name="img-selected" id="img-selected" type="file" onchange="readURL(this);" >
                             <img id="img-preview"  src="" alt="your image">
                         </div>
                     </div>
-
+                    <br>
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted"></label>
                         <div class="col-md-8">
@@ -54,11 +54,12 @@
             </div>
         </div>
     </div>
+    <br>
     <hr>
 
 {% endblock content %}
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>
+    <script type="text/javascript" src="{{ asset('uploadImage.js', 'js') }}"></script>
     <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
 {% endblock javascripts %}

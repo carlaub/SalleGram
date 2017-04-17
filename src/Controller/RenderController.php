@@ -79,14 +79,21 @@ class RenderController {
     }
 
     public function renderUploadImage(Application $app) {
-        if ($app['session']->get('user') === null){
+       /* if ($app['session']->get('user') === null){
             //TODO 403 code
            return $this->renderHome($app);
         }
         return $app['twig']->render('uploadImage.twig', array(
             'app'=> ['name' => $app['app.name']],
             'logged'=>$this->haveSession($app),
-        ));
+        ));*/
+       if ($this->correctSession($app)){
+           return $app['twig']->render('uploadImage.twig', array(
+               'app'=> ['name' => $app['app.name']],
+               'logged'=>$this->haveSession($app),
+           ));
+       }
+       return $app -> redirect('/');
     }
 
     /**
@@ -106,6 +113,7 @@ class RenderController {
         return false;
     }
 
+
     /**
      * @param $idUser
      * @return string
@@ -118,6 +126,29 @@ class RenderController {
             return $idUser;
         }
         return "img_profile_default";
+    }
+
+    /**
+     *
+     * TODO LLAMAR A ESTA FUCNION ANTES DE REENDERIZAR CUALQUIERA QUE NECESITE ESTAR LOGEADO ...
+     * TODO ... SI DEVUELVE FALSE REENDERIZAR /LOGIN
+     *
+     * @param $app
+     * @return bool
+     */
+    public function correctSession($app) {
+
+        if ($app['session']->get('user') != null) {
+
+            $db = Database::getInstance("pwgram");
+            $pdoUser = new PdoUserRepository($db);
+            if($pdoUser->validateUserLogin($app['session']->get('user')['username'],
+                $app['session']->get('user')['password'])){
+                return true;
+            }
+        }
+        //TODO error 403
+        return false;
     }
 }
 
