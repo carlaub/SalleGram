@@ -7,11 +7,13 @@ session_start();//TODO ESTO?
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
 use pwgram\Model\Entity\User;
+use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 class FormsController {
 
@@ -37,7 +39,7 @@ class FormsController {
     public function checkUserImage(User &$user, Validator $validator, $profileImage) {
 
         //Image validation
-        if ($validator->validateProfileImage($profileImage->getClientSize(), $profileImage->getClientOriginalExtension())) {
+        if ($validator->validateImage($profileImage->getClientSize(), $profileImage->getClientOriginalExtension())) {
 
             $user->setProfileImage(true);
             return true;
@@ -89,7 +91,7 @@ class FormsController {
 
         //Save User profile image
         $idUser = $pdoUser->getId($newUser->getUsername());
-        if($newUser->getProfileImage()) $imageProcessing->saveImage(strval($idUser), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
+        if($newUser->getProfileImage()) $imageProcessing->saveProfileImage(strval($idUser), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
 
         //Send validation email
         $emailManager = new EmailManager();
@@ -201,19 +203,62 @@ class FormsController {
 
     }
 
+
+    /**
+     * Image upload. Verify data form, image characteristics (size, extension...), update BBDD and
+     * save the image in two different size: 400x300 and 100x100
+     * The users image are saved in upload_img directory inside web/assets/img
+     * The users image follow this nomenclature:
+     *  - {id-image}100x100.{extension}
+     *  - {id-image}400x300.{extension}
+     *
+     * @param Application $app
+     * @param Request $request
+     * @param Database $db
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function uploadImage(Application $app, Request $request, Database $db) {
         //TODO: verificar campos de la imagen (tiulo existente, foto existente)
+        $validator = new Validator();
+
         $title = $request->request->get('img-title');
-        $private = $request->request->get('img-private');
-         //TODO: redimension
+        $private = $request->request->get('img-private') != null;
+        $image = $request->files->get('img-selected');
+
+        // Check if the image accomplish the requirements
+        if (!$validator->validateUploadImage($title, $image)) {
+            //TODO: error desde php avisando que no se puede subir la imagen seleccionada
+            return $app -> redirect('/upload-image');
+        }
+
+        // Correct image, save it and update DB
+
         $pdoUser = new PdoUserRepository($db);
         $idUser = $pdoUser->getId($app['session']->get('user')['username']);
+
+        // Create image entity
+        date_default_timezone_set('Europe/Madrid');
+
+        $newImage = new Image($title, $image->getRealPath(), date('Y-m-d h:i:s'), $idUser, $private);
+
+        // Save image information in DB image table
+        $pdoImage = new PdoImageRepository($db);
+
+        $pdoImage->add($newImage);
+
+        $idImage = $pdoImage->getLastInsertedId();
+
+
+        $imageProcessing = new ImageProcessing();
+        $imageProcessing->saveUploadImage($idImage, $image->getClientOriginalExtension(), $image->getRealPath());
         return $app -> redirect('/');
-
-
-
     }
 
+    /**
+     * @param Application $app
+     * @param $userName
+     * @param $dbPassword
+     */
     public function setSession(Application $app, $userName, $dbPassword) {
 
         // Only one session at the same time

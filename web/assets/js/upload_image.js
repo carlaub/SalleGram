@@ -9,12 +9,12 @@ $(document).ready(function() {
 
 
 
-        if(validateTitle(title) && validateImg(img)) {
-            alert("ok!");
+        if(validateTitle(title) & validateImg(img)) {
+            //alert("ok!");
 
         }else{
             event.preventDefault();
-            alert("error validacio");
+            //alert("error validacio");
         }
 
     });
@@ -24,7 +24,7 @@ $(document).ready(function() {
         var element = document.getElementById("img-title");
 
         if(title === '') {
-            element.placeholder = "No has introducido ningún nombre";
+            element.placeholder = "No has introducido ningún título";
             element.value = "";
             element.className = "form-control-red";
             return false;
@@ -39,15 +39,12 @@ $(document).ready(function() {
         var element = document.getElementById("img-selected");
         if (img  === ''){
             element.className = "form-control-red";
-
             return false;
         }else{
             element.className = "form-control";
             return true;
         }
-
     }
-
 });
 
 

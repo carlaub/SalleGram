@@ -50,6 +50,7 @@ class PdoImageRepository implements PdoRepository
      */
     public function add($row)
     {
+
         $query  = "INSERT INTO `Image`(`title`, `img_path`, `visits`, `private`, `created_at`, `likes`, `fk_user`) VALUES(?, ?, ?, ?, ?, ?, ?)";
         $result = $this->db->preparedQuery(
             $query,
@@ -63,6 +64,8 @@ class PdoImageRepository implements PdoRepository
                 $row->getFkUser()
             ]
         );
+        $results = $result->fetch();
+
     }
 
 
@@ -200,5 +203,18 @@ class PdoImageRepository implements PdoRepository
         $total = $result->fetch();
 
         return $total['total'];
+    }
+
+    public function getLastInsertedId() {
+        $query = "SELECT LAST_INSERT_ID()";
+        $result = $this->db->query($query);
+
+        if (!$result) return false;
+
+        $lastId = $result->fetch();
+
+
+        return $lastId['LAST_INSERT_ID()'];
+
     }
 }

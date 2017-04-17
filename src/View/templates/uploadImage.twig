@@ -32,7 +32,7 @@
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Privada: </label>
                         <div class="col-lg-8">
-                            <input class="checkbox-info" type="checkbox" placeholder="Private" name="img-private" id="img-private">
+                            <input class="checkbox-info" type="checkbox" placeholder="Private" name="img-private" id="img-private" value="private">
                         </div>
                     </div>
 
@@ -60,6 +60,6 @@
 {% endblock content %}
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('uploadImage.js', 'js') }}"></script>
+    <script type="text/javascript" src="{{ asset('upload_image.js', 'js') }}"></script>
     <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
 {% endblock javascripts %}

@@ -31,7 +31,7 @@ class Image
      */
     private $fkUser;
 
-    public function __construct($title, $imgPath, $createdAt, $fkUser, $visits = 0, $private = false, $likes = 0, $id = -1)
+    public function __construct($title, $imgPath, $createdAt, $fkUser, $private,  $visits = 0, $likes = 0, $id = -1)
     {
         $this->id           = $id;
         $this->title        = $title;

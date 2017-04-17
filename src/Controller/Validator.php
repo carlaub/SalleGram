@@ -157,12 +157,26 @@ class Validator
         return $date && $dateFormatted->format($format) == $date && $date <= $today;
     }
 
-    function validateProfileImage($size, $format) {
+    function validateImage($size, $format) {
         //Size lees than 5M and forman png or jpg
         if ($size < Validator::MAX_IMG_SIZE && ($format == "jpg" || $format == "jpeg")) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param $title
+     * @param $image
+     */
+    function validateUploadImage($title, $image) {
+        if ($title != null && $image != null
+            && $this->validateImage($image->getClientSize(), $image->getClientOriginalExtension())) {
+            return true;
+        } else {
+            return false;
+
+        }
     }
 
 }
