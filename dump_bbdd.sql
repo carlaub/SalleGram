@@ -32,13 +32,6 @@ CREATE TABLE `Comment` (
   `fk_image` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Volcado de datos para la tabla `Comment`
---
-
-INSERT INTO `Comment` (`id`, `content`, `last_modified`, `fk_user`, `fk_image`) VALUES
-(2, 'dfds', '2017-04-16 00:00:00', 2, 2),
-(33, 'dfds', '2017-04-16 00:00:00', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -54,6 +47,7 @@ CREATE TABLE `Image` (
   `private` tinyint(4) NOT NULL,
   `created_at` datetime NOT NULL,
   `likes` int(11) NOT NULL,
+  `extension` varchar(255) NOT NULL,
   `fk_user` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -68,13 +62,6 @@ CREATE TABLE `Image_likes` (
   `fk_user` int(11) NOT NULL,
   `fk_image` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `Image_likes`
---
-
-INSERT INTO `Image_likes` (`id`, `fk_user`, `fk_image`) VALUES
-(2, 67, 2);
 
 -- --------------------------------------------------------
 

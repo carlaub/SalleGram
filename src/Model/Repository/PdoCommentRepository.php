@@ -2,7 +2,7 @@
 /**
  * Created by PhpStorm.
  * User: Albertpv
- * Date: 11/04/17
+ * AppFormatDate: 11/04/17
  * Time: 21:20
  */
 
@@ -64,7 +64,7 @@ class PdoCommentRepository implements PdoRepository
             ]
         );
 
-        return !$result;
+        return $result !== false;
     }
 
 
@@ -99,6 +99,44 @@ class PdoCommentRepository implements PdoRepository
         );
     }
 
+    /**
+     * @param int $id   The image foreign key
+     *
+     * @return false|mixed false if an error happened doing the request or an array of the
+     *         comments associated with an image.
+     */
+    public function getImageComments($id) {
+
+        $query  = "SELECT * FROM `Comment` WHERE fk_image = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $id
+            ]
+        );
+        if (!$result) return false; // an error happened during the execution
+
+        $comments = $result->fetchAll();
+
+        if (!$comments) return false;
+
+        $resComments = [];
+
+        foreach ($comments as $comment) {
+
+            array_push($resComments,
+                new Comment(
+                    $comment['content'],
+                    $comment['last_modified'],
+                    $comment['fk_user'],
+                    $comment['fk_image'],
+                    $comment['id']
+                )
+            );
+        }
+
+        return $resComments;
+    }
     /**
      * Updates an existing comment with new information.
      *

@@ -2,7 +2,7 @@
 /**
  * Created by PhpStorm.
  * User: Albertpv
- * Date: 13/04/17
+ * AppFormatDate: 13/04/17
  * Time: 19:20
  */
 
@@ -29,11 +29,21 @@ class Image
     private $userName;
 
     /**
-     * @var the user who is the owner of the published photo
+     * @var string The format of the image: jpg, png, etc.
+     */
+    private $extension;
+
+    /**
+     * @var array of Comment
+     */
+    private $comments;
+
+    /**
+     * @var User    the user who is the owner of the published photo
      */
     private $fkUser;
 
-    public function __construct($title, $createdAt, $fkUser, $private,  $visits = 0, $likes = 0, $id = -1)
+    public function __construct($title, $createdAt, $fkUser, $private, $extension = ".jpg", $visits = 0, $likes = 0, $id = -1)
     {
         $this->id           = $id;
         $this->title        = $title;
@@ -41,7 +51,10 @@ class Image
         $this->fkUser       = $fkUser;
         $this->visits       = $visits;
         $this->private      = $private;
+        $this->extension    = $extension;
         $this->likes        = $likes;
+        $this->comments     = [];
+
     }
 
     /**
@@ -182,4 +195,22 @@ class Image
     public function getUserName() {
         return $this->userName;
     }
+
+    /**
+     * @return array
+     */
+    public function getComments(): array
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param array $comments
+     */
+    public function setComments(array $comments)
+    {
+        $this->comments = $comments;
+    }
+
+
 }

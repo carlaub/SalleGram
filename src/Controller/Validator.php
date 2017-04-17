@@ -3,6 +3,7 @@
 
 namespace pwgram\Controller;
 use pwgram\lib\Database\Database;
+use pwgram\Model\Entity\AppFormatDate;
 use pwgram\Model\Entity\User;
 use pwgram\Model\Repository\PdoUserRepository;
 use \DateTime;
@@ -20,10 +21,10 @@ use \DateTime;
 class Validator
 {
 
-    const MAX_USERNAME  = 20;
-    const MIN_PASSWORD  = 6;
-    const MAX_PASSWORD  = 12;
-    const MAX_IMG_SIZE  = 5000000000;
+    private const MAX_USERNAME  = 20;
+    private const MIN_PASSWORD  = 6;
+    private const MAX_PASSWORD  = 12;
+    private const MAX_IMG_SIZE  = 5000000000;
 
 
     /**
@@ -148,13 +149,11 @@ class Validator
     // checked
     function validateDate($date){
 
-        $today  = new DateTime();
-        $format = 'Y-m-d';
-        $today  = $today->format($format);
+        $today  = AppFormatDate::today();
 
-        $dateFormatted = DateTime::createFromFormat($format, $date);
+        $dateFormatted = DateTime::createFromFormat(AppFormatDate::DATE_FORMAT, $date);
 
-        return $date && $dateFormatted->format($format) == $date && $date <= $today;
+        return $date && $dateFormatted->format(AppFormatDate::DATE_FORMAT) == $date && $date <= $today;
     }
 
     function validateImage($size, $format) {

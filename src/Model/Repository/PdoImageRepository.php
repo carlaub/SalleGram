@@ -2,7 +2,7 @@
 /**
  * Created by PhpStorm.
  * User: Albertpv
- * Date: 13/04/17
+ * AppFormatDate: 13/04/17
  * Time: 20:02
  */
 
@@ -127,7 +127,7 @@ class PdoImageRepository implements PdoRepository
      */
     public function get($id)
     {
-        $query  = "SELECT id, title, img_path, visits, private, created_at, likes, fk_user FROM `Image` WHERE id = ?";
+        $query  = "SELECT id, title, img_path, visits, private, created_at, likes, extension, fk_user FROM `Image` WHERE id = ?";
         $result = $this->db->preparedQuery(
             $query,
             [
@@ -143,15 +143,74 @@ class PdoImageRepository implements PdoRepository
 
         return new Image(
             $image['title'],
-            $image['img_path'],
             $image['created_at'],
             $image['fk_user'],
-            $image['visits'],
             $image['private'],
+            $image['extension'],
+            $image['visits'],
             $image['likes'],
             $image['id']
         );
     }
+
+    public function getAll() {
+        $query = "SELECT * FROM Image";
+        $result = $this->db->query($query);
+
+        if(!$result) return 0;
+
+        $results = $result->fetchAll();
+
+        if(!$results) return 0; // Any image in DB
+
+        return $results;
+    }
+
+
+    public function getLastInsertedId() {
+        $query = "SELECT LAST_INSERT_ID()";
+        $result = $this->db->query($query);
+
+        if (!$result) return false;
+
+        $lastId = $result->fetch();
+
+        return $lastId['LAST_INSERT_ID()'];
+    }
+
+    public function getAllPublicImages() {
+
+        $query = "SELECT * FROM Image WHERE private IS FALSE";
+        $result = $this->db->query($query);
+
+        if (!$result) return false;
+
+        $results = $result->fetchAll();
+
+        if(!$results) return []; // Any image in DB
+
+        $images = [];
+
+        foreach ($results as $image) {
+
+            array_push(
+                $images,
+                new Image(
+                    $image['title'],
+                    $image['created_at'],
+                    $image['fk_user'],
+                    $image['private'],
+                    $image['extension'],
+                    $image['visits'],
+                    $image['likes'],
+                    $image['id']
+                )
+            );
+        }
+
+        return $images;
+    }
+
 
     /**
      * Updates an existing image of the database.
@@ -203,28 +262,4 @@ class PdoImageRepository implements PdoRepository
         return $total['total'];
     }
 
-    public function getAll() {
-        $query = "SELECT * FROM Image";
-        $result = $this->db->query($query);
-
-        if(!$result) return 0;
-
-        $results = $result->fetchAll();
-
-        if(!$results) return 0; // Any image in DB
-
-        return $results;
-    }
-
-    public function getLastInsertedId() {
-        $query = "SELECT LAST_INSERT_ID()";
-        $result = $this->db->query($query);
-
-        if (!$result) return false;
-
-        $lastId = $result->fetch();
-
-
-        return $lastId['LAST_INSERT_ID()'];
-    }
 }

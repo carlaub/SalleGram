@@ -26,5 +26,6 @@ $app->get('/profile', 'pwgram\\Controller\\RenderController::renderHome');
 
 /*Comments*/
 
+$app->get('/new-comment/{id}', 'pwgram\\Controller\\CommentsController::addComment');
 
 

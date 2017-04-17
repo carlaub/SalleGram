@@ -5,6 +5,7 @@ namespace pwgram\Controller;
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
+use pwgram\Model\Repository\PdoCommentRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
@@ -12,14 +13,39 @@ use Silex\Application;
 
 class RenderController {
 
+    private $sessionController;
+
+
+    public function __construct()
+    {
+        $this->sessionController = new SessionController();
+    }
+
     public function renderHome(Application $app) {
         //TODO: Comprobar que el usuario de la sesion es correcto
+        //TODO: This is a first solution but must be rethinked for pagination
+
+        $db = Database::getInstance("pwgram");
+        $pdoImage = new PdoImageRepository($db);
+        $commentsPdo = new PdoCommentRepository($db);
 
         //Images array that will be displayed on the main page
-        $publicImages = $this->getPublicImages();
+        $publicImages = $pdoImage->getAllPublicImages();
+        $publicImages = !$publicImages? [] : $publicImages; // if false, return an empty array, if not return the public images
+
+        // let's add all the comments for each image
+        foreach ($publicImages as $image) {
+
+            $comments = $commentsPdo->getImageComments($image->getId());
+
+            if (!$comments) $comments = [];
+            $image->setComments($comments);
+        }
+
         //var_dump($app['session']->get('user')['username']);
-        $idUser = $this->verifySession($app);
+        $idUser = $this->sessionController->verifySession($app);
         $image = $this->getProfileImage($idUser);
+
         if ($publicImages != 0) {
             return $app['twig']->render('home.twig', array(
                 'app'=> ['name' => $app['app.name']],
@@ -44,7 +70,7 @@ class RenderController {
         $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
         return $app['twig']->render('login.twig', array(
             'app'=> ['name' => $app['app.name']],
-            'logged'=>$this->haveSession($app),
+            'logged'=>$this->sessionController->haveSession($app),
             'data'=>$TotaInfoDeFotos //SERA UN ARRAY
         ));
 
@@ -77,20 +103,6 @@ class RenderController {
         ));
     }
 
-    public function haveSession(Application $app) {
-        //var_dump($app['session']->get('user'));
-
-        if ($app['session']->get('user') === null){
-            return false;
-        }
-        return true;
-
-    }
-
-    public function logout(Application $app) {
-        $app['session']->clear();//solo una sesion a la vez
-        return $this->renderHome($app);
-    }
 
     /**
      * @param Application $app
@@ -105,7 +117,7 @@ class RenderController {
             'app'=> ['name' => $app['app.name']],
             'logged'=>$this->haveSession($app),
         ));*/
-       if ($this->correctSession($app)){
+       if ($this->sessionController->correctSession($app)){
            return $app['twig']->render('uploadImage.twig', array(
                'app'=> ['name' => $app['app.name']],
                'logged'=>$this->haveSession($app),
@@ -114,22 +126,12 @@ class RenderController {
        return $app -> redirect('/login');
     }
 
-    /**
-     * @param $app
-     */
-    public function verifySession($app) {
 
-        if ($this->haveSession($app)) {
-
-            $db = Database::getInstance("pwgram");
-            $pdoUser = new PdoUserRepository($db);
-            $id = $pdoUser->validateUserSession($app['session']->get('user')['username'],
-                $app['session']->get('user')['password']);
-
-            if ($id != false) return $id;
-        }
-        return false;
+    public function logout(Application $app) {
+        $app['session']->clear();//solo una sesion a la vez
+        return $this->renderHome($app);
     }
+
 
 
     /**
@@ -146,54 +148,6 @@ class RenderController {
         return "img_profile_default";
     }
 
-    /**
-     *
-     * TODO LLAMAR A ESTA FUCNION ANTES DE REENDERIZAR CUALQUIERA QUE NECESITE ESTAR LOGEADO ...
-     * TODO ... SI DEVUELVE FALSE REENDERIZAR /LOGIN
-     *
-     * @param $app
-     * @return bool
-     */
-    public function correctSession($app) {
 
-        if ($app['session']->get('user') != null) {
-
-            $db = Database::getInstance("pwgram");
-            $pdoUser = new PdoUserRepository($db);
-            if($pdoUser->validateUserLogin($app['session']->get('user')['username'],
-                $app['session']->get('user')['password'])){
-                return true;
-            }
-        }
-        //TODO error 403
-        return false;
-    }
-
-    //TODO: creo que no deberia estar aqui esta funcion pero no sabia donde ponerla
-    public function getPublicImages() {
-        $db = Database::getInstance("pwgram");
-        $pdoImage = new PdoImageRepository($db);
-        $pdoUser = new PdoUserRepository($db);
-
-        $publicImages = array();
-
-        // Obtain all public images in db
-        $imagesFromDB =  $pdoImage->getAll();
-        if ($imagesFromDB != null){
-            foreach ($imagesFromDB as $imageFromDB) {
-                if (!$imageFromDB['private']) {
-                    $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false,
-                        $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
-                    $userName = $pdoUser->getName($imageFromDB['fk_user']);
-                    $image->setUserName($userName);
-
-                    array_push($publicImages, $image);
-                }
-            }
-            return $publicImages;
-        }
-        return 0;
-
-    }
 }
 
