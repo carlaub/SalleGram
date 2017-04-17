@@ -20,14 +20,23 @@ class RenderController {
         //var_dump($app['session']->get('user')['username']);
         $idUser = $this->verifySession($app);
         $image = $this->getProfileImage($idUser);
-
-        return $app['twig']->render('home.twig', array(
-            'app'=> ['name' => $app['app.name']],
-            'name'=> $app['session']->get('user')['username'],
-            'img'=> $image,
-            'logged'=> $idUser,
-            'images'=>$publicImages //SERA UN ARRAY
-        ));
+        if ($publicImages != 0) {
+            return $app['twig']->render('home.twig', array(
+                'app'=> ['name' => $app['app.name']],
+                'name'=> $app['session']->get('user')['username'],
+                'img'=> $image,
+                'logged'=> $idUser,
+                'images'=>$publicImages //SERA UN ARRAY
+            ));
+        }else{
+            return $app['twig']->render('homeWelcome.twig', array(
+                'app'=> ['name' => $app['app.name']],
+                'name'=> $app['session']->get('user')['username'],
+                'img'=> $image,
+                'logged'=> $idUser,
+                'images'=>$publicImages //SERA UN ARRAY
+            ));
+        }
 
     }
 
@@ -170,17 +179,21 @@ class RenderController {
 
         // Obtain all public images in db
         $imagesFromDB =  $pdoImage->getAll();
-        foreach ($imagesFromDB as $imageFromDB) {
-            if (!$imageFromDB['private']) {
-                $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false,
-                    $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
-                $userName = $pdoUser->getName($imageFromDB['fk_user']);
-                $image->setUserName($userName);
+        if ($imagesFromDB != null){
+            foreach ($imagesFromDB as $imageFromDB) {
+                if (!$imageFromDB['private']) {
+                    $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false,
+                        $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
+                    $userName = $pdoUser->getName($imageFromDB['fk_user']);
+                    $image->setUserName($userName);
 
-                array_push($publicImages, $image);
+                    array_push($publicImages, $image);
+                }
             }
+            return $publicImages;
         }
-        return $publicImages;
+        return 0;
+
     }
 }
 

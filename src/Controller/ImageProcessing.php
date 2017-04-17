@@ -17,6 +17,7 @@ class ImageProcessing {
     public function saveProfileImage($idUser, $extension, $path) {
         $pathImgSave = "../web/assets/img/profile_img/" . $idUser . ".". $extension;
         move_uploaded_file($path, $pathImgSave);
+        chmod($pathImgSave, 0777);
         $this->resizingProfileImage($pathImgSave);
     }
 
@@ -30,7 +31,11 @@ class ImageProcessing {
         $pathImgSave = "../web/assets/img/upload_img/" . $idImage . ".". $extension;
 
         $pathImgSaveLittleSize = "../web/assets/img/upload_img/" . $idImage ."_100x100.". $extension;
+        //chmod($pathImgSaveLittleSize, 0777);
+
         $pathImgSaveLargeSize = "../web/assets/img/upload_img/" . $idImage ."_400x300.". $extension;
+        //chmod($pathImgSaveLargeSize, 0777);
+
 
         move_uploaded_file($path, $pathImgSave);
 
