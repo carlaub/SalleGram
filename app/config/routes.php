@@ -14,7 +14,7 @@ $app->get('/dovalidation/{id}', 'pwgram\\Controller\\ValidationController::userV
 
 /*Menu routes, loggef user*/
 $app->get('/logout', 'pwgram\\Controller\\RenderController::logout');
-$app->get('/uploadImage', 'pwgram\\Controller\\RenderController::renderUploadImage');
+$app->get('/upload-image', 'pwgram\\Controller\\RenderController::renderUploadImage');
 
 
 $app->get('/notifications', 'pwgram\\Controller\\RenderController::renderHome');
