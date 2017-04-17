@@ -24,5 +24,7 @@ $app->get('/edit-profile', 'pwgram\\Controller\\RenderController::renderEditProf
 $app->get('/editImage', 'pwgram\\Controller\\RenderController::renderHome');
 $app->get('/profile', 'pwgram\\Controller\\RenderController::renderHome');
 
+/*Comments*/
+
 
 
