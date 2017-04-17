@@ -21,10 +21,10 @@ use \DateTime;
 class Validator
 {
 
-    private const MAX_USERNAME  = 20;
-    private const MIN_PASSWORD  = 6;
-    private const MAX_PASSWORD  = 12;
-    private const MAX_IMG_SIZE  = 5000000000;
+    const MAX_USERNAME  = 20;
+    const MIN_PASSWORD  = 6;
+    const MAX_PASSWORD  = 12;
+    const MAX_IMG_SIZE  = 5000000000;
 
 
     /**
