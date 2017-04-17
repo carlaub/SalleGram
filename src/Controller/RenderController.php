@@ -78,6 +78,10 @@ class RenderController {
         return $this->renderHome($app);
     }
 
+    /**
+     * @param Application $app
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function renderUploadImage(Application $app) {
        /* if ($app['session']->get('user') === null){
             //TODO 403 code
@@ -93,7 +97,7 @@ class RenderController {
                'logged'=>$this->haveSession($app),
            ));
        }
-       return $app -> redirect('/');
+       return $app -> redirect('/login');
     }
 
     /**
