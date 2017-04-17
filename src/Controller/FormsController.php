@@ -26,6 +26,7 @@ class FormsController {
         $mail = $request->request->get('mail');
         $date = $request->request->get('date');
         $password = $request->request->get('password');
+        $profileImage = $request->files->get('image-path') != null;
 
         $user = new User($userName, $mail, $date, 0, false, -1, $password);
 
@@ -129,7 +130,7 @@ class FormsController {
                 //TODO: set coookies and sesion
                 $userName = $pdoUser->getUsername($userNameOrEmail);
 
-                $_SESSION['user']   = $userName;
+
                 $this->setSession($app, $userName, $dbPassword);
 
                 return $app -> redirect('/');
@@ -153,12 +154,13 @@ class FormsController {
         $confirmPassword = $request->request->get('confirm-password');
         $profileImage = $request->files->get('image-path');
 
+
         // TODO: Check if user is logged?
-        $userNameOrEmail = $_SESSION['user'];
+        $userName = $app['session']->get('user')['username'];
 
         $pdo = new PdoUserRepository($db);
 
-        $currentUserName = $pdo->getUsername($userNameOrEmail);
+        $currentUserName = $pdo->getUsername($userName);
         $userId = $pdo->getId($currentUserName);
 
         $currentUser = $pdo->get($userId);

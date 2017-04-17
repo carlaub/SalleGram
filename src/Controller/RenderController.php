@@ -111,10 +111,13 @@ class RenderController {
      * @return string
      */
     public function getProfileImage($idUser){
-        if($idUser != false) {
+        $db = Database::getInstance("pwgram");
+        $pdoUser = new PdoUserRepository($db);
+
+        if($pdoUser->getProfileImage($idUser)) {
             return $idUser;
         }
-        return "img_profile_default.jpg";
+        return "img_profile_default";
     }
 }
 

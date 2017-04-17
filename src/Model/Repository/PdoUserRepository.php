@@ -196,7 +196,7 @@ class PdoUserRepository implements PdoRepository {
      */
     public function update($row)
     {
-        $query = "UPDATE `User` SET username = ?, password = ?, email = ?, birthdate = ?, active = ? WHERE id = ?";
+        $query = "UPDATE `User` SET username = ?, password = ?, email = ?, birthdate = ?, active = ?, profile_image = ? WHERE id = ?";
         $result = $this->db->preparedQuery(
             $query,
             [
@@ -205,6 +205,7 @@ class PdoUserRepository implements PdoRepository {
                 $row->getEmail(),
                 $row->getBirthday(),
                 $row->getActive(),
+                $row->getProfileImage(),
                 $row->getId()
             ]
         );
@@ -408,7 +409,7 @@ class PdoUserRepository implements PdoRepository {
         if (!$result) return false;
         $results = $result->fetch();
         if(!$results) return false;
-        return true;
+        return $results['profile_image'];
     }
 
 }
