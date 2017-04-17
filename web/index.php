@@ -16,9 +16,9 @@ use pwgram\lib\Database\Database;
 use pwgram\Model\Repository\PdoUserRepository;
 
 
-$db = Database::getInstance("pwgram");
+/*$db = Database::getInstance("pwgram");
 
-$pdo = new PdoUserRepository($db);
+$pdo = new PdoUserRepository($db);*/
 
 
 $app->run();

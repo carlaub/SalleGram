@@ -23,6 +23,39 @@ class Validator
     const MAX_USERNAME  = 20;
     const MIN_PASSWORD  = 6;
     const MAX_PASSWORD  = 12;
+    const MAX_IMG_SIZE  = 5000000000;
+
+
+    /**
+     * Validates register/edit profile forms fields except email.
+     * This method does not check if the username is unique.
+     *
+     * @param User $user
+     * @param $passwd2
+     * @return bool
+     */
+    public function validateUserEditableFields(User $user, $passwd2) {
+
+        if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) return false;
+
+        $length = strlen($user->getUsername());
+        if ($length == 0 || $length > Validator::MAX_USERNAME
+            || !preg_match('/[a-zA-Z0-9]+$/', $user->getUsername())) return false;
+
+        $passwdLength = strlen($user->getPassword());
+        $uppercase  = preg_match('@[A-Z]@', $user->getPassword());
+        $lowercase  = preg_match('@[a-z]@', $user->getPassword());
+        $number     = preg_match('@[0-9]@', $user->getPassword());
+
+        if ($passwdLength < Validator::MIN_PASSWORD || $passwdLength > Validator::MAX_PASSWORD
+            || !$uppercase || !$lowercase || !$number)    return false;
+
+        if ($user->getPassword() !== $passwd2)          return false;
+
+        if (!$this->validateDate($user->getBirthday())) return false;
+
+        return true;
+    }
 
     /**
      * Verify that the user data is completely correct
@@ -32,29 +65,38 @@ class Validator
      */
     public function validateNewUser(User $user, $passwd2) {
 
-        if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) return false;
-
-        $length = strlen($user->getUsername());
-        if ($length == 0 || $length > Validator::MAX_USERNAME
-            || !preg_match('/[a-zA-Z0-9]+$/', $user->getUsername())) return false;
-
-        $passwdLength = strlen($user->getPassword());
-        $uppercase = preg_match('@[A-Z]@', $user->getPassword());
-        $lowercase = preg_match('@[a-z]@', $user->getPassword());
-        $number = preg_match('@[0-9]@', $user->getPassword());
-
-      if ($passwdLength < Validator::MIN_PASSWORD || $passwdLength > Validator::MAX_PASSWORD
-       || !$uppercase || !$lowercase || !$number)    return false;
-
-        if ($user->getPassword() !== $passwd2)          return false;
-
-        if (!$this->validateDate($user->getBirthday())) return false;
+        if (!$this->validateUserEditableFields($user, $passwd2)) return false;
 
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
 
 
         if (!$pdoUser->validateUnique($user->getUsername(), $user->getEmail())) return false;
+
+        return true;
+    }
+
+    /**
+     * Validates all editable fields an also checks that, if the user has changed its username,
+     * this new username already does nor exists.
+     *
+     * @param User $currentUserState    The current user data, without the update.
+     * @param User $userUpdate          The current user with data modifications.
+     * @param string $passwd2           The password confirmation.
+     *
+     * @return bool                     true if the new data is correct, false if not.
+     */
+    public function validateUserUpdate(User $currentUserState, User $userUpdate, $passwd2) {
+
+        if (!$this->validateUserEditableFields($userUpdate, $passwd2)) return false;
+
+        if ($currentUserState->getUsername() !== $userUpdate->getUsername()) {
+
+            $db = Database::getInstance("pwgram");
+            $pdoUser = new PdoUserRepository($db);
+
+            if (!$pdoUser->validateUnique($userUpdate->getUsername())) return false;
+        }
 
         return true;
     }
@@ -117,7 +159,7 @@ class Validator
 
     function validateProfileImage($size, $format) {
         //Size lees than 5M and forman png or jpg
-        if ($size < 5000000000 && ($format == "jpg" || $format == "jpeg")) {
+        if ($size < Validator::MAX_IMG_SIZE && ($format == "jpg" || $format == "jpeg")) {
             return true;
         }
         return false;

@@ -73,7 +73,7 @@ class PdoUserRepository implements PdoRepository {
      */
     public function get($id)
     {
-        $query  = "SELECT id, username, email, birthdate, active FROM `User` WHERE id = ?";
+        $query  = "SELECT id, username, email, birthdate, active, profile_image FROM `User` WHERE id = ?";
         $result = $this->db->preparedQuery(
             $query,
             [
@@ -89,8 +89,9 @@ class PdoUserRepository implements PdoRepository {
         return new User(
             $user["username"],
             $user["email"],
-            $user["birthday"],
+            $user["birthdate"],
             $user["active"],
+            $user["profile_image"],
             $user["id"]
         );
     }
@@ -125,10 +126,6 @@ class PdoUserRepository implements PdoRepository {
      * @param string $username The username to validate.
      * @param string $email    The email to validate.
      *
-     * Note: this method adds extra logic not "natural" for
-     *       the class. It will be practically moved to
-     *       validator when the fucking method getByField
-     *       starts to work.
      *
      * @return string Encoded JSON with the structure:
      *          {
@@ -172,21 +169,10 @@ class PdoUserRepository implements PdoRepository {
      * @param string $username The username to validate.
      * @param string $email    The email to validate.
      *
-     * Note: this method adds extra logic not "natural" for
-     *       the class. It will be practically moved to
-     *       validator when the fucking method getByField
-     *       starts to work.
      *
      * @return bool true if there is no user with this username and email, false if not.
      */
-
-    /**
-     * Verify user isn't in DB
-     * @param $username
-     * @param $email
-     * @return bool
-     */
-    public function validateUnique($username, $email) {
+    public function validateUnique($username, $email = "") {
 
         $query = "SELECT id FROM `User` WHERE username = ? OR email = ?";
         $result = $this->db->preparedQuery(
@@ -201,8 +187,6 @@ class PdoUserRepository implements PdoRepository {
 
         //$res == false, user isn't in db
         return $res == false;
-
-
     }
 
     /**

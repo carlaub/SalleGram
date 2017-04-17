@@ -43,8 +43,19 @@ class RenderController {
             'logged'=>false,
             'data'=>$TotaInfoDeFotos //SERA UN ARRAY
         ));
+    }
+
+    public function renderEditProfile(Application $app) {
+        $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
+
+        return $app['twig']->render('edit_profile.twig', array(
+            'app'=> ['name' => $app['app.name']],
+            'logged'=>false,
+            'data'=>$TotaInfoDeFotos //SERA UN ARRAY
+        ));
 
     }
+
 
     public function renderValidation(Application $app) {
         return $app['twig']->render('validation.twig', array(
@@ -84,6 +95,7 @@ class RenderController {
     public function verifySession($app) {
 
         if ($this->haveSession($app)) {
+
             $db = Database::getInstance("pwgram");
             $pdoUser = new PdoUserRepository($db);
             $id = $pdoUser->validateUserSession($app['session']->get('user')['username'],

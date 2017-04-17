@@ -29,7 +29,7 @@ class User {
     private $profileImage; //Boolean
 
 
-    public function __construct($username, $password,  $email, $birthday, $active, $id = -1) {
+    public function __construct($username,  $email, $birthday, $active, $profile_image = false, $id = -1, $password = "") {
 
         $this->username = $username;
         $this->password = $password;

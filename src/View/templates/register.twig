@@ -19,22 +19,28 @@
         <hr>
         <div class="row">
 
-
             <div class="col-md-9 personal-info">
 
                 <form class="form-horizontal" enctype="multipart/form-data" id="registerUserForm" action="/register/form" method="POST">
+
+                    {%  block username_field %}
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Username</label>
                         <div class="col-lg-8">
                             <input class="form-control " type="text" placeholder="Username" name="username" id="username">
                         </div>
                     </div>
+                    {%  endblock username_field %}
+
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Email: </label>
                         <div class="col-lg-8">
                             <input class="form-control" type="email" placeholder="example@mail.com" name="mail" id="mail">
                         </div>
                     </div>
+
+                    {% block editable_fields %}
+
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Fecha nacimiento:</label>
                         <div class="col-lg-8">
@@ -61,6 +67,9 @@
                             <img id="img-preview" height="100" width="100" src="{{ asset('/profile_img/img_profile_default.jpg', 'img') }}" alt="your image">
                         </div>
                     </div>
+
+                    {% endblock editable_fields %}
+
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted"></label>
                         <div class="col-md-8">

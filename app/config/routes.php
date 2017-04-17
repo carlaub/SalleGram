@@ -18,7 +18,9 @@ $app->get('/uploadImage', 'pwgram\\Controller\\RenderController::renderUploadIma
 
 
 $app->get('/notifications', 'pwgram\\Controller\\RenderController::renderHome');
-$app->get('/editProfile', 'pwgram\\Controller\\RenderController::renderHome');
+
+$app->get('/edit-profile', 'pwgram\\Controller\\RenderController::renderEditProfile');
+
 $app->get('/editImage', 'pwgram\\Controller\\RenderController::renderHome');
 $app->get('/profile', 'pwgram\\Controller\\RenderController::renderHome');
 
