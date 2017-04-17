@@ -26,16 +26,17 @@ class Image
 
     private $likes;
 
+    private $userName;
+
     /**
      * @var the user who is the owner of the published photo
      */
     private $fkUser;
 
-    public function __construct($title, $imgPath, $createdAt, $fkUser, $private,  $visits = 0, $likes = 0, $id = -1)
+    public function __construct($title, $createdAt, $fkUser, $private,  $visits = 0, $likes = 0, $id = -1)
     {
         $this->id           = $id;
         $this->title        = $title;
-        $this->imgPath      = $imgPath;
         $this->createdAt    = $createdAt;
         $this->fkUser       = $fkUser;
         $this->visits       = $visits;
@@ -169,5 +170,16 @@ class Image
     public function setFkUser($fkUser)
     {
         $this->fkUser = $fkUser;
+    }
+
+    /**
+     * @param $userName
+     */
+    public function setUserName($userName) {
+        $this->userName = $userName;
+    }
+
+    public function getUserName() {
+        return $this->userName;
     }
 }

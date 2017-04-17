@@ -2,7 +2,6 @@
 
 namespace pwgram\Controller;
 
-session_start();//TODO ESTO?
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
@@ -134,7 +133,6 @@ class FormsController {
 
 
                 $this->setSession($app, $userName, $dbPassword);
-
                 return $app -> redirect('/');
             }
         }
@@ -239,7 +237,7 @@ class FormsController {
         // Create image entity
         date_default_timezone_set('Europe/Madrid');
 
-        $newImage = new Image($title, $image->getRealPath(), date('Y-m-d h:i:s'), $idUser, $private);
+        $newImage = new Image($title, date('Y-m-d h:i:s'), $idUser, $private);
 
         // Save image information in DB image table
         $pdoImage = new PdoImageRepository($db);
@@ -265,6 +263,7 @@ class FormsController {
         $app['session']->clear();
         // Save the session
         $app['session']->set('user', array('username' => $userName, 'password' => $dbPassword));
+        $app['session']->start();
     }
 
 

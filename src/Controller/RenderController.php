@@ -2,7 +2,10 @@
 
 namespace pwgram\Controller;
 
+
 use pwgram\lib\Database\Database;
+use pwgram\Model\Entity\Image;
+use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
 
@@ -11,7 +14,9 @@ class RenderController {
 
     public function renderHome(Application $app) {
         //TODO: Comprobar que el usuario de la sesion es correcto
-        $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
+
+        //Images array that will be displayed on the main page
+        $publicImages = $this->getPublicImages();
         //var_dump($app['session']->get('user')['username']);
         $idUser = $this->verifySession($app);
         $image = $this->getProfileImage($idUser);
@@ -21,7 +26,7 @@ class RenderController {
             'name'=> $app['session']->get('user')['username'],
             'img'=> $image,
             'logged'=> $idUser,
-            'data'=>$TotaInfoDeFotos //SERA UN ARRAY
+            'images'=>$publicImages //SERA UN ARRAY
         ));
 
     }
@@ -153,6 +158,29 @@ class RenderController {
         }
         //TODO error 403
         return false;
+    }
+
+    //TODO: creo que no deberia estar aqui esta funcion pero no sabia donde ponerla
+    public function getPublicImages() {
+        $db = Database::getInstance("pwgram");
+        $pdoImage = new PdoImageRepository($db);
+        $pdoUser = new PdoUserRepository($db);
+
+        $publicImages = array();
+
+        // Obtain all public images in db
+        $imagesFromDB =  $pdoImage->getAll();
+        foreach ($imagesFromDB as $imageFromDB) {
+            if (!$imageFromDB['private']) {
+                $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false,
+                    $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
+                $userName = $pdoUser->getName($imageFromDB['fk_user']);
+                $image->setUserName($userName);
+
+                array_push($publicImages, $image);
+            }
+        }
+        return $publicImages;
     }
 }
 

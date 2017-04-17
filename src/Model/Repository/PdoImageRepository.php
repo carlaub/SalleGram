@@ -51,12 +51,11 @@ class PdoImageRepository implements PdoRepository
     public function add($row)
     {
 
-        $query  = "INSERT INTO `Image`(`title`, `img_path`, `visits`, `private`, `created_at`, `likes`, `fk_user`) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        $query  = "INSERT INTO `Image`(`title`, `visits`, `private`, `created_at`, `likes`, `fk_user`) VALUES(?, ?, ?, ?, ?, ?)";
         $result = $this->db->preparedQuery(
             $query,
             [
                 $row->getTitle(),
-                $row->getImgPath(),
                 $row->getVisits(),
                 $row->isPrivate(),
                 $row->getCreatedAt(),
@@ -161,12 +160,11 @@ class PdoImageRepository implements PdoRepository
      */
     public function update($row)
     {
-        $query = "UPDATE `Image` SET title = ?, img_path = ?, visits = ?, private = ?, created_at = ?, likes = ?, fk_user = ? WHERE id = ?";
+        $query = "UPDATE `Image` SET title = ?, visits = ?, private = ?, created_at = ?, likes = ?, fk_user = ? WHERE id = ?";
         $result = $this->db->preparedQuery(
             $query,
             [
                 $row->getTitle(),
-                $row->getImgPath(),
                 $row->getVisits(),
                 $row->isPrivate(),
                 $row->getCreatedAt(),
@@ -205,6 +203,19 @@ class PdoImageRepository implements PdoRepository
         return $total['total'];
     }
 
+    public function getAll() {
+        $query = "SELECT * FROM Image";
+        $result = $this->db->query($query);
+
+        if(!$result) return 0;
+
+        $results = $result->fetchAll();
+
+        if(!$results) return 0; // Any image in DB
+
+        return $results;
+    }
+
     public function getLastInsertedId() {
         $query = "SELECT LAST_INSERT_ID()";
         $result = $this->db->query($query);
@@ -215,6 +226,5 @@ class PdoImageRepository implements PdoRepository
 
 
         return $lastId['LAST_INSERT_ID()'];
-
     }
 }

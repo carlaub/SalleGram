@@ -47,82 +47,50 @@
     <div class="container-fluid bg-1 text-center">
         <div class="row">
 
-        {% if logged != false %}
+            {% for image in images %}
+                <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <a  href="/user/{id-user}" ><h4>{{ image.username }}</h4></a>
+                        </div>
+                        <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
+                        <div class="caption">
+                            <a  href="/image/{id-image}" ><h2>{{ image.title }}</h2></a>
 
-            <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
-                    <div class="caption">
-                        <a  href="/user/{id-user}" ><h4>Usuario</h4></a>
-                    </div>
-                    <img  src="{{ asset('LSALLE.png','img') }}" height="400" width="300" >
-                    <div class="caption">
-                        <a  href="/image/{id-image}" ><h2>Título de la imagen</h2></a>
+                            <p>
+                                <span class="intro-text conj-span">
+                                    <span>0</span>
+                                    <span class="glyphicon glyphicon-eye-open glyphicon-black" ></span>
+                                </span>
 
-                        <p>
-                            <span class="intro-text conj-span">
-                                <span>0</span>
-                                <span class="glyphicon glyphicon-eye-open glyphicon-black" ></span>
-                            </span>
+                                <span class="intro-text conj-span">
+                                    <span>0</span>
+                                    <span class="glyphicon glyphicon-thumbs-up glyphicon-black" ></span>
+                                </span>
 
-                            <span class="intro-text conj-span">
-                                <span>0</span>
-                                <span class="glyphicon glyphicon-thumbs-up glyphicon-black" ></span>
-                            </span>
+                                <span class="intro-text conj-span">
+                                    <span>1</span>
+                                    <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
+                                </span>
+                            </p>
 
-                            <span class="intro-text conj-span">
-                                <span>1</span>
-                                <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
-                            </span>
-                        </p>
+                            <p>Esto es un comentario</p>
 
-                        <p>Esto es un comentario</p>
+                            <form accept-charset="UTF-8" action="" >
+                                    <textarea class="form-control" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>
+                                    <button class="btn btn-info" type="submit">Post New comment</button>
+                            </form>
+                            <p>
+                                <a href="/like/{id-image}" class="btn glyphicon glyphicon-heart-empty" role="button"></a>
+                            </p>
+                            <p>{{ image.createdAt}}</p>
 
-                        <form accept-charset="UTF-8" action="" >
-                                <textarea class="form-control" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>
-                                <button class="btn btn-info" type="submit">Post New comment</button>
-                        </form>
-                        <p>
-                            <a href="/like/{id-image}" class="btn glyphicon glyphicon-heart-empty" role="button"></a>
-                        </p>
-                        <p>Subida hace nunca</p>
-
-                    </div>
-                </div>
-            </div>
-
-        {% endif %}
-        {% if logged == false %}
-            <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
-                    <div class="caption">
-                        <a  href="/user/{id-user}" ><h4>Usuario</h4></a>
-                    </div>
-                    <img  src="{{ asset('LSALLE.png','img') }}" height="400" width="300" >
-                    <div class="caption">
-                        <a  href="/image/{id-image}" ><h2>Título de la imagen</h2></a>
-                        <p>
-                            <span class="intro-text conj-span">
-                                <span>0</span>
-                                <span class="glyphicon glyphicon-eye-open glyphicon-black" ></span>
-                            </span>
-
-                            <span class="intro-text conj-span">
-                                <span>0</span>
-                                <span class="glyphicon glyphicon-thumbs-up glyphicon-black" ></span>
-                            </span>
-
-                            <span class="intro-text conj-span">
-                                <span>1</span>
-                                <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
-                            </span>
-                        </p>
-                        <p>Comentarios</p>
-                        <p>Subida hace nunca</p>
-
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endfor %}
+
+
 
         </div>
     </div>

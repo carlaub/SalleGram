@@ -260,6 +260,20 @@ class PdoUserRepository implements PdoRepository {
         return $results['id'];
     }
 
+    public function getName($id) {
+        $query = "SELECT username FROM `User` WHERE id = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $id
+            ]
+        );
+        if (!$result) return false;
+        $results = $result->fetch();
+
+        return $results['username'];
+    }
+
     /**
      * Retrieves the value of the active flag. Util for validate if the user account
      * is already validate
