@@ -147,19 +147,26 @@ class RenderController {
         return "img_profile_default";
     }
 
-    private function getPublicImages() {
+    public function getPublicImages() {
         $db = Database::getInstance("pwgram");
         $pdoImage = new PdoImageRepository($db);
-        $images = array();
+        $pdoUser = new PdoUserRepository($db);
 
-        $imagesFromDB = $pdoImage->getAllPublicImages();
+        $publicImages = array();
 
-        foreach($imagesFromDB as $image) {
+        // Obtain all public images in db
+        $imagesFromDB =  $pdoImage->getAll();
+        foreach ($imagesFromDB as $imageFromDB) {
+            if (!$imageFromDB['private']) {
+                $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false, $imageFromDB['extension'],
+                    $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
+                $userName = $pdoUser->getName($imageFromDB['fk_user']);
+                $image->setUserName($userName);
 
+                array_push($publicImages, $image);
+            }
         }
-
-
-        return $images;
+        return $publicImages;
     }
 
 
