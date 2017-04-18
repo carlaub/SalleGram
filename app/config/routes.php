@@ -30,4 +30,7 @@ $app->get('/new-comment/{id}', 'pwgram\\Controller\\CommentsController::addComme
 /*Like*/
 $app->get('/like/{id}', 'pwgram\\Controller\\LikesController::addLike');
 
+/*Image View*/
+$app->get('/image-view/{id}', 'pwgram\\Controller\\RenderController::renderImageView');
+
 

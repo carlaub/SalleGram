@@ -125,6 +125,32 @@ class RenderController {
        return $app -> redirect('/login');
     }
 
+    public function renderImageView(Application $app, $id) {
+        $imageViewController = new ImageViewController();
+
+        $image = $imageViewController->prepareImage($id);
+
+        $idUser = $this->sessionController->verifySession($app);
+        $profileImage = $this->getProfileImage($idUser);
+
+        //Image not found
+        if (!$image) {
+            return $app['twig']->render('error.twig',array(
+                'message'=>"Imagen no encontrada.",
+            ));
+        }
+
+        //Image OK
+        return $app['twig']->render('image-view.twig', array(
+            'app'=> ['name' => $app['app.name']],
+            'image'=>$image,
+            'name'=> $app['session']->get('user')['username'],
+            'profileImage'=> $profileImage,
+            'logged'=> $idUser
+        ));
+
+    }
+
 
     public function logout(Application $app) {
         $app['session']->clear();//solo una sesion a la vez
