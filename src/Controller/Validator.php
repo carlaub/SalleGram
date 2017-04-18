@@ -152,7 +152,8 @@ class Validator
         $today  = AppFormatDate::today();
 
         $dateFormatted = DateTime::createFromFormat(AppFormatDate::DATE_FORMAT, $date);
-
+        var_dump($date);
+        var_dump($dateFormatted);
         return $date && $dateFormatted->format(AppFormatDate::DATE_FORMAT) == $date && $date <= $today;
     }
 
