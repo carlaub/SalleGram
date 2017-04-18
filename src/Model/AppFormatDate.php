@@ -6,7 +6,7 @@
  * Time: 00:37
  */
 
-namespace pwgram\Model\Entity;
+namespace pwgram\Model;
 
 use \DateTime;
 
@@ -22,7 +22,7 @@ use \DateTime;
 class AppFormatDate
 {
 
-    const DATE_FORMAT   = 'Y-m-d';
+    const DATE_FORMAT   = 'Y-m-d h:i:s';
 
 
     public static function today() {

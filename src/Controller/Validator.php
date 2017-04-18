@@ -3,7 +3,7 @@
 
 namespace pwgram\Controller;
 use pwgram\lib\Database\Database;
-use pwgram\Model\Entity\AppFormatDate;
+use pwgram\Model\AppFormatDate;
 use pwgram\Model\Entity\User;
 use pwgram\Model\Repository\PdoUserRepository;
 use \DateTime;

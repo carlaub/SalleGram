@@ -25,7 +25,9 @@ $app->get('/editImage', 'pwgram\\Controller\\RenderController::renderHome');
 $app->get('/profile', 'pwgram\\Controller\\RenderController::renderHome');
 
 /*Comments*/
-
 $app->get('/new-comment/{id}', 'pwgram\\Controller\\CommentsController::addComment');
+
+/*Like*/
+$app->get('/like/{id}', 'pwgram\\Controller\\LikesController::addLike');
 
 

@@ -46,13 +46,13 @@ class RenderController {
         $idUser = $this->sessionController->verifySession($app);
         $image = $this->getProfileImage($idUser);
 
-        if ($publicImages != 0) {
+        if ($publicImages != null) {
             return $app['twig']->render('home.twig', array(
                 'app'=> ['name' => $app['app.name']],
                 'name'=> $app['session']->get('user')['username'],
                 'img'=> $image,
                 'logged'=> $idUser,
-                'images'=>$publicImages //SERA UN ARRAY
+                'images'=>$publicImages
             ));
         }else{
             return $app['twig']->render('homeWelcome.twig', array(
@@ -60,7 +60,7 @@ class RenderController {
                 'name'=> $app['session']->get('user')['username'],
                 'img'=> $image,
                 'logged'=> $idUser,
-                'images'=>$publicImages //SERA UN ARRAY
+                'images'=>$publicImages
             ));
         }
 
@@ -120,7 +120,7 @@ class RenderController {
        if ($this->sessionController->correctSession($app)){
            return $app['twig']->render('uploadImage.twig', array(
                'app'=> ['name' => $app['app.name']],
-               'logged'=>$this->haveSession($app),
+               'logged'=>$this->sessionController->haveSession($app),
            ));
        }
        return $app -> redirect('/login');

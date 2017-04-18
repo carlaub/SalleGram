@@ -9,6 +9,7 @@
 namespace pwgram\Model\Repository;
 
 
+use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\ImageLike;
 
 
@@ -20,6 +21,11 @@ class PdoImageLikesRepository implements PdoRepository
      * @var Database class instance.
      */
     private $db;
+
+    public function __construct(Database $db)
+    {
+        $this->db = $db;
+    }
 
 
     public function add($row)
@@ -92,5 +98,24 @@ class PdoImageLikesRepository implements PdoRepository
         $total = $result->fetch();
 
         return $total['total'];
+    }
+
+    public function likevalid($idImage, $idUser) {
+        $query = "SELECT id FROM `Image_likes` WHERE fk_image = ? AND fk_user = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $idImage,
+                $idUser
+            ]
+        );
+
+        if (!$result) return 0;
+
+        $results = $result->fetch();
+
+        if ($results == null) return true; // User hasn't put like
+
+        return false; // User put like
     }
 }

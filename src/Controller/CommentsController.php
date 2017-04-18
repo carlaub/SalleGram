@@ -9,7 +9,7 @@
 namespace pwgram\Controller;
 
 
-use pwgram\Model\Entity\AppFormatDate;
+use pwgram\Model\AppFormatDate;
 use pwgram\Model\Repository\PdoCommentRepository;
 use Silex\Application;
 use pwgram\lib\Database\Database;
@@ -37,7 +37,7 @@ class CommentsController
             // TODO 403?
 
             return $app['twig']->render('error.twig', array(
-                'message'=>"El comentario no se ha añadido, suario no conectado."
+                'message'=>"El comentario no se ha añadido, usario no conectado."
             ));
         }
 
