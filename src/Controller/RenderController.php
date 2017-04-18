@@ -26,11 +26,10 @@ class RenderController {
         //TODO: This is a first solution but must be rethinked for pagination
 
         $db = Database::getInstance("pwgram");
-        $pdoImage = new PdoImageRepository($db);
         $commentsPdo = new PdoCommentRepository($db);
 
         //Images array that will be displayed on the main page
-        $publicImages = $pdoImage->getAllPublicImages();
+        $publicImages = $this->getPublicImages();
         $publicImages = !$publicImages? [] : $publicImages; // if false, return an empty array, if not return the public images
 
         // let's add all the comments for each image
@@ -146,6 +145,21 @@ class RenderController {
             return $idUser;
         }
         return "img_profile_default";
+    }
+
+    private function getPublicImages() {
+        $db = Database::getInstance("pwgram");
+        $pdoImage = new PdoImageRepository($db);
+        $images = array();
+
+        $imagesFromDB = $pdoImage->getAllPublicImages();
+
+        foreach($imagesFromDB as $image) {
+
+        }
+
+
+        return $images;
     }
 
 
