@@ -182,6 +182,7 @@ class RenderController {
 
         // Obtain all public images in db
         $imagesFromDB =  $pdoImage->getAll();
+        if ($imagesFromDB == 0) return false;
         foreach ($imagesFromDB as $imageFromDB) {
             if (!$imageFromDB['private']) {
                 $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false, $imageFromDB['extension'],
