@@ -6,6 +6,7 @@ use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\ImageLike;
 use pwgram\Model\Entity\Like;
 use pwgram\Model\Repository\PdoImageLikesRepository;
+use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
 
@@ -41,6 +42,7 @@ class LikesController {
             $newLike = new ImageLike($idUser, $id);
 
             $pdoImageLike->add($newLike);
+            $this->updateImageLikes($id);
 
             return $app->redirect('/');
         }
@@ -49,5 +51,15 @@ class LikesController {
             'message'=>"El like no se ha añadido, usario no conectado."
         ));
 
+    }
+
+    /**
+     * @param $idImage
+     */
+    private function updateImageLikes($idImage) {
+        $db = Database::getInstance("pwgram");
+        $pdoImage = new PdoImageRepository($db);
+
+        $pdoImage->updateLikes($idImage);
     }
 }
