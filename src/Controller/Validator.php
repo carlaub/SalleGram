@@ -151,10 +151,9 @@ class Validator
 
         $today  = AppFormatDate::today();
 
-        $dateFormatted = DateTime::createFromFormat(AppFormatDate::DATE_FORMAT, $date);
-        var_dump($date);
-        var_dump($dateFormatted);
-        return $date && $dateFormatted->format(AppFormatDate::DATE_FORMAT) == $date && $date <= $today;
+        $dateFormatted = DateTime::createFromFormat('Y-m-d', $date);
+
+        return $date && $dateFormatted->format('Y-m-d') == $date && $date <= $today;
     }
 
     function validateImage($size, $format) {

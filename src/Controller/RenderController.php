@@ -27,9 +27,11 @@ class RenderController {
 
         $db = Database::getInstance("pwgram");
         $commentsPdo = new PdoCommentRepository($db);
+        $userPdo     = new PdoUserRepository($db);
+        $imagesPdo   = new PdoImageRepository($db);
 
         //Images array that will be displayed on the main page
-        $publicImages = $this->getPublicImages();
+        $publicImages = $imagesPdo->getAllPublicImages();
         $publicImages = !$publicImages? [] : $publicImages; // if false, return an empty array, if not return the public images
 
         // let's add all the comments for each image
@@ -39,6 +41,9 @@ class RenderController {
 
             if (!$comments) $comments = [];
             $image->setComments($comments);
+
+            $userName = $userPdo->getName($image->getFkUser());
+            $image->setUserName($userName);
         }
 
         //var_dump($app['session']->get('user')['username']);

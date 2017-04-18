@@ -22,7 +22,7 @@ use \DateTime;
 class AppFormatDate
 {
 
-    const DATE_FORMAT   = 'Y-m-d';
+    const DATE_FORMAT   = 'Y-m-d H:i:s';
 
 
     public static function today() {

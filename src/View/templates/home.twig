@@ -73,7 +73,10 @@
                                 </span>
                             </p>
 
-                            <p>Esto es un comentario</p>
+                            {% for comment in image.comments %}
+
+                                <p> {{ comment.content }} </p>
+                            {% endfor %}
 
                             <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
                                     <textarea class="form-control textarea-comment" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>

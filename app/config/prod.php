@@ -18,7 +18,6 @@ $app->register(new Silex\Provider\AssetServiceProvider(), array(
         'img' => array('base_urls' => array('http://grup17.com/assets/img')),
 
     ),
-
 ));
 
 $app->register(new Silex\Provider\SessionServiceProvider());
