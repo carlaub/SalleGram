@@ -64,7 +64,6 @@ class PdoImageRepository implements PdoRepository
             ]
         );
         $results = $result->fetch();
-
     }
 
 

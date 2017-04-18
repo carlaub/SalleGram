@@ -17,7 +17,7 @@ class ImageProcessing {
     public function saveProfileImage($idUser, $extension, $path) {
         $pathImgSave = "../web/assets/img/profile_img/" . $idUser . ".". $extension;
         move_uploaded_file($path, $pathImgSave);
-        chmod($pathImgSave, 0777);
+        //chmod($pathImgSave, 0777);
         $this->resizingProfileImage($pathImgSave);
     }
 
@@ -29,6 +29,7 @@ class ImageProcessing {
     public function saveUploadImage($idImage, $extension, $path) {
 
         $pathImgSave = "../web/assets/img/upload_img/" . $idImage . ".". $extension;
+        //chmod($pathImgSave, 0777);
 
         $pathImgSaveLittleSize = "../web/assets/img/upload_img/" . $idImage ."_100x100.". $extension;
         //chmod($pathImgSaveLittleSize, 0777);
@@ -52,12 +53,16 @@ class ImageProcessing {
 
         $imgOriginal = $pathImgSave;
         $imgResized = getimagesize($imgOriginal);
+        chmod($pathImgSave, 0777);
+
         $height = 200;
         $width = 200;
 
         // Create new image 200x200
         $new = imagecreatetruecolor($width, $height);
         $source = imagecreatefromjpeg($imgOriginal);
+        chmod($imgOriginal, 0777);
+
         $images = imagecopyresized($new, $source, 0,0,0,0, $width, $height, $imgResized[0], $imgResized[1]);
         imagecopyresampled($new, $source, 0, 0, $width, $height, 0, 0, 0, 0);
 
@@ -81,11 +86,14 @@ class ImageProcessing {
         // Little size (100x100)
         $new = imagecreatetruecolor(100, 100);
         $source = imagecreatefromjpeg($pathImgSave);
+        chmod($pathImgSave, 0777);
+
 
         $images = imagecopyresized($new, $source, 0,0,0,0, 100, 100, $imgResized[0], $imgResized[1]);
         imagecopyresampled($new, $source, 0, 0, 100, 100, 0, 0, 0, 0);
 
         imagejpeg($new, $pathImgSaveLittleSize);
+        chmod($pathImgSaveLittleSize, 0777);
         imagedestroy($new);
 
         // Large Size (400x300)
@@ -95,6 +103,7 @@ class ImageProcessing {
         imagecopyresampled($new, $source, 0, 0, 400, 300, 0, 0, 0, 0);
 
         imagejpeg($new, $pathImgSaveLargeSize);
+        chmod($pathImgSaveLargeSize, 0777);
         imagedestroy($new);
 
         imagedestroy($source);
