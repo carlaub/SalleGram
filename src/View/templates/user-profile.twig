@@ -76,53 +76,18 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xs-6 col-sm-4 col-md-4">
 
-            {#{% for image in images %}#}
-                {#<div class="col-sm-6 col-md-4">#}
-                    {#<div class="thumbnail">#}
-                        {#<a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>#}
-                        {#<img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >#}
-                        {#<div class="caption">#}
-                            {#<div class="caption">#}
-                                {#<a  href="/user-profile/{{ image.fkUser }}" ><h4>{{ image.username }}</h4></a>#}
-                            {#</div>#}
-
-                            {#<p>#}
-                                {#<span class="intro-text conj-span">#}
-                                    {#<span>{{ image.visits }}</span>#}
-                                    {#<span class="glyphicon glyphicon-eye-open glyphicon-black" ></span>#}
-                                {#</span>#}
-
-                                {#<span class="intro-text conj-span">#}
-                                    {#<span>{{ image.likes }}</span>#}
-                                    {#<span class="glyphicon glyphicon-thumbs-up glyphicon-black" ></span>#}
-                                {#</span>#}
-
-                                {#<span class="intro-text conj-span">#}
-                                    {#<span>{{ image.numComments }}</span>#}
-                                    {#<span class="glyphicon glyphicon-comment glyphicon-black" ></span>#}
-                                {#</span>#}
-                            {#</p>#}
-
-                            {#{% for comment in image.comments %}#}
-
-                                {#<p> {{ comment.content }} </p>#}
-
-                            {#{% endfor %}#}
-
-                            {#<form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >#}
-                                {#<textarea class="form-control textarea-comment" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>#}
-                                {#<button class="btn btn-info" type="submit">Publicar comentario</button>#}
-                            {#</form>#}
-                            {#<p>#}
-                                {#<a href="/like/{{ image.id }}" class="btn glyphicon glyphicon-heart-empty" role="button"></a>#}
-                            {#</p>#}
-                            {#<p>{{ image.createdAt}}</p>#}
-
-                        {#</div>#}
-                    {#</div>#}
-                {#</div>#}
-            {#{% endfor %}#}
+            {% for image in images %}
+                <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                        <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
+                        <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
+                        <br><br>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
 
         </div>
     </div>

@@ -223,7 +223,12 @@ class PdoImageRepository implements PdoRepository
         if ($offset == 0) {
 
             $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC";
-            $result = $this->db->query($query);
+            $result = $this->db->preparedQuery(
+                $query,
+                [
+                    $id
+                ]
+            );
         }
         else {
 

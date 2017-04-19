@@ -167,11 +167,10 @@ class RenderController {
      */
     public function renderUserProfile(Application $app, $id) {
 
-        $idUser = $this->sessionController->verifySession($app);
-        $profileImage = $this->getProfileImage($idUser);
-        $user = $this->getInfoUser($idUser);
+        $profileImage = $this->getProfileImage($id);
+        $user = $this->getInfoUser($id);
 
-
+        $image = $this->getImagesUser($id);
 
 
 
@@ -179,13 +178,14 @@ class RenderController {
             'app'=> ['name' => $app['app.name']],
             'name'=> $app['session']->get('user')['username'],
             'profileImg'=> $profileImage,
-            'logged'=> $idUser,
+            'logged'=> $this->sessionController->verifySession($app),
             'mail'=> $user->getEmail(),
             'date'=> $user->getBirthday(),
-            'comments'=>$this->getUserComments($idUser),
-            'likes'=>$this->getUserLikes($idUser)
+            'comments'=>$this->getUserComments($id),
+            'likes'=>$this->getUserLikes($id),
+            'images'=> $image
 
-            //IMAGENES DEL USUARIO
+            //TODO IMAGENES DEL USUARIO
         ));
     }
 
@@ -254,6 +254,20 @@ class RenderController {
             }
         }
         return $publicImages;
+    }
+
+    public function getImagesUser($id){
+
+        $db = Database::getInstance("pwgram");
+        $pdoImage = new PdoImageRepository($db);
+        $pdoUser = new PdoUserRepository($db);
+
+        $publicImages = array();
+
+        // Obtain all public images in db
+        $imagesFromDB =  $pdoImage->getAllUserImages($id);
+
+        return $imagesFromDB;
     }
 
 
