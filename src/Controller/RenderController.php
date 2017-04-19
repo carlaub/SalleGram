@@ -169,11 +169,10 @@ class RenderController {
         $idUser = $this->sessionController->verifySession($app);
         $profileImage = $this->getProfileImage($idUser);
 
-
         return $app['twig']->render('user-profile.twig', array(
             'app'=> ['name' => $app['app.name']],
             'name'=> $app['session']->get('user')['username'],
-            'profileImage'=> $profileImage,
+            'img'=> $profileImage,
             'logged'=> $idUser
         ));
     }
