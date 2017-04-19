@@ -135,3 +135,7 @@ p {font-size: 16px;
 .textarea-comment {
     margin-bottom: 20px;
 }
+
+textarea {
+    resize: none;
+}

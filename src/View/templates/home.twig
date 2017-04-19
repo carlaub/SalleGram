@@ -76,6 +76,7 @@
                             {% for comment in image.comments %}
 
                                 <p> {{ comment.content }} </p>
+
                             {% endfor %}
 
                             <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
