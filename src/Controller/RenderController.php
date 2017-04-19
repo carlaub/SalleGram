@@ -6,6 +6,7 @@ namespace pwgram\Controller;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
 use pwgram\Model\Repository\PdoCommentRepository;
+use pwgram\Model\Repository\PdoImageLikesRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
@@ -70,7 +71,7 @@ class RenderController {
     }
 
     public function renderLogin(Application $app) {
-        $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
+        $TotaInfoDeFotos = 0;
         return $app['twig']->render('login.twig', array(
             'app'=> ['name' => $app['app.name']],
             'logged'=>$this->sessionController->haveSession($app),
@@ -80,7 +81,7 @@ class RenderController {
     }
 
     public function renderRegistration(Application $app) {
-        $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
+        $TotaInfoDeFotos = 0;
         return $app['twig']->render('register.twig', array(
             'app'=> ['name' => $app['app.name']],
             'logged'=>false,
@@ -89,7 +90,7 @@ class RenderController {
     }
 
     public function renderEditProfile(Application $app) {
-        $TotaInfoDeFotos = 0; //TODO Llegir info de la bbdd i pasar un array d'imatges
+        $TotaInfoDeFotos = 0;
 
         return $app['twig']->render('edit_profile.twig', array(
             'app'=> ['name' => $app['app.name']],
@@ -168,12 +169,23 @@ class RenderController {
 
         $idUser = $this->sessionController->verifySession($app);
         $profileImage = $this->getProfileImage($idUser);
+        $user = $this->getInfoUser($idUser);
+
+
+
+
 
         return $app['twig']->render('user-profile.twig', array(
             'app'=> ['name' => $app['app.name']],
             'name'=> $app['session']->get('user')['username'],
-            'img'=> $profileImage,
-            'logged'=> $idUser
+            'profileImg'=> $profileImage,
+            'logged'=> $idUser,
+            'mail'=> $user->getEmail(),
+            'date'=> $user->getBirthday(),
+            'comments'=>$this->getUserComments($idUser),
+            'likes'=>$this->getUserLikes($idUser)
+
+            //IMAGENES DEL USUARIO
         ));
     }
 
@@ -198,6 +210,28 @@ class RenderController {
         }
         return "img_profile_default";
     }
+
+    public function getInfoUser($idUser){
+        $db = Database::getInstance("pwgram");
+        $pdoUser = new PdoUserRepository($db);
+
+        return $pdoUser->get($idUser);
+    }
+
+    public function getUserLikes($idUser){
+        $db = Database::getInstance("pwgram");
+        $pdoUser = new PdoImageLikesRepository($db);
+
+        return $pdoUser->getTotalUserLikes($idUser);
+    }
+
+    public function getUserComments($idUser){
+        $db = Database::getInstance("pwgram");
+        $pdoUser = new PdoCommentRepository($db);
+
+        return $pdoUser->getTotalUserComments($idUser);
+    }
+
 
     public function getPublicImages() {
         $db = Database::getInstance("pwgram");
