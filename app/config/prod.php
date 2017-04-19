@@ -25,5 +25,14 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 
 $app->register(new FormServiceProvider());
 
+$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+    'db.options' => array(
+        'driver' => 'pdo_mysql',
+        'dbname' => 'pwgram',
+        'user' => 'root',
+        'password' => 'root'
+    ),
+));
+
 
 
