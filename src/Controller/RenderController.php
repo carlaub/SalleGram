@@ -172,7 +172,7 @@ class RenderController {
 
         $image = $this->getImagesUser($id);
 
-
+        //TODO FALTA QUE LAS IMAGENES SE PUEDAN FILTRAR
 
         return $app['twig']->render('user-profile.twig', array(
             'app'=> ['name' => $app['app.name']],
@@ -181,8 +181,9 @@ class RenderController {
             'logged'=> $this->sessionController->verifySession($app),
             'mail'=> $user->getEmail(),
             'date'=> $user->getBirthday(),
+            'profileName'=> $user->getUsername(),
             'comments'=>$this->getUserComments($id),
-            'likes'=>$this->getUserLikes($id),
+            'nImgs'=>'-1', //TODO NO SON LIKES SON NUMERO DE FOTOS PUBLICADAS
             'images'=> $image
 
             //TODO IMAGENES DEL USUARIO
