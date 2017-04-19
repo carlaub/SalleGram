@@ -57,7 +57,7 @@ class RenderController {
                 'logged'=> $idUser,
                 'images'=>$publicImages
             ));
-        }else{
+        } else {
             return $app['twig']->render('homeWelcome.twig', array(
                 'app'=> ['name' => $app['app.name']],
                 'name'=> $app['session']->get('user')['username'],

@@ -47,6 +47,8 @@ class PdoImageRepository implements PdoRepository
      * Adds a new image into the database.
      *
      * @param Image $row    the new image to be added.
+     *
+     * @return bool         true if the image has been added correctly, false if not.
      */
     public function add($row)
     {
@@ -63,7 +65,8 @@ class PdoImageRepository implements PdoRepository
                 $row->getFkUser()
             ]
         );
-        $results = $result->fetch();
+
+        return $result !== false;
     }
 
 
@@ -126,7 +129,7 @@ class PdoImageRepository implements PdoRepository
      */
     public function get($id)
     {
-        $query  = "SELECT id, title, img_path, visits, private, created_at, likes, extension, fk_user FROM `Image` WHERE id = ?";
+        $query  = "SELECT * FROM `Image` WHERE id = ?";
         $result = $this->db->preparedQuery(
             $query,
             [
@@ -177,10 +180,28 @@ class PdoImageRepository implements PdoRepository
         return $lastId['LAST_INSERT_ID()'];
     }
 
-    public function getAllPublicImages() {
+    public function getAllPublicImages($offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
-        $query = "SELECT * FROM Image WHERE private IS FALSE";
-        $result = $this->db->query($query);
+        if ($offset == 0) {
+
+            $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY created_at";
+            $result = $this->db->preparedQuery(
+                $query,
+                [
+                    $limit
+                ]
+            );
+        }
+        else {
+            $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY created_at DESC LIMIT ?, ?";
+            $result = $this->db->preparedQuery(
+                $query,
+                [
+                    $offset,
+                    $limit
+                ]
+            );
+        }
 
         if (!$result) return false;
 
@@ -188,28 +209,62 @@ class PdoImageRepository implements PdoRepository
 
         if(!$results) return []; // Any image in DB
 
-        $images = [];
+        return $this->populateImages($results);
+    }
 
-        foreach ($results as $image) {
+    /**
+     * @param int $id       The id of the user.
+     * @param int $offset
+     * @param int $limit
+     * @return array|bool
+     */
+    public function getAllUserImages($id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
-            array_push(
-                $images,
-                new Image(
-                    $image['title'],
-                    $image['created_at'],
-                    $image['fk_user'],
-                    $image['private'],
-                    $image['extension'],
-                    $image['visits'],
-                    $image['likes'],
-                    $image['id']
-                )
+        if ($offset == 0) {
+
+            $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC";
+            $result = $this->db->query($query);
+        }
+        else {
+
+            $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC LIMIT ?, ?";
+            $result = $this->db->preparedQuery(
+                $query,
+                [
+                    $id,
+                    $offset,
+                    $limit
+                ]
             );
         }
 
-        return $images;
+        if (!$result) return false;
+
+        $results = $result->fetchAll();
+
+        if(!$results) return []; // Any image in DB
+
+        return $this->populateImages($results);
     }
 
+    public function getMostVisitedImages($max = 5) {
+
+        $query = "SELECT * FROM Image ORDER BY visits ASC LIMIT ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $max
+            ]
+        );
+
+        if (!$result) return false;
+
+        $results = $result->fetchAll();
+
+        if(!$results) return []; // Any image in DB
+
+        return $this->populateImages($results);
+    }
 
     /**
      * Updates an existing image of the database.
@@ -261,4 +316,28 @@ class PdoImageRepository implements PdoRepository
         return $total['total'];
     }
 
+
+    private function populateImages($queryResult) {
+
+        $images = [];
+
+        foreach ($queryResult as $image) {
+
+            array_push(
+                $images,
+                new Image(
+                    $image['title'],
+                    $image['created_at'],
+                    $image['fk_user'],
+                    $image['private'],
+                    $image['extension'],
+                    $image['visits'],
+                    $image['likes'],
+                    $image['id']
+                )
+            );
+        }
+
+        return $images;
+    }
 }

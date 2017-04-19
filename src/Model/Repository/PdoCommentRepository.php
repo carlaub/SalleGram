@@ -100,20 +100,37 @@ class PdoCommentRepository implements PdoRepository
     }
 
     /**
-     * @param int $id   The image foreign key
+     * @param int $id       The image foreign key
+     * @param int $offset
+     * @param int $limit
      *
      * @return false|mixed false if an error happened doing the request or an array of the
      *         comments associated with an image.
      */
-    public function getImageComments($id) {
+    public function getImageComments($id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
-        $query  = "SELECT * FROM `Comment` WHERE fk_image = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
+        if ($offset == 0) {
+
+            $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC";
+            $result = $this->db->preparedQuery(
+                $query,
+                [
+                    $id
+                ]
+            );
+        }
+        else {
+
+            $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC LIMIT ?, ?";
+            $result = $this->db->preparedQuery(
+                $query,
+                [
+                    $id,
+                    $offset,
+                    $limit
+                ]
+            );
+        }
         if (!$result) return false; // an error happened during the execution
 
         $comments = $result->fetchAll();
@@ -137,6 +154,25 @@ class PdoCommentRepository implements PdoRepository
 
         return $resComments;
     }
+
+    public function getTotalUserComments($id) {
+
+        $query  = "SELECT COUNT(*) as total FROM Comment WHERE fk_user = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $id
+            ]
+        );
+
+        if (!$result) return 0;
+
+        $total = $result->fetch();
+
+        return $total['total'];
+    }
+
+
     /**
      * Updates an existing comment with new information.
      *

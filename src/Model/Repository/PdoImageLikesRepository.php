@@ -64,6 +64,23 @@ class PdoImageLikesRepository implements PdoRepository
         );
     }
 
+    public function getTotalUserLikes($id) {
+
+        $query  = "SELECT COUNT(*) as total FROM Image_likes WHERE fk_user = ?";
+        $result = $this->db->preparedQuery(
+            $query,
+            [
+                $id
+            ]
+        );
+
+        if (!$result) return 0;
+
+        $total = $result->fetch();
+
+        return $total['total'];
+    }
+
     public function update($row)
     {
         $query = "UPDATE `Image_likes` SET fk_user = ?, fk_image = ? WHERE id = ?";
