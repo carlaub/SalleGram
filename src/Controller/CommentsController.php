@@ -14,7 +14,7 @@ use pwgram\Model\Repository\PdoCommentRepository;
 use Silex\Application;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Comment;
-
+use Symfony\Component\HttpFoundation\Request;
 
 
 class CommentsController
@@ -29,7 +29,10 @@ class CommentsController
     }
 
 
-    public function addComment(Application $app, int $imageId, string $content) {
+    public function addComment(Application $app, Request $request) {
+
+        $imageId = $request->get("id");
+        $content = $request->get('text');
 
         $userid = $this->sessionController->verifySession($app);
         if (!$userid) {

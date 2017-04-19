@@ -53,7 +53,9 @@ class FormsController {
      * @param Database $db
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function registerUser(Application $app, Request $request, Database $db) {
+    public function registerUser(Application $app, Request $request) {
+
+        $db = Database::getInstance("pwgram");
 
         $validator = new Validator();
         $imageProcessing = new ImageProcessing();
@@ -113,7 +115,9 @@ class FormsController {
      * @param Database $db
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function loginUser(Application $app, Request $request, Database $db) {
+    public function loginUser(Application $app, Request $request) {
+
+        $db = Database::getInstance("pwgram");
 
         $userNameOrEmail = $request->request->get('usernameOrMail');
         $password = $request->request->get('password');
@@ -148,7 +152,9 @@ class FormsController {
      * @param Database $db
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function updateUser(Application $app, Request $request, Database $db) {
+    public function updateUser(Application $app, Request $request) {
+
+        $db = Database::getInstance("pwgram");
 
         $userUpdate = $this->getUserFromForm($request);
         $confirmPassword = $request->request->get('confirm-password');
@@ -215,7 +221,10 @@ class FormsController {
      * @param Database $db
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function uploadImage(Application $app, Request $request, Database $db) {
+    public function uploadImage(Application $app, Request $request) {
+
+        $db = Database::getInstance("pwgram");
+
         //TODO: verificar campos de la imagen (tiulo existente, foto existente)
         $validator = new Validator();
 

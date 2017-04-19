@@ -2,6 +2,17 @@
 
 use pwgram\Controller\homeController;
 
+
+$app->post('/login/form', 'pwgram\\Controller\\FormsController::loginUser');
+
+$app->post('/register/form', 'pwgram\\Controller\\FormsController::registerUser');
+
+$app->post('/edit_profile/form', 'pwgram\\Controller\\FormsController::updateUser');
+
+$app->post('/uploadImage/form', 'pwgram\\Controller\\FormsController::uploadImage');
+
+$app->post('/new-comment/{id}', 'pwgram\\Controller\\FormsController::addComment');
+
 $app->get('', 'pwgram\\Controller\\RenderController::renderHome');
 
 /*Basics, no logged user*/
