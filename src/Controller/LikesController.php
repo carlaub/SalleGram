@@ -48,7 +48,7 @@ class LikesController {
         }
 
         return $app['twig']->render('error.twig', array(
-            'message'=>"El like no se ha añadido, usario no conectado."
+            'message'=>"Ya le has dado like a esta foto"
         ));
 
     }

@@ -33,4 +33,7 @@ $app->get('/like/{id}', 'pwgram\\Controller\\LikesController::addLike');
 /*Image View*/
 $app->get('/image-view/{id}', 'pwgram\\Controller\\RenderController::renderImageView');
 
+/*User Public Profile*/
+$app->get('/user-profile/{id}','pwgram\\Controller\\RenderController::renderUserProfile');
+
 

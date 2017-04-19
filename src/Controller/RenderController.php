@@ -22,7 +22,6 @@ class RenderController {
     }
 
     public function renderHome(Application $app) {
-        //TODO: Comprobar que el usuario de la sesion es correcto
         //TODO: This is a first solution but must be rethinked for pagination
 
         $db = Database::getInstance("pwgram");
@@ -130,6 +129,11 @@ class RenderController {
        return $app -> redirect('/login');
     }
 
+    /**
+     * @param Application $app
+     * @param $id
+     * @return mixed
+     */
     public function renderImageView(Application $app, $id) {
         $imageViewController = new ImageViewController();
 
@@ -154,6 +158,24 @@ class RenderController {
             'logged'=> $idUser
         ));
 
+    }
+
+    /**
+     * @param Application $app
+     * @param $id
+     */
+    public function renderUserProfile(Application $app, $id) {
+
+        $idUser = $this->sessionController->verifySession($app);
+        $profileImage = $this->getProfileImage($idUser);
+
+
+        return $app['twig']->render('user-profile.twig', array(
+            'app'=> ['name' => $app['app.name']],
+            'name'=> $app['session']->get('user')['username'],
+            'profileImage'=> $profileImage,
+            'logged'=> $idUser
+        ));
     }
 
 

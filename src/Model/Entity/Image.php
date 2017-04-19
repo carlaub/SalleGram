@@ -28,6 +28,8 @@ class Image
 
     private $userName;
 
+    private $numComments;
+
     /**
      * @var string The format of the image: jpg, png, etc.
      */
@@ -42,6 +44,7 @@ class Image
      * @var User    the user who is the owner of the published photo
      */
     private $fkUser;
+
 
     public function __construct($title, $createdAt, $fkUser, $private, $extension = ".jpg", $visits = 0, $likes = 0, $id = -1)
     {
@@ -210,6 +213,21 @@ class Image
     public function setComments(array $comments)
     {
         $this->comments = $comments;
+        $this->numComments = count($comments);
+    }
+
+    /**
+     * @param int $numComments
+     */
+    public function setNumComments(int $numComments) {
+        $this->numComments = $numComments;
+    }
+
+    /**
+     *
+     */
+    public function getNumComments() {
+        return $this->numComments;
     }
 
 

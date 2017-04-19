@@ -32,6 +32,13 @@ class ImageViewController {
         $comments = $pdoComents->getImageComments($idImage);
         if ($comments) $image->setComments($comments);
 
+        //Increment image visits
+        $this->incrementVisits($idImage, $pdoImage);
+
         return $image;
+    }
+
+    private function incrementVisits($idImage, PdoImageRepository $pdoImage) {
+        $pdoImage->incrementVisits($idImage);
     }
 }

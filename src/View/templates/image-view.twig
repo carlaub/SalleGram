@@ -49,12 +49,13 @@
 
                 <div class="col-sm-6 col-md-4">
                     <div class="thumbnail">
-                        <div class="caption">
-                            <a  href="/user/{{ image.fkUser }}" ><h4>{{ image.username }}</h4></a>
-                        </div>
+                        <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
                         <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
                         <div class="caption">
-                            <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
+                            <div class="caption">
+                                <a  href="/user-profile/{{ image.fkUser }}" ><h4>{{ image.username }}</h4></a>
+                            </div>
+
 
                             <p>
                                 <span class="intro-text conj-span">
@@ -68,7 +69,7 @@
                                 </span>
 
                                 <span class="intro-text conj-span">
-                                    <span>1</span>
+                                    <span>{{ image.numComments }}</span>
                                     <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
                                 </span>
                             </p>
