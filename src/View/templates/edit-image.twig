@@ -1,0 +1,114 @@
+{% extends "base.twig" %}
+
+
+{% block navbar %}
+
+    {#No logeado#}
+    {% if logged == false %}
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+            </ul>
+        </div>
+        {% endif %}
+
+    {#logeado#}
+    {% if logged != false %}
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/notifications"><span class="glyphicon glyphicon-bell" ></span> </a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <strong>Opciones</strong>
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/upload-image">Añadir imagen</a></li>
+                        <li><a href="/user-images">Imágenes subidas</a></li>
+                        <li><a href="/logout">Cerrar sesion</a></li>
+                    </ul>
+                </li>
+                <li><a href="/edit-profile" class="dropdown-toggle" >
+                        {#<span class="glyphicon glyphicon-user"></span> #}
+                        <img  src="{{ asset('/profile_img/'~img~'.jpg','img') }}" height="25" width="25" >
+                        <strong> {{ name }}</strong>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+
+{% endblock navbar %}
+
+{% block content %}
+    <div class="container-fluid bg-1 text-center">
+        <div class="row">
+
+
+            {#logeado#}
+            {% if logged != false %}
+
+                <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+
+                        {#edit or delete#}
+                        <p class="text-right ">
+                            <span class="conj-span">
+                            <a href="/delete-image/{{ image.id }}" class="btn glyphicon glyphicon-trash" role="button"></a>
+                        </span>
+
+                        </p>
+
+                        {#title#}
+                        <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
+                        {#img#}
+                        <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
+                        <br><br>
+                    </div>
+                </div>
+
+                <div class="personal-info col-md-6 row">
+                    <div class="thumbnail">
+
+                        <form class="form-horizontal" enctype="multipart/form-data" id="uploadImageForm" action="/editImage/form//{{ image.id }}" method="POST">
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label text-muted">Título: </label>
+                                <div class="col-lg-8">
+                                    <input class="form-control " type="text" value="{{ image.title }}" name="img-title" id="img-title" placeholder="Titulo">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label text-muted">Privada: </label>
+                                <div class="col-lg-8">
+                                    <input class="checkbox-info" type="checkbox" placeholder="Private" name="img-private" id="img-private" value="private" {{  private }}>
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-muted"></label>
+                                <div class="col-md-8">
+                                    <button type="submit" class="btn our-btn">Editar Imagen</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+
+            {% endif %}
+
+
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('upload_image.js', 'js') }}"></script>
+    <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
+{% endblock javascripts %}

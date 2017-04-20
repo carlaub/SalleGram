@@ -49,8 +49,10 @@ $app->get('/user-profile/{id}','pwgram\\Controller\\RenderController::renderUser
 
 $app->get('/user-images/', 'pwgram\\Controller\\RenderController::renderUserImages');
 
-$app->get('/edit-image/{idImage}', 'pwgram\\Controller\\FormsController::editImage');
+$app->get('/edit-image/{idImage}', 'pwgram\\Controller\\RenderController::editImage');
 $app->get('/delete-image/{idImage}', 'pwgram\\Controller\\FormsController::deleteImage');
+$app->post('/editImage/form/{idImage}', 'pwgram\\Controller\\FormsController::editImageForm');
+
 
 
 

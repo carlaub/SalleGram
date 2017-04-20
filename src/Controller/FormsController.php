@@ -268,16 +268,26 @@ class FormsController {
             $pdoImage->remove($idImage);
 
             return $app -> redirect('/user-images');
-        }
-
-        return $app -> redirect('/user-images');
+        }else return $app -> redirect('/login');
 
     }
 
-    public function editImage(Application $app, $idImage){
+    public function editImageForm(Application $app, $idImage){
 
-        //todo coger la informacion de la imagen y mostrar el form de editar
+        $sessionController = new SessionController();
+        if($sessionController->correctSession($app)){
+            $db = Database::getInstance("pwgram");
+
+            //TODO falta coger de la bbdd la imagen y hacer un alter, sera llamar la funcion
+
+            return $app -> redirect('/user-images');
+
+        }else  return $app -> redirect('/login');
+
+
+
     }
+
 
     /**
      * @param Application $app

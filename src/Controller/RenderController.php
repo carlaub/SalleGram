@@ -295,6 +295,37 @@ class RenderController {
         return $imagesFromDB;
     }
 
+    public function editImage(Application $app, $idImage){
+
+
+
+        if ($this->sessionController->correctSession($app)){
+            $db = Database::getInstance("pwgram");
+            $pdoImage = new PdoImageRepository($db);
+
+
+            $idUser = $this->sessionController->getSessionUserId($app);
+            $profileImage = $this->getProfileImage($idUser);
+
+            $image = $pdoImage->get($idImage);
+
+            if($image->isPrivate()){
+                $private = 'checked';
+            }else $private = '';
+
+            return $app['twig']->render('edit-image.twig', array(
+                'app'=> ['name' => $app['app.name']],
+                'name'=> $app['session']->get('user')['username'],
+                'img'=> $profileImage,
+                'logged'=> $idUser,
+                'image'=> $image,
+                'private'=> $private
+            ));
+
+        }else return $app -> redirect('/login');
+
+    }
+
 
 }
 

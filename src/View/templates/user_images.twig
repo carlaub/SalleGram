@@ -25,7 +25,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="/upload-image">Añadir imagen</a></li>
-                        <li><a href="/edit-image">Editar imagen</a></li>
+                        <li><a href="/user-images">Imágenes subidas</a></li>
                         <li><a href="/logout">Cerrar sesion</a></li>
                     </ul>
                 </li>
@@ -69,58 +69,7 @@
                             <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
                             {#img#}
                             <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
-                            {#num(visitas likes comments)#}
-                            <div class="caption">
-                                <div class="caption">
-                                    <a  href="/user-profile/{{ image.fkUser }}" ><h4>{{ image.username }}</h4></a>
-                                </div>
-
-                                <p>
-                                <span class="intro-text conj-span">
-                                    <span>{{ image.visits }}</span>
-                                    <span class="glyphicon glyphicon-eye-open glyphicon-black" ></span>
-                                </span>
-
-                                    <span class="intro-text conj-span">
-                                    <span>{{ image.likes }}</span>
-                                    <span class="glyphicon glyphicon-thumbs-up glyphicon-black" ></span>
-                                </span>
-
-                                    <span class="intro-text conj-span">
-                                    <span>{{ image.numComments }}</span>
-                                    <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
-                                </span>
-                                </p>
-                                {#comentarios#}
-                                {% for comment in image.comments %}
-
-                                    <p> {{ comment.content }} </p>
-
-                                {% endfor %}
-
-
-                                {% if image.numComments < 3  %}
-
-                                    {% for i in range(image.numComments,3) %}
-
-                                        <br>
-
-                                    {% endfor %}
-                                {% endif %}
-                                {#add comment#}
-                                <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
-                                    <textarea class="form-control textarea-comment" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>
-                                    <button class="btn btn-info" type="submit">Publicar comentario</button>
-                                </form>
-                                {#add like#}
-                                <p>
-                                    <a href="/like/{{ image.id }}" class="btn glyphicon glyphicon-heart-empty" role="button"></a>
-                                </p>
-                                {#img date#}
-                                <p>{{ image.createdAt}}</p>
-
-
-                            </div>
+                            <br><br>
                         </div>
                     </div>
                 {% endfor %}

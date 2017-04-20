@@ -139,3 +139,7 @@ p {font-size: 16px;
 textarea {
     resize: none;
 }
+
+.thumbnail{
+    padding: 20px;
+}
