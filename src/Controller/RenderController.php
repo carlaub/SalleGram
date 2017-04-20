@@ -66,6 +66,7 @@ class RenderController {
                 'name'=> $app['session']->get('user')['username'],
                 'img'=> $image,
                 'logged'=> $idUser,
+                'p'=> 'Sube fotos y compartelas con tus amigos ',
                 'images'=>$publicImages
             ));
         }
@@ -355,7 +356,6 @@ class RenderController {
             //var_dump($app['session']->get('user')['username']);
             $idUser = $this->sessionController->getSessionUserId($app);
             $image = $this->getProfileImage($idUser);
-
             if ($userImagesCommented != null) {
                 return $app['twig']->render('userComments.twig', array(
                     'app'=> ['name' => $app['app.name']],
@@ -364,12 +364,13 @@ class RenderController {
                     'idUser'=> $idUser,
                     'images'=>$userImagesCommented
                 ));
-            } else { //TODO NO HAS HECHO COMENTARIOS A NINGUNA FOTO
-                return $app['twig']->render('userComments.twig', array(
+            } else {
+                return $app['twig']->render('homeWelcome.twig', array(
                     'app'=> ['name' => $app['app.name']],
                     'name'=> $app['session']->get('user')['username'],
                     'img'=> $image,
                     'logged'=> $idUser,
+                    'p'=>'Aun no has hecho ningún comentario',
                     'images'=>$userImagesCommented
                 ));
             }
