@@ -46,6 +46,8 @@ class RenderController {
             $image->setUserName($userName);
         }
 
+
+
         //var_dump($app['session']->get('user')['username']);
         $idUser = $this->sessionController->getSessionUserId($app);
         $image = $this->getProfileImage($idUser);

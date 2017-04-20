@@ -26,6 +26,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="/upload-image">Añadir imagen</a></li>
                         <li><a href="/user-images">Imágenes subidas</a></li>
+                        <li><a href="/user-comments">Comentarios del usuario</a></li>
                         <li><a href="/logout">Cerrar sesion</a></li>
                     </ul>
                 </li>
@@ -74,22 +75,13 @@
                                     <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
                                 </span>
                                 </p>
+                                <div class="vlimit">
+                                        {% for comment in image.comments %}
 
-                                {% for comment in image.comments %}
+                                            <p> {{ comment.content }} </p>
 
-                                    <p> {{ comment.content }} </p>
-
-                                {% endfor %}
-
-                                {% if image.numComments < 3  %}
-
-                                    {% for i in range(image.numComments,3) %}
-
-                                        <br>
-
-                                    {% endfor %}
-                                {% endif %}
-
+                                        {% endfor %}
+                                </div>
 
                                 <p>{{ image.createdAt}}</p>
 
@@ -105,9 +97,11 @@
 
                 {% for image in images %}
                     <div class="col-sm-6 col-md-4">
-                        <div class="thumbnail">
-                            <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
+                        <div class="thumbnail  ">
+                            <a href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
+
                             <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
+
                             <div class="caption">
                                 <div class="caption">
                                     <a  href="/user-profile/{{ image.fkUser }}" ><h4>{{ image.username }}</h4></a>
@@ -129,23 +123,15 @@
                                     <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
                                 </span>
                                 </p>
+                                <div class="vlimit">
+                                    {% for comment in image.comments %}
 
-                                {% for comment in image.comments %}
-
-                                    <p> {{ comment.content }} </p>
-
-                                {% endfor %}
-
-
-                                {% if image.numComments < 3  %}
-
-                                    {% for i in range(image.numComments,3) %}
-
-                                        <br>
+                                       <a href="/edit-comment/{{ comment.id }}"> <p class="limit"> {{ comment.content }} </p></a>
 
                                     {% endfor %}
-                                {% endif %}
 
+
+                                </div>
                                 <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
                                     <textarea class="form-control textarea-comment" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>
                                     <button class="btn btn-info" type="submit">Publicar comentario</button>

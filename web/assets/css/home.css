@@ -143,3 +143,22 @@ textarea {
 .thumbnail{
     padding: 20px;
 }
+
+.limit{
+    width : 430px;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.vlimit{
+    height : 100px;
+    word-wrap: break-word;
+}
+
+.limit-image{
+    max-width : 1100px;
+    word-wrap: break-word;
+}
