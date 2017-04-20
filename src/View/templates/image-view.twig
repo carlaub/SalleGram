@@ -47,8 +47,7 @@
 
             {#No logeado#}
             {% if logged == false %}
-
-                <div class="col-sm-6 col-md-4">
+                <div class="col-sm6 col-md-4">
                     <div class="thumbnail">
                         <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
                         <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >

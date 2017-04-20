@@ -81,6 +81,16 @@
 
                                 {% endfor %}
 
+                                {% if image.numComments < 3  %}
+
+                                    {% for i in range(image.numComments,3) %}
+
+                                        <br>
+
+                                    {% endfor %}
+                                {% endif %}
+
+
                                 <p>{{ image.createdAt}}</p>
 
                             </div>
@@ -125,6 +135,16 @@
                                     <p> {{ comment.content }} </p>
 
                                 {% endfor %}
+
+
+                                {% if image.numComments < 3  %}
+
+                                    {% for i in range(image.numComments,3) %}
+
+                                        <br>
+
+                                    {% endfor %}
+                                {% endif %}
 
                                 <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
                                     <textarea class="form-control textarea-comment" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>
