@@ -66,6 +66,10 @@ class CommentsController
         return $app->redirect("/"); // TODO: add an information message or something similar
     }
 
+    public function editComment(Application $app, $idComment){
+
+    }
+
 
 
 }

@@ -1,0 +1,91 @@
+{% extends "base.twig" %}
+
+
+{% block navbar %}
+
+    <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/notifications"><span class="glyphicon glyphicon-bell" ></span> </a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <strong>Opciones</strong>
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/upload-image">Añadir imagen</a></li>
+                    <li><a href="/user-images">Imágenes subidas</a></li>
+                    <li><a href="/user-comments">Comentarios del usuario</a></li>
+                    <li><a href="/logout">Cerrar sesion</a></li>
+                </ul>
+            </li>
+            <li><a href="/edit-profile" class="dropdown-toggle" >
+                    {#<span class="glyphicon glyphicon-user"></span> #}
+                    <img  src="{{ asset('/profile_img/'~img~'.jpg','img') }}" height="25" width="25" >
+                    <strong> {{ name }}</strong>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+{% endblock navbar %}
+
+{% block content %}
+    <div class="container-fluid bg-1 text-center">
+        <div class="row">
+
+
+            {% for image in images %}
+                {% for comment in image.comments %}
+                    {% if comment.lastModified == idUser %}
+
+                        <div class="col-sm-6 col-md-4">
+                            <div class="thumbnail  ">
+                                <a href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
+
+                                <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
+
+                                <div class="caption">
+                                    <div class="caption">
+                                        <a  href="/user-profile/{{ image.fkUser }}" ><h4>{{ image.username }}</h4></a>
+                                    </div>
+
+                                    <p>
+                                        <span class="intro-text conj-span">
+                                            <span>{{ image.visits }}</span>
+                                            <span class="glyphicon glyphicon-eye-open glyphicon-black" ></span>
+                                        </span>
+
+                                        <span class="intro-text conj-span">
+                                            <span>{{ image.likes }}</span>
+                                            <span class="glyphicon glyphicon-thumbs-up glyphicon-black" ></span>
+                                        </span>
+
+                                        <span class="intro-text conj-span">
+                                            <span>{{ image.numComments }}</span>
+                                            <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
+                                        </span>
+                                    </p>
+                                    <div class="vlimit">
+                                        {% for comment in image.comments %}
+                                            {% if comment.lastModified == idUser %}
+                                                <a href="/edit-comment/{{ comment.id }}/{{ image.id }}"> <p class="limit"> {{ comment.content }} </p></a>
+                                            {% endif %}
+                                        {% endfor %}
+
+
+                                    </div>
+
+                                    <p>{{ image.createdAt}}</p>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+
+
+        </div>
+    </div>
+
+{% endblock content %}

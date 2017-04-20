@@ -329,5 +329,89 @@ class RenderController {
     }
 
 
+    public function userComments(Application $app) {
+
+        if($this->sessionController->correctSession($app)){
+            $db = Database::getInstance("pwgram");
+            $commentsPdo = new PdoCommentRepository($db);
+            $userPdo     = new PdoUserRepository($db);
+            $imagesPdo   = new PdoImageRepository($db);
+
+            //Images array that will be displayed on the main page
+            $userImagesCommented = $imagesPdo->getAllPublicImages();//TODO SOLO LAS fotos QUE EL USUARIO HA DADO LIKE
+            $userImagesCommented = !$userImagesCommented? [] : $userImagesCommented; // if false, return an empty array, if not return the public images
+
+            // let's add all the comments for each image
+            foreach ($userImagesCommented as $image) {
+
+                $comments = $commentsPdo->getImageComments($image->getId());
+
+                if (!$comments) $comments = [];
+                $image->setComments($comments);
+                $userName = $userPdo->getName($image->getFkUser());
+                $image->setUserName($userName);
+            }
+
+            //var_dump($app['session']->get('user')['username']);
+            $idUser = $this->sessionController->getSessionUserId($app);
+            $image = $this->getProfileImage($idUser);
+
+            if ($userImagesCommented != null) {
+                return $app['twig']->render('userComments.twig', array(
+                    'app'=> ['name' => $app['app.name']],
+                    'name'=> $app['session']->get('user')['username'],
+                    'img'=> $image,
+                    'idUser'=> $idUser,
+                    'images'=>$userImagesCommented
+                ));
+            } else { //TODO NO HAS HECHO COMENTARIOS A NINGUNA FOTO
+                return $app['twig']->render('userComments.twig', array(
+                    'app'=> ['name' => $app['app.name']],
+                    'name'=> $app['session']->get('user')['username'],
+                    'img'=> $image,
+                    'logged'=> $idUser,
+                    'images'=>$userImagesCommented
+                ));
+            }
+        }else return $app -> redirect('/login');
+
+
+    }
+    public function editComment(Application $app, $idComment, $idImage){
+
+        if($this->sessionController->correctSession($app)){
+
+            $db = Database::getInstance("pwgram");
+            $commentContent = new PdoCommentRepository($db);
+
+
+            $imageViewController = new ImageViewController();
+
+            $image = $imageViewController->prepareImage($idImage);
+
+            $idUser = $this->sessionController->getSessionUserId($app);
+            $profileImage = $this->getProfileImage($idUser);
+
+            //Image not found
+            if (!$image) {
+                return $app['twig']->render('error.twig',array(
+                    'message'=>"Imagen no encontrada.",
+                ));
+            }
+
+            //Image OK
+            return $app['twig']->render('edit-comment.twig', array(
+                'app'=> ['name' => $app['app.name']],
+                'image'=>$image,
+                'name'=> $app['session']->get('user')['username'],
+                'profileImage'=> $profileImage,
+                'logged'=> $idUser,
+                'userComment'=> "",
+                'idComment'=> $idComment
+            ));
+        }else return $app -> redirect('/login');
+    }
+
+
 }
 

@@ -37,6 +37,10 @@ $app->get('/profile', 'pwgram\\Controller\\RenderController::renderHome');
 
 /*Comments*/
 $app->get('/new-comment/{id}', 'pwgram\\Controller\\CommentsController::addComment');
+$app->get('/user-comments', 'pwgram\\Controller\\RenderController::userComments');
+$app->get('/edit-comment/{idComment}/{idImage}', 'pwgram\\Controller\\RenderController::editComment');
+$app->get('/edit-comment/form/{idComment}/{idImage}', 'pwgram\\Controller\\CommentsController::editComment');
+
 
 /*Like*/
 $app->get('/like/{id}', 'pwgram\\Controller\\LikesController::addLike');
