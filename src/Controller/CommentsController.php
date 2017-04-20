@@ -34,7 +34,7 @@ class CommentsController
         $imageId = $request->get("id");
         $content = $request->get('text');
 
-        $userid = $this->sessionController->verifySession($app);
+        $userid = $this->sessionController->getSessionUserId($app);
         if (!$userid) {
 
             // TODO 403?

@@ -219,7 +219,6 @@ class PdoImageRepository implements PdoRepository
      * @return array|bool
      */
     public function getAllUserImages($id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
-
         if ($offset == 0) {
 
             $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC";
@@ -248,7 +247,6 @@ class PdoImageRepository implements PdoRepository
         $results = $result->fetchAll();
 
         if(!$results) return []; // Any image in DB
-
         return $this->populateImages($results);
     }
 
@@ -342,7 +340,6 @@ class PdoImageRepository implements PdoRepository
                 )
             );
         }
-
         return $images;
     }
 }

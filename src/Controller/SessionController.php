@@ -35,7 +35,7 @@ class SessionController
      *
      * @return
      */
-    public function verifySession($app) {
+    public function getSessionUserId($app) {
 
         if ($this->haveSession($app)) {
 

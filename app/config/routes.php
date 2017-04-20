@@ -47,4 +47,6 @@ $app->get('/image-view/{id}', 'pwgram\\Controller\\RenderController::renderImage
 /*User Public Profile*/
 $app->get('/user-profile/{id}','pwgram\\Controller\\RenderController::renderUserProfile');
 
+$app->get('/user-images/', 'pwgram\\Controller\\RenderController::renderUserImages');
+
 

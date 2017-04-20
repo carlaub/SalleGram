@@ -21,7 +21,7 @@ class LikesController {
 
     public function addLike(Application $app, int $id) {
 
-        $userid = $this->sessionController->verifySession($app);
+        $userid = $this->sessionController->getSessionUserId($app);
         if (!$userid) {
 
             // TODO 403?

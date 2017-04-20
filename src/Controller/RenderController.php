@@ -47,7 +47,7 @@ class RenderController {
         }
 
         //var_dump($app['session']->get('user')['username']);
-        $idUser = $this->sessionController->verifySession($app);
+        $idUser = $this->sessionController->getSessionUserId($app);
         $image = $this->getProfileImage($idUser);
 
         if ($publicImages != null) {
@@ -140,7 +140,7 @@ class RenderController {
 
         $image = $imageViewController->prepareImage($id);
 
-        $idUser = $this->sessionController->verifySession($app);
+        $idUser = $this->sessionController->getSessionUserId($app);
         $profileImage = $this->getProfileImage($idUser);
 
         //Image not found
@@ -178,7 +178,7 @@ class RenderController {
             'app'=> ['name' => $app['app.name']],
             'name'=> $app['session']->get('user')['username'],
             'profileImg'=> $profileImage,
-            'logged'=> $this->sessionController->verifySession($app),
+            'logged'=> $this->sessionController->getSessionUserId($app),
             'mail'=> $user->getEmail(),
             'date'=> $user->getBirthday(),
             'profileName'=> $user->getUsername(),
@@ -188,6 +188,30 @@ class RenderController {
 
             //TODO IMAGENES DEL USUARIO
         ));
+    }
+
+    public function renderUserImages(Application $app) {
+
+
+        if ($this->sessionController->correctSession($app)){
+            $idUser = $this->sessionController->getSessionUserId($app);
+            $profileImage = $this->getProfileImage($idUser);
+
+            $userUploadImagesController = new UserUploadImagesController();
+
+            $images = $userUploadImagesController->getUserUploadImages($idUser);
+
+
+            return $app['twig']->render('user_images.twig', array(
+                'app'=> ['name' => $app['app.name']],
+                'name'=> $app['session']->get('user')['username'],
+                'img'=> $profileImage,
+                'logged'=> $idUser,
+                'images'=> $images
+            ));
+        }
+
+
     }
 
 
