@@ -23,7 +23,7 @@ $app->get('/register', 'pwgram\\Controller\\RenderController::renderRegistration
 $app->get('/validation', 'pwgram\\Controller\\RenderController::renderValidation');
 $app->get('/dovalidation/{id}', 'pwgram\\Controller\\ValidationController::userValidation');
 
-/*Menu routes, loggef user*/
+/*Menu routes, logged user*/
 $app->get('/logout', 'pwgram\\Controller\\RenderController::logout');
 $app->get('/upload-image', 'pwgram\\Controller\\RenderController::renderUploadImage');
 
