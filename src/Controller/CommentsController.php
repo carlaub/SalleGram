@@ -44,20 +44,24 @@ class CommentsController
             ));
         }
 
-        $db = Database::getInstance("pwgram");
-        $pdo = new PdoCommentRepository($db);
 
-        $today = AppFormatDate::today();
-        $comment = new Comment($content, $userid, $today, $imageId);
+        if (strlen(preg_replace('/\s+/u','',$content))){ //  que no pongan solo espacion en blanco
+            $db = Database::getInstance("pwgram");
+            $pdo = new PdoCommentRepository($db);
 
-        $res = $pdo->add($comment);
+            $today = AppFormatDate::today();
+            $comment = new Comment($content, $userid, $today, $imageId);
 
-        if (!$res) {
+            $res = $pdo->add($comment);
 
-            return $app['twig']->render('error.twig', array(
-                'message'=>"No se ha podido añadir el comentario en la imagen solicitada."
-            ));
+            if (!$res) {
+
+                return $app['twig']->render('error.twig', array(
+                    'message'=>"No se ha podido añadir el comentario en la imagen solicitada."
+                ));
+            }
         }
+
 
         return $app->redirect("/"); // TODO: add an information message or something similar
     }

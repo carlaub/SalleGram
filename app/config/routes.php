@@ -11,7 +11,7 @@ $app->post('/edit_profile/form', 'pwgram\\Controller\\FormsController::updateUse
 
 $app->post('/uploadImage/form', 'pwgram\\Controller\\FormsController::uploadImage');
 
-$app->post('/new-comment/{id}', 'pwgram\\Controller\\FormsController::addComment');
+$app->post('/new-comment/{id}', 'pwgram\\Controller\\FormsController::addComment'); //???? TODO no esta no?
 
 $app->get('', 'pwgram\\Controller\\RenderController::renderHome');
 
