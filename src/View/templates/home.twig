@@ -76,11 +76,15 @@
                                 </span>
                                 </p>
                                 <div class="vlimit">
-                                        {% for comment in image.comments %}
+                                    {% set i = 0 %}
 
-                                            <p> {{ comment.content }} </p>
+                                    {% for comment in image.comments %}
+                                        {% set i =i+1 %}
+                                        {%  if i < 4 %}
+                                            <p class="limit"> {{  comment.content }} </p>
+                                        {% endif %}
 
-                                        {% endfor %}
+                                    {% endfor %}
                                 </div>
 
                                 <p>{{ image.createdAt}}</p>
@@ -124,12 +128,15 @@
                                 </span>
                                 </p>
                                 <div class="vlimit">
-                                    {% for comment in image.comments %}
+                                    {% set i = 0 %}
 
-                                       <p class="limit"> {{ comment.content }} </p>
+                                    {% for comment in image.comments %}
+                                        {% set i =i+1 %}
+                                        {%  if i < 4 %}
+                                            <p class="limit"> {{  comment.content }} </p>
+                                        {% endif %}
 
                                     {% endfor %}
-
 
                                 </div>
                                 <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
