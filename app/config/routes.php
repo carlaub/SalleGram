@@ -44,9 +44,16 @@ $app->get('/like/{id}', 'pwgram\\Controller\\LikesController::addLike');
 /*Image View*/
 $app->get('/image-view/{id}', 'pwgram\\Controller\\RenderController::renderImageView');
 
-/*User Public Profile*/
+/*User Profile*/
 $app->get('/user-profile/{id}','pwgram\\Controller\\RenderController::renderUserProfile');
 
 $app->get('/user-images/', 'pwgram\\Controller\\RenderController::renderUserImages');
+
+$app->get('/edit-image/{idImage}', 'pwgram\\Controller\\FormsController::editImage');
+$app->get('/delete-image/{idImage}', 'pwgram\\Controller\\FormsController::deleteImage');
+
+
+
+
 
 

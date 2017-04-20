@@ -160,9 +160,6 @@ class FormsController {
         $confirmPassword = $request->request->get('confirm-password');
         $profileImage = $request->files->get('image-path');
 
-
-        // TODO Check if user is logged? CREO QUE NO, YA SE COMPRUEBA EN EL RENDER
-
         $userName = $app['session']->get('user')['username'];
 
         $pdo = new PdoUserRepository($db);
@@ -259,6 +256,27 @@ class FormsController {
         $imageProcessing = new ImageProcessing();
         $imageProcessing->saveUploadImage($idImage, $image->getClientOriginalExtension(), $image->getRealPath());
         return $app -> redirect('/');
+    }
+
+    public function deleteImage(Application $app, $idImage){
+
+        $sessionController = new SessionController();
+        if($sessionController->correctSession($app)){
+            $db = Database::getInstance("pwgram");
+
+            $pdoImage = new PdoImageRepository($db);
+            $pdoImage->remove($idImage);
+
+            return $app -> redirect('/user-images');
+        }
+
+        return $app -> redirect('/user-images');
+
+    }
+
+    public function editImage(Application $app, $idImage){
+
+        //todo coger la informacion de la imagen y mostrar el form de editar
     }
 
     /**
