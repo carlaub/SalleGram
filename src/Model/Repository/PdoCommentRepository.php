@@ -144,8 +144,8 @@ class PdoCommentRepository implements PdoRepository
             array_push($resComments,
                 new Comment(
                     $comment['content'],
-                    $comment['last_modified'],
                     $comment['fk_user'],
+                    $comment['last_modified'],
                     $comment['fk_image'],
                     $comment['id']
                 )

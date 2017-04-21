@@ -36,7 +36,7 @@
 
             {% for image in images %}
                 {% for comment in image.comments %}
-                    {% if comment.lastModified == idUser %}
+                    {% if comment.fkUser == idUser %}
 
                         <div class="col-sm-6 col-md-4">
                             <div class="thumbnail  ">
@@ -67,7 +67,7 @@
                                     </p>
                                     <div class="vlimit">
                                         {% for comment in image.comments %}
-                                            {% if comment.lastModified == idUser %}
+                                            {% if comment.fkUser == idUser %}
                                                 <a href="/edit-comment/{{ comment.id }}/{{ image.id }}"> <p class="limit"> {{ comment.content }} </p></a>
                                             {% endif %}
                                         {% endfor %}
