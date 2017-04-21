@@ -141,7 +141,7 @@ class RenderController {
     public function renderImageView(Application $app, $id) {
         $imageViewController = new ImageViewController();
 
-        $image = $imageViewController->prepareImage($id);
+        $image = $imageViewController->prepareImage($app, $id);
 
         $idUser = $this->sessionController->getSessionUserId($app);
         $profileImage = $this->getProfileImage($app, $idUser);
@@ -161,7 +161,6 @@ class RenderController {
             'profileImage'=> $profileImage,
             'logged'=> $idUser
         ));
-
     }
 
     /**
@@ -388,7 +387,7 @@ class RenderController {
 
             $imageViewController = new ImageViewController();
 
-            $image = $imageViewController->prepareImage($idImage);
+            $image = $imageViewController->prepareImage($app, $idImage);
 
             $idUser = $this->sessionController->getSessionUserId($app);
             $profileImage = $this->getProfileImage($app, $idUser);

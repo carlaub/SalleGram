@@ -76,11 +76,11 @@ class PdoImageRepository implements PdoRepository
      *
      * @param int $id    The id of the image visited.
      */
-    public function incrementVisits($id) {
+    public function incrementVisits(Application $app, $id) {
 
         $this->db->initTransaction();
 
-        $image = $this->get($id);
+        $image = $this->get($app, $id);
         if (!$image) {              // I think this should never happen, but I am not sure
 
             echo "The operation could not be done, error getting the image from the database.";
@@ -90,7 +90,7 @@ class PdoImageRepository implements PdoRepository
 
         $image->setVisits($image->getVisits() + 1);
 
-        $this->update($image);
+        $this->update($app, $image);
         $this->db->commitTransaction();
     }
 
@@ -102,11 +102,11 @@ class PdoImageRepository implements PdoRepository
      * @param int $id      The id of the image to update.
      * @param int $inc     Can be <b>negative</b>.
      */
-    public function updateLikes($id, $inc = 1) {
+    public function updateLikes(Application $app, $id, $inc = 1) {
 
         $this->db->initTransaction();
 
-        $image = $this->get($id);
+        $image = $this->get($app, $id);
         if (!$image) {              // i think this should never happen, but I am not sure
 
             echo "The operation could not be done, error getting the image from the database.";
@@ -116,7 +116,7 @@ class PdoImageRepository implements PdoRepository
 
         $image->setLikes($image->getLikes() + $inc);
 
-        $this->update($image);
+        $this->update($app, $image);
         $this->db->commitTransaction();
     }
 

@@ -42,7 +42,7 @@ class LikesController {
             $newLike = new ImageLike($idUser, $id);
 
             $pdoImageLike->add($app, $newLike);
-            $this->updateImageLikes($id);
+            $this->updateImageLikes($app, $id);
 
             return $app->redirect('/');
         }
@@ -56,10 +56,10 @@ class LikesController {
     /**
      * @param $idImage
      */
-    private function updateImageLikes($idImage) {
+    private function updateImageLikes(Application $app, $idImage) {
         $db = Database::getInstance("pwgram");
         $pdoImage = new PdoImageRepository($db);
 
-        $pdoImage->updateLikes($idImage);
+        $pdoImage->updateLikes($app, $idImage);
     }
 }

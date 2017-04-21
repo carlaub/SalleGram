@@ -160,9 +160,7 @@ class PdoCommentRepository implements PdoRepository
         );
         if (!$result) return 0;
 
-        $total = $result->fetch();
-
-        return $total['total'];
+        return $result['total'];
     }
 
 
