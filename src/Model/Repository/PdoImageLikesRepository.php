@@ -11,11 +11,13 @@ namespace pwgram\Model\Repository;
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\ImageLike;
-
+use Silex\Application;
 
 // not checked
 class PdoImageLikesRepository implements PdoRepository
 {
+
+    const TABLE_NAME    = "Image_likes";
 
     /**
      * @var Database class instance.
@@ -28,33 +30,28 @@ class PdoImageLikesRepository implements PdoRepository
     }
 
 
-    public function add($row)
+    public function add(Application $app, $row)
     {
-        $query  = "INSERT INTO Image_likes(`fk_user`, `fk_image`) VALUES(?, ?)";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $row->getFkUser(),
-                $row->getFkImage()
-            ]
+        $result = $app['db']->insert(
+            PdoImageLikesRepository::TABLE_NAME,
+            array(
+                'fk_user'   =>  $row->getFkUser(),
+                'fk_image'  =>  $row->getFkImage()
+            )
         );
 
         return !$result;
     }
 
-    public function get($id)
+    public function get(Application $app, $id)
     {
-        $query  = "SELECT id, fk_user, fk_image FROM `Image_likes` WHERE id = ?";
-        $result = $this->db->preparedQuery(
+        $query  = "SELECT * FROM `Image_likes` WHERE id = ?";
+        $comment = $app['db']->fetchAssoc(
             $query,
-            [
+            array(
                 $id
-            ]
+            )
         );
-        if (!$result) return false; // an error happened during the execution
-
-        $comment = $result->fetch();
-
         if (!$comment) return false;   // comment not found
 
         return new ImageLike(
@@ -64,51 +61,45 @@ class PdoImageLikesRepository implements PdoRepository
         );
     }
 
-    public function getTotalUserLikes($id) {
+    public function getTotalUserLikes(Application $app, $id) {
 
         $query  = "SELECT COUNT(*) as total FROM Image_likes WHERE fk_user = ?";
-        $result = $this->db->preparedQuery(
+        $total  = $app['db']->fetchAssoc(
             $query,
-            [
+            array(
                 $id
-            ]
+            )
         );
 
-        if (!$result) return 0;
-
-        $total = $result->fetch();
+        if (!$total) return 0;
 
         return $total['total'];
     }
 
-    public function update($row)
+    public function update(Application $app, $row)
     {
         $query = "UPDATE `Image_likes` SET fk_user = ?, fk_image = ? WHERE id = ?";
-        $result = $this->db->preparedQuery(
+        $result = $app['db']->executeUpdate(
             $query,
-            [
+            array(
                 $row->getFkUser(),
                 $row->getFkImage(),
                 $row->getId()
-            ]
+            )
         );
     }
 
-    public function remove($id)
+    public function remove(Application $app, $id)
     {
-        $query = "DELETE FROM `Image_likes` WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
+        $app['db']->delete(PdoImageLikesRepository::TABLE_NAME,
+            array(
+                'id' => $id
+            ));
     }
 
-    public function length()
+    public function length(Application $app)
     {
-        $query = "SELECT COUNT(*) AS total FROM Image_likes";
-        $result = $this->db->query($query);
+        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Image_likes");
 
         if (!$result) return 0;
 
@@ -117,21 +108,20 @@ class PdoImageLikesRepository implements PdoRepository
         return $total['total'];
     }
 
-    public function likevalid($idImage, $idUser) {
+    public function likevalid(Application $app, $idImage, $idUser) {
         $query = "SELECT id FROM `Image_likes` WHERE fk_image = ? AND fk_user = ?";
-        $result = $this->db->preparedQuery(
+        $result = $app['db']->fetchAssoc(
             $query,
-            [
+            array(
                 $idImage,
                 $idUser
-            ]
+            )
         );
 
-        if (!$result) return 0;
+        //TODO: check with the update
+        if (!$result) return true;
 
-        $results = $result->fetch();
-
-        if ($results == null) return true; // User hasn't put like
+        //if ($results == null) return true; // User hasn't put like
 
         return false; // User put like
     }

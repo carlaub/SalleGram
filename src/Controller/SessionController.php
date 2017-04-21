@@ -41,7 +41,7 @@ class SessionController
 
             $db = Database::getInstance("pwgram");
             $pdoUser = new PdoUserRepository($db);
-            $id = $pdoUser->validateUserSession($app['session']->get('user')['username'],
+            $id = $pdoUser->validateUserSession($app, $app['session']->get('user')['username'],
                 $app['session']->get('user')['password']);
 
             if ($id != false) return $id;
@@ -62,7 +62,7 @@ class SessionController
 
             $db = Database::getInstance("pwgram");
             $pdoUser = new PdoUserRepository($db);
-            if($pdoUser->validateUserLogin($app['session']->get('user')['username'],
+            if($pdoUser->validateUserLogin($app, $app['session']->get('user')['username'],
                 $app['session']->get('user')['password'])){
                 return true;
             }

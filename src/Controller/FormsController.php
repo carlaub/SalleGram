@@ -66,7 +66,7 @@ class FormsController {
         $profileImage = $request->files->get('image-path');
 
 
-        if ($validator->validateNewUser($newUser, $confirmPassword)) {
+        if ($validator->validateNewUser($app, $newUser, $confirmPassword)) {
             //Image not null
             if($profileImage != null) {
                 //Image validation
@@ -88,10 +88,10 @@ class FormsController {
 
         //All correct, register new user in DB
         $pdoUser = new PdoUserRepository($db);
-        $pdoUser->add($newUser);
+        $pdoUser->add($app, $newUser);
 
         //Save User profile image
-        $idUser = $pdoUser->getId($newUser->getUsername());
+        $idUser = $pdoUser->getId($app, $newUser->getUsername());
         if($newUser->getProfileImage()) $imageProcessing->saveProfileImage(strval($idUser), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
 
         //Send validation email
@@ -126,14 +126,14 @@ class FormsController {
         $pdoUser = new PdoUserRepository($db);
 
         // Get user password from DB
-        $dbPassword = $pdoUser->getPassword($userNameOrEmail);
+        $dbPassword = $pdoUser->getPassword($app, $userNameOrEmail);
 
         if ($dbPassword != false) {
             // Compare password from db with password entered
             if (crypt($password, $dbPassword) == $dbPassword) {
                 //Password are equals
                 //TODO: set coookies and sesion
-                $userName = $pdoUser->getUsername($userNameOrEmail);
+                $userName = $pdoUser->getUsername($app, $userNameOrEmail);
 
 
                 $this->setSession($app, $userName, $dbPassword);
@@ -164,17 +164,17 @@ class FormsController {
 
         $pdo = new PdoUserRepository($db);
 
-        $currentUserName = $pdo->getUsername($userName);
-        $userId = $pdo->getId($currentUserName);
+        $currentUserName = $pdo->getUsername($app, $userName);
+        $userId = $pdo->getId($app, $currentUserName);
 
-        $currentUser = $pdo->get($userId);
+        $currentUser = $pdo->get($app, $userId);
 
         $userUpdate->setEmail($currentUser->getEmail()); // data from db that does not change
         $userUpdate->setId($userId);
 
         $validator = new Validator();
 
-        if ($validator->validateUserUpdate($currentUser, $userUpdate, $confirmPassword)) {
+        if ($validator->validateUserUpdate($app, $currentUser, $userUpdate, $confirmPassword)) {
 
             //Encrypt user password before insert in database
             $userUpdate->setPassword(crypt($userUpdate->getPassword(), '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
@@ -193,7 +193,7 @@ class FormsController {
             //updates the info of the session
             $this->setSession($app,$userUpdate->getUsername(), $userUpdate->getPassword());
             // updates the database user row with the new data
-            $pdo->update($userUpdate);
+            $pdo->update($app, $userUpdate);
 
             return $app -> redirect('/');
         }
@@ -238,7 +238,7 @@ class FormsController {
         // Correct image, save it and update DB
 
         $pdoUser = new PdoUserRepository($db);
-        $idUser = $pdoUser->getId($app['session']->get('user')['username']);
+        $idUser = $pdoUser->getId($app, $app['session']->get('user')['username']);
 
         // Create image entity
         date_default_timezone_set('Europe/Madrid');
@@ -248,9 +248,9 @@ class FormsController {
         // Save image information in DB image table
         $pdoImage = new PdoImageRepository($db);
 
-        $pdoImage->add($newImage);
+        $pdoImage->add($app, $newImage);
 
-        $idImage = $pdoImage->getLastInsertedId();
+        $idImage = $pdoImage->getLastInsertedId($app);
 
 
         $imageProcessing = new ImageProcessing();
@@ -265,7 +265,7 @@ class FormsController {
             $db = Database::getInstance("pwgram");
 
             $pdoImage = new PdoImageRepository($db);
-            $pdoImage->remove($idImage);
+            $pdoImage->remove($app, $idImage);
 
             return $app -> redirect('/user-images');
         }else return $app -> redirect('/login');

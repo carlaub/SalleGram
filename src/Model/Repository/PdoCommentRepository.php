@@ -10,6 +10,7 @@ namespace pwgram\Model\Repository;
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Comment;
+use Silex\Application;
 
 
 
@@ -31,6 +32,7 @@ use pwgram\Model\Entity\Comment;
  */
 class PdoCommentRepository implements PdoRepository
 {
+    const TABLE_NAME    = "Comment";
 
     /**
      * @var Database class instance.
@@ -51,17 +53,16 @@ class PdoCommentRepository implements PdoRepository
      *
      * @return bool         true if the comment has been added correctly, false if not.
      */
-    public function add($row)
+    public function add(Application $app, $row)
     {
-        $query  = "INSERT INTO Comment(`content`, `last_modified`, `fk_user`, `fk_image`) VALUES(?, ?, ?, ?)";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $row->getContent(),
-                $row->getLastModified(),
-                $row->getFkUser(),
-                $row->getFkImage()
-            ]
+        $result = $app['db']->insert(
+            PdoCommentRepository::TABLE_NAME,
+            array(
+                'content'       =>  $row->getContent(),
+                'last_modified' =>  $row->getLastModified(),
+                'fk_user'       =>  $row->getFkUser(),
+                'fk_image'      =>  $row->getFkImage()
+            )
         );
 
         return $result !== false;
@@ -75,18 +76,15 @@ class PdoCommentRepository implements PdoRepository
      *
      * @return bool|Comment An instance of Comment if it has been found, false if not.
      */
-    public function get($id)
+    public function get(Application $app, $id)
     {
-        $query  = "SELECT id, content, last_modified, fk_user, fk_image FROM `Comment` WHERE id = ?";
-        $result = $this->db->preparedQuery(
+        $query   = "SELECT id, content, last_modified, fk_user, fk_image FROM `Comment` WHERE id = ?";
+        $comment = $app['db']->fetchAssoc(
             $query,
-            [
+            array(
                 $id
-            ]
+            )
         );
-        if (!$result) return false; // an error happened during the execution
-
-        $comment = $result->fetch();
 
         if (!$comment) return false;   // comment not found
 
@@ -107,39 +105,35 @@ class PdoCommentRepository implements PdoRepository
      * @return false|mixed false if an error happened doing the request or an array of the
      *         comments associated with an image.
      */
-    public function getImageComments($id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getImageComments(Application $app, $id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
             $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC";
-            $result = $this->db->preparedQuery(
+            $result = $app['db']->fetchAll(
                 $query,
-                [
+                array(
                     $id
-                ]
+                )
             );
         }
         else {
 
             $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC LIMIT ?, ?";
-            $result = $this->db->preparedQuery(
+            $result = $app['db']->fetchAll(
                 $query,
-                [
+                array(
                     $id,
                     $offset,
                     $limit
-                ]
+                )
             );
         }
         if (!$result) return false; // an error happened during the execution
 
-        $comments = $result->fetchAll();
-
-        if (!$comments) return false;
-
         $resComments = [];
 
-        foreach ($comments as $comment) {
+        foreach ($result as $comment) {
 
             array_push($resComments,
                 new Comment(
@@ -155,16 +149,15 @@ class PdoCommentRepository implements PdoRepository
         return $resComments;
     }
 
-    public function getTotalUserComments($id) {
+    public function getTotalUserComments(Application $app, $id) {
 
         $query  = "SELECT COUNT(*) as total FROM Comment WHERE fk_user = ?";
-        $result = $this->db->preparedQuery(
+        $result = $comment = $app['db']->fetchAssoc(
             $query,
-            [
+            array(
                 $id
-            ]
+            )
         );
-
         if (!$result) return 0;
 
         $total = $result->fetch();
@@ -178,16 +171,16 @@ class PdoCommentRepository implements PdoRepository
      *
      * @param Comment $row  The comment to be updated.
      */
-    public function update($row)
+    public function update(Application $app, $row)
     {
         $query = "UPDATE `Comment` SET content = ?, last_modified = ? WHERE id = ?";
-        $result = $this->db->preparedQuery(
+        $result = $app['db']->executeUpdate(
             $query,
-            [
+            array(
                 $row->getContent(),
                 $row->getLastModified(),
                 $row->getId()
-            ]
+            )
         );
     }
 
@@ -196,21 +189,17 @@ class PdoCommentRepository implements PdoRepository
      *
      * @param int $id   The comment to be deleted.
      */
-    public function remove($id)
+    public function remove(Application $app, $id)
     {
-        $query = "DELETE FROM `Comment` WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
+        $app['db']->delete(PdoCommentRepository::TABLE_NAME,
+            array(
+                'id' => $id
+            ));
     }
 
-    public function length()
+    public function length(Application $app)
     {
-        $query = "SELECT COUNT(*) AS total FROM Comment";
-        $result = $this->db->query($query);
+        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Comment");
 
         if (!$result) return 0;
 

@@ -52,7 +52,7 @@ class CommentsController
             $today = AppFormatDate::today();
             $comment = new Comment($content, $userid, $today, $imageId);
 
-            $res = $pdo->add($comment);
+            $res = $pdo->add($app, $comment);
 
             if (!$res) {
 
@@ -61,7 +61,6 @@ class CommentsController
                 ));
             }
         }
-
 
         return $app->redirect("/"); // TODO: add an information message or something similar
     }

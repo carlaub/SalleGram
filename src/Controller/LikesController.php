@@ -35,13 +35,13 @@ class LikesController {
         $pdoImageLike = new PdoImageLikesRepository($db);
         $pdoUser = new PdoUserRepository($db);
 
-        $idUser = $pdoUser->getId($app['session']->get('user')['username']);
+        $idUser = $pdoUser->getId($app, $app['session']->get('user')['username']);
 
         //Validate that user not put like on this photo
-        if ($pdoImageLike->likevalid($id, $idUser)) {
+        if ($pdoImageLike->likevalid($app, $id, $idUser)) {
             $newLike = new ImageLike($idUser, $id);
 
-            $pdoImageLike->add($newLike);
+            $pdoImageLike->add($app, $newLike);
             $this->updateImageLikes($id);
 
             return $app->redirect('/');

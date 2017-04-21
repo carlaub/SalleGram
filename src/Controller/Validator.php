@@ -7,6 +7,7 @@ use pwgram\Model\AppFormatDate;
 use pwgram\Model\Entity\User;
 use pwgram\Model\Repository\PdoUserRepository;
 use \DateTime;
+use Silex\Application;
 
 /**
  * Class Validator
@@ -64,7 +65,7 @@ class Validator
      * @param $passwd2
      * @return bool
      */
-    public function validateNewUser(User $user, $passwd2) {
+    public function validateNewUser(Application $app, User $user, $passwd2) {
 
         if (!$this->validateUserEditableFields($user, $passwd2)) return false;
 
@@ -72,7 +73,7 @@ class Validator
         $pdoUser = new PdoUserRepository($db);
 
 
-        if (!$pdoUser->validateUnique($user->getUsername(), $user->getEmail())) return false;
+        if (!$pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail())) return false;
 
         return true;
     }
@@ -87,7 +88,7 @@ class Validator
      *
      * @return bool                     true if the new data is correct, false if not.
      */
-    public function validateUserUpdate(User $currentUserState, User $userUpdate, $passwd2) {
+    public function validateUserUpdate(Application $app, User $currentUserState, User $userUpdate, $passwd2) {
 
         if (!$this->validateUserEditableFields($userUpdate, $passwd2)) return false;
 
@@ -96,7 +97,7 @@ class Validator
             $db = Database::getInstance("pwgram");
             $pdoUser = new PdoUserRepository($db);
 
-            if (!$pdoUser->validateUnique($userUpdate->getUsername())) return false;
+            if (!$pdoUser->validateUnique($app, $userUpdate->getUsername())) return false;
         }
 
         return true;

@@ -10,6 +10,7 @@ namespace pwgram\Model\Repository;
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\User;
+use Silex\Application;
 
 
 /**
@@ -30,6 +31,8 @@ use pwgram\Model\Entity\User;
  */
 class PdoUserRepository implements PdoRepository {
 
+    const TABLE_NAME    = "User";
+
     /**
      * @var Database class instance.
      */
@@ -44,12 +47,22 @@ class PdoUserRepository implements PdoRepository {
     /**
      * Adds a new user to the database.
      *
-     * @param User $row     The new user to be added.
+     * @param User $row         The new user to be added.
+     * @param Application $app
      */
-    public function add($row)
+    public function add(Application $app, $row)
     {
-        $query  = "INSERT INTO `User`(`username`, `email`, `birthdate`, `password`, `active`, `profile_image`) VALUES(?, ?, ?, ?, ?, ?)";
-        $result = $this->db->preparedQuery(
+        //$query  = "INSERT INTO `User`(`username`, `email`, `birthdate`, `password`, `active`, `profile_image`) VALUES(?, ?, ?, ?, ?, ?)";
+        $app['db']->insert(PdoUserRepository::TABLE_NAME,
+                            array(
+                                'username'      => $row->getUsername(),
+                                'email'         => $row->getEmail(),
+                                'birthdate'     => $row->getBirthday(),
+                                'password'      => $row->getPassword(),
+                                'active'        => $row->getActive(),
+                                'profile_image' => $row->getProfileImage()
+                            ));
+        /*$result = $this->db->preparedQuery(
             $query,
             [
                 $row->getUsername(),
@@ -59,9 +72,9 @@ class PdoUserRepository implements PdoRepository {
                 $row->getActive(),
                 $row->getProfileImage()
             ]
-        );
+        );*/
 
-        if ($result) $row->setPassword(null);
+        //if ($result) $row->setPassword(null);
     }
 
     /**
@@ -71,20 +84,12 @@ class PdoUserRepository implements PdoRepository {
      *
      * @return bool|User false if the user could not be found or the user in case it exists.
      */
-    public function get($id)
+    public function get(Application $app, $id)
     {
         $query  = "SELECT id, username, email, birthdate, active, profile_image FROM `User` WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
-        if (!$result) return false; // an error happened during the execution
+        $user = $app['db']->fetchAssoc($query, array((int) $id));
 
-        $user = $result->fetch();
-
-        if (!$user) return false;   // user not found
+        if (!$user) return false; // an error happened during the execution
 
         return new User(
             $user["username"],
@@ -95,30 +100,6 @@ class PdoUserRepository implements PdoRepository {
             $user["id"]
         );
     }
-
-
-    // not working, yeah.
-    public function getByField($field, $value) {
-
-        $query = "SELECT ? FROM `User` WHERE ? = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $field,
-                $field,
-                $value
-            ]
-        );
-
-        if (!$result) return false;
-
-        $res = $result->fetch();
-
-        if (!$res) return false;
-
-        return $res[$field];
-    }
-
 
     /**
      * Checks if an username and/or email exists in the database.
@@ -172,18 +153,10 @@ class PdoUserRepository implements PdoRepository {
      *
      * @return bool true if there is no user with this username and email, false if not.
      */
-    public function validateUnique($username, $email = "") {
+    public function validateUnique(Application $app, $username, $email = "") {
 
         $query = "SELECT id FROM `User` WHERE username = ? OR email = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $username,
-                $email
-            ]
-        );
-
-        $res = $result->fetch();
+        $res = $app['db']->fetchAssoc($query, array($username, $email));
 
         //$res == false, user isn't in db
         return $res == false;
@@ -194,23 +167,22 @@ class PdoUserRepository implements PdoRepository {
      *
      * @param User $row The updated user.
      */
-    public function update($row)
+    public function update(Application $app, $row)
     {
         $query = "UPDATE `User` SET username = ?, password = ?, email = ?, birthdate = ?, active = ?, profile_image = ? WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $row->getUsername(),
-                $row->getPassword(),
-                $row->getEmail(),
-                $row->getBirthday(),
-                $row->getActive(),
-                $row->getProfileImage(),
-                $row->getId()
-            ]
-        );
+        $res = $app['db']->executeUpdate(
+                            $query,
+                            array(
+                                $row->getUsername(),
+                                $row->getPassword(),
+                                $row->getEmail(),
+                                $row->getBirthday(),
+                                $row->getActive(),
+                                $row->getProfileImage(),
+                                $row->getId())
+                            );
 
-        if ($result) $row->setPassword(null);
+        if ($res) $row->setPassword(null);
     }
 
     /**
@@ -218,18 +190,15 @@ class PdoUserRepository implements PdoRepository {
      *
      * @param int $id The id of the user.
      */
-    public function remove($id)
+    public function remove(Application $app, $id)
     {
-        $query = "DELETE FROM `User` WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
+        $app['db']->delete(PdoUserRepository::TABLE_NAME,
+                            array(
+                                'id' => $id
+                            ));
     }
 
-    public function length()
+    public function length(Application $app)
     {
         $query = "SELECT COUNT(*) AS total FROM `User`";
         $result = $this->db->query($query);
@@ -245,33 +214,22 @@ class PdoUserRepository implements PdoRepository {
      * Return user id
      * @param $userName
      */
-    public function getId($userName) {
+    public function getId(Application $app, $username) {
         $query  = "SELECT id FROM `User` WHERE username = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $userName
-            ]
-        );
+        $result = $app['db']->fetchAssoc($query, array($username));
+
         if (!$result) return false; // an error happened during the execution
 
-        $results = $result->fetch();
-
-        return $results['id'];
+        return $result['id'];
     }
 
-    public function getName($id) {
+    public function getName(Application $app, $id) {
         $query = "SELECT username FROM `User` WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
-        if (!$result) return false;
-        $results = $result->fetch();
+        $result = $app['db']->fetchAssoc($query, array($id));
 
-        return $results['username'];
+        if (!$result) return false;
+
+        return $result['username'];
     }
 
     /**
@@ -280,19 +238,13 @@ class PdoUserRepository implements PdoRepository {
      * @param $id
      * @return bool|mixed
      */
-    public function getActive($id) {
+    public function getActive(Application $app, $id) {
         $query = "SELECT active FROM `User` WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
+        $result = $app['db']->fetchAssoc($query, array($id));
+
         if (!$result) return true; // an error happened during the execution
 
-        $results = $result->fetch();
-
-        return $results['active'];
+        return $result['active'];
     }
 
     /**
@@ -301,18 +253,11 @@ class PdoUserRepository implements PdoRepository {
      * the link validation via email or via web
      * @param $id
      */
-    public function updateActiveState($id) {
+    public function updateActiveState(Application $app, $id) {
         $query = "UPDATE `User` SET active = ? WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                1,
-                $id
-            ]
-        );
+        $result = $app['db']->executeUpdate($query, array(1, $id));
 
-        $results = $result->fetch();
-        if (!$results) return false;
+        if (!$result) return false;
         return true;
     }
 
@@ -321,20 +266,12 @@ class PdoUserRepository implements PdoRepository {
      * @param $password
      * @return bool
      */
-    public function validateUserLogin($userNameOrEmail, $password) {
+    public function validateUserLogin(Application $app, $userNameOrEmail, $password) {
         $query = "SELECT id FROM `User` WHERE (username = ? OR email = ?) AND password = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $userNameOrEmail,
-                $userNameOrEmail,
-                $password
-            ]
-        );
-        if (!$result) return false; // an error happened during the execution
+        $result = $app['db']->fetchAssoc($query,
+                        array($userNameOrEmail, $userNameOrEmail, $password));
 
-        $results = $result->fetch();
-        if (!$results) return false; // no user with these characteristics
+        if (!$result) return false; // an error happened during the execution
 
         return true;
     }
@@ -343,22 +280,18 @@ class PdoUserRepository implements PdoRepository {
      * @param $userName
      * @param $password HASHED!!!
      */
-    public function validateUserSession($userName, $password) {
+    public function validateUserSession(Application $app, $userName, $password) {
         $query = "SELECT id FROM `User` WHERE username = ? AND password = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $userName,
-                $password
-
-            ]
-        );
+        $result = $app['db']->fetchAssoc(
+                    $query,
+                    [
+                        $userName,
+                        $password
+                    ]
+                );
         if (!$result) return false; // an error happened during the execution
 
-        $results = $result->fetch();
-        if (!$results) return false; // no user with these characteristics
-
-        return $results['id'];
+        return $result['id'];
     }
 
     /**
@@ -366,9 +299,9 @@ class PdoUserRepository implements PdoRepository {
      * @return bool|mixed
      */
 
-    public function getUsername($userNameOrEmail) {
+    public function getUsername(Application $app, $userNameOrEmail) {
         $query = "SELECT username FROM `User` WHERE username = ? OR email = ?";
-        $result = $this->db->preparedQuery(
+        $result = $app['db']->fetchAssoc(
             $query,
             [
                 $userNameOrEmail,
@@ -376,10 +309,8 @@ class PdoUserRepository implements PdoRepository {
             ]
         );
         if (!$result) return false;
-        $results = $result->fetch();
-        if (!$results) return false;
 
-        return $results['username'];
+        return $result['username'];
     }
 
 
@@ -392,9 +323,9 @@ class PdoUserRepository implements PdoRepository {
      * @param $userNameOrEmail
      * @return bool|mixed
      */
-    public function getPassword($userNameOrEmail) {
+    public function getPassword(Application $app, $userNameOrEmail) {
         $query = "SELECT password FROM `User` WHERE (username = ? OR email = ?)";
-        $result = $this->db->preparedQuery(
+        $result = $app['db']->fetchAssoc(
             $query,
             [
                 $userNameOrEmail,
@@ -402,28 +333,25 @@ class PdoUserRepository implements PdoRepository {
             ]
         );
         if (!$result) return false;
-        $results = $result->fetch();
-        if(!$results) return false;
 
-        return $results['password'];
+        return $result['password'];
     }
 
     /**
      *
      * @param $id
      */
-    public function getProfileImage($id) {
+    public function getProfileImage(Application $app, $id) {
         $query = "SELECT profile_image FROM `User` WHERE id = ?";
-        $result = $this->db->preparedQuery(
+        $result = $app['db']->fetchAssoc(
             $query,
             [
                 $id
             ]
         );
         if (!$result) return false;
-        $results = $result->fetch();
-        if(!$results) return false;
-        return $results['profile_image'];
+
+        return $result['profile_image'];
     }
 
 }

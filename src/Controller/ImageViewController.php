@@ -20,16 +20,16 @@ class ImageViewController {
         $pdoComents = new PdoCommentRepository($db);
 
         // Verify that the image exist
-        $image = $pdoImage->get($idImage);
+        $image = $pdoImage->get($app, $idImage);
 
         // Image not found
         if(!$image) return false;
 
         // Image found
         //Set Username
-        $image->setUserName($pdoUser->getName($image->getFkUser()));
+        $image->setUserName($pdoUser->getName($app, $image->getFkUser()));
         //Set Comment
-        $comments = $pdoComents->getImageComments($idImage);
+        $comments = $pdoComents->getImageComments($app, $idImage);
         if ($comments) $image->setComments($comments);
 
         //Increment image visits

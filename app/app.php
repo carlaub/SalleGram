@@ -10,13 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use pwgram\lib\Database\Database;
 use pwgram\Controller\CommentsController;
-
+use Doctrine\DBAL\DriverManager;
 
 
 $app = new Application();
 
 $app['app.name'] = 'PWGram';
-
+//$app['db']       = DriverManager::getConnection();
 
 
 

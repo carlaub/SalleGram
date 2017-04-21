@@ -3,18 +3,19 @@
 
 namespace pwgram\Model\Repository;
 
+use Silex\Application;
 
 interface PdoRepository {
 
     const MAX_RESULTS_LIMIT   = 18446744073709551615;
 
-    public function add     ($row);
+    public function add     (Application $app, $row);
 
-    public function get     ($id);
+    public function get     (Application $app, $id);
 
-    public function update  ($row);
+    public function update  (Application $app, $row);
 
-    public function remove  ($id);
+    public function remove  (Application $app, $id);
 
-    public function length  ();
+    public function length  (Application $app);
 }

@@ -11,7 +11,7 @@ namespace pwgram\Model\Repository;
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
-
+use Silex\Application;
 
 /**
  * Class PdoImageRepository
@@ -31,6 +31,7 @@ use pwgram\Model\Entity\Image;
  */
 class PdoImageRepository implements PdoRepository
 {
+    const TABLE_NAME    = "Image";
 
     /**
      * @var Database class instance.
@@ -50,23 +51,22 @@ class PdoImageRepository implements PdoRepository
      *
      * @return bool         true if the image has been added correctly, false if not.
      */
-    public function add($row)
+    public function add(Application $app, $row)
     {
 
-        $query  = "INSERT INTO `Image`(`title`, `visits`, `private`, `created_at`, `likes`, `fk_user`) VALUES(?, ?, ?, ?, ?, ?)";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $row->getTitle(),
-                $row->getVisits(),
-                $row->isPrivate(),
-                $row->getCreatedAt(),
-                $row->getLikes(),
-                $row->getFkUser()
-            ]
+        //$query  = "INSERT INTO `Image`(`title`, `visits`, `private`, `created_at`, `likes`, `fk_user`) VALUES(?, ?, ?, ?, ?, ?)";
+        $app['db']->insert(PdoImageRepository::TABLE_NAME,
+            array(
+                'title'         =>  $row->getTitle(),
+                'visits'        =>  $row->getVisits(),
+                'private'       =>  $row->isPrivate(),
+                'created_at'    =>  $row->getCreatedAt(),
+                'likes'         =>  $row->getLikes(),
+                'fk_user'       =>  $row->getFkUser()
+            )
         );
 
-        return $result !== false;
+        //return $result !== false;
     }
 
 
@@ -127,21 +127,17 @@ class PdoImageRepository implements PdoRepository
      * @return bool|Image An Image instance is returned if everything goes well,
      *                    false if the image could not be found.
      */
-    public function get($id)
+    public function get(Application $app, $id)
     {
         $query  = "SELECT * FROM `Image` WHERE id = ?";
-        $result = $this->db->preparedQuery(
+        $image = $app['db']->fetchAssoc(
             $query,
-            [
+            array(
                 $id
-            ]
+            )
         );
 
-        if (!$result) return false; // an error happened during the execution
-
-        $image = $result->fetch();
-
-        if (!$image) return false;   // image not found
+        if (!$image) return false; // an error happened during the execution
 
         return new Image(
             $image['title'],
@@ -155,61 +151,51 @@ class PdoImageRepository implements PdoRepository
         );
     }
 
-    public function getAll() {
+    public function getAll(Application $app) {
         $query = "SELECT * FROM Image";
-        $result = $this->db->query($query);
+        $result = $app['db']->fetchAll($query);
 
-        if(!$result) return 0;
+        if(!$result) return 0; // Any image in DB
 
-        $results = $result->fetchAll();
-
-        if(!$results) return 0; // Any image in DB
-
-        return $results;
+        return $result;
     }
 
 
-    public function getLastInsertedId() {
-        $query = "SELECT LAST_INSERT_ID()";
-        $result = $this->db->query($query);
+    public function getLastInsertedId(Application $app) {
+        $query = "SELECT LAST_INSERT_ID() as id";
+        $result = $app['db']->fetchAssoc($query);
 
         if (!$result) return false;
 
-        $lastId = $result->fetch();
-
-        return $lastId['LAST_INSERT_ID()'];
+        return $result['id'];
     }
 
-    public function getAllPublicImages($offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getAllPublicImages(Application $app, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
             $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY created_at";
-            $result = $this->db->preparedQuery(
+            $result = $app['db']->fetchAll(
                 $query,
-                [
+                array(
                     $limit
-                ]
+                )
             );
         }
         else {
             $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY created_at DESC LIMIT ?, ?";
-            $result = $this->db->preparedQuery(
+            $result = $app['db']->fetchAll(
                 $query,
-                [
+                array(
                     $offset,
                     $limit
-                ]
+                )
             );
         }
 
-        if (!$result) return false;
+        if (!$result) return []; // Any image in DB
 
-        $results = $result->fetchAll();
-
-        if(!$results) return []; // Any image in DB
-
-        return $this->populateImages($results);
+        return $this->populateImages($result);
     }
 
     /**
@@ -218,55 +204,49 @@ class PdoImageRepository implements PdoRepository
      * @param int $limit
      * @return array|bool
      */
-    public function getAllUserImages($id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getAllUserImages(Application $app, $id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+
         if ($offset == 0) {
 
             $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC";
-            $result = $this->db->preparedQuery(
+            $result = $app['db']->fetchAll(
                 $query,
-                [
+                array(
                     $id
-                ]
+                )
             );
         }
         else {
 
             $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC LIMIT ?, ?";
-            $result = $this->db->preparedQuery(
+            $result = $app['db']->fetchAll(
                 $query,
-                [
+                array(
                     $id,
                     $offset,
                     $limit
-                ]
+                )
             );
         }
 
-        if (!$result) return false;
+        if (!$result) return []; // Any image in DB
 
-        $results = $result->fetchAll();
-
-        if(!$results) return []; // Any image in DB
-        return $this->populateImages($results);
+        return $this->populateImages($result);
     }
 
-    public function getMostVisitedImages($max = 5) {
+    public function getMostVisitedImages(Application $app, $max = 5) {
 
         $query = "SELECT * FROM Image ORDER BY visits ASC LIMIT ?";
-        $result = $this->db->preparedQuery(
+        $result = $app['db']->fetchAll(
             $query,
-            [
+            array(
                 $max
-            ]
+            )
         );
 
-        if (!$result) return false;
+        if(!$result) return []; // Any image in DB
 
-        $results = $result->fetchAll();
-
-        if(!$results) return []; // Any image in DB
-
-        return $this->populateImages($results);
+        return $this->populateImages($result);
     }
 
     /**
@@ -274,12 +254,12 @@ class PdoImageRepository implements PdoRepository
      *
      * @param Image $row    An existing image with updated information.
      */
-    public function update($row)
+    public function update(Application $app, $row)
     {
         $query = "UPDATE `Image` SET title = ?, visits = ?, private = ?, created_at = ?, likes = ?, fk_user = ? WHERE id = ?";
-        $result = $this->db->preparedQuery(
+        $result = $app['db']->executeUpdate(
             $query,
-            [
+            array(
                 $row->getTitle(),
                 $row->getVisits(),
                 $row->isPrivate(),
@@ -287,7 +267,7 @@ class PdoImageRepository implements PdoRepository
                 $row->getLikes(),
                 $row->getFkUser(),
                 $row->getId()
-            ]
+            )
         );
     }
 
@@ -296,21 +276,17 @@ class PdoImageRepository implements PdoRepository
      *
      * @param int $id   The id associated with the image to delete.
      */
-    public function remove($id)
+    public function remove(Application $app, $id)
     {
-        $query = "DELETE FROM `Image` WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
+        $app['db']->delete(PdoImageRepository::TABLE_NAME,
+            array(
+                'id' => $id
+            ));
     }
 
-    public function length()
+    public function length(Application $app)
     {
-        $query = "SELECT COUNT(*) AS total FROM Image";
-        $result = $this->db->query($query);
+        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Image");
 
         if (!$result) return 0;
 
@@ -340,6 +316,7 @@ class PdoImageRepository implements PdoRepository
                 )
             );
         }
+
         return $images;
     }
 }

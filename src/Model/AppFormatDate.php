@@ -23,7 +23,7 @@ class AppFormatDate
 {
 
     const DATE_FORMAT   = 'Y-m-d H:i:s';
-
+    const DAY_SECONDS   = 86400;
 
     public static function today() {
 
@@ -38,6 +38,11 @@ class AppFormatDate
         $format = AppFormatDate::DATE_FORMAT;
 
         return $date->format($format);
+    }
+
+    public static function diff(DateTime $date1, DateTime $date2) {
+
+        return $date2->getTimestamp() - $date1->getTimestamp();
     }
 
 }

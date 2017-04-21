@@ -11,9 +11,12 @@ namespace pwgram\Model\Repository;
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Notification;
+use Silex\Application;
 
 class PdoNotificationRepository implements PdoRepository
 {
+
+    const TABLE_NAME    = "Notification";
 
     private $db;
 
@@ -23,37 +26,26 @@ class PdoNotificationRepository implements PdoRepository
         $this->db = $db;
     }
 
-    public function add($row)
+    public function add(Application $app, $row)
     {
-        $query  = "INSERT INTO Notification(`fk_user_dest`, `fk_user_src`, `type`, `fk_image`, `created_at`) VALUES(?, ?, ?, ?, ?)";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $row->getWho(),
-                $row->getFrom(),
-                $row->getType(),
-                $row->getWhere(),
-                $row->getCreatedAt()
-            ]
-        );
+        $app['db']->insert(PdoNotificationRepository::TABLE_NAME,
+                            array(
+                                'fk_user_dest'  =>  $row->getWho(),
+                                'fk_user_src'   =>  $row->getFrom(),
+                                'type'          =>  $row->getType(),
+                                'fk_image'      =>  $row->getWhere(),
+                                'created_at'    =>  $row->getCreatedAt()
+                            ));
 
-        return $result !== false;
+        //return $result !== false;
     }
 
-    public function get($id)
+    public function get(Application $app, $id)
     {
         $query  = "SELECT * FROM `Notification` WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
-        if (!$result) return false; // an error happened during the execution
+        $notification = $app['db']->fetchAssoc($query, array($id));
 
-        $notification = $result->fetch();
-
-        if (!$notification) return false;   // comment not found
+        if (!$notification) return false; // an error happened during the execution
 
         return new Notification(
             $notification['fk_user_dest'],
@@ -69,23 +61,15 @@ class PdoNotificationRepository implements PdoRepository
      *
      * @return array    An array of notifications for the user or empty if no one has been found.
      */
-    public function getAllUserNotifications($id) {
+    public function getAllUserNotifications(Application $app, $id) {
         $notifications = [];
 
         $query  = "SELECT * FROM `Notification` WHERE fk_user_dest = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
+        $result = $app['db']->fetchAll($query, array($id));
+
         if (!$result) return $notifications; // an error happened during the execution
 
-        $rawNotifications = $result->fetchAll();
-
-        if (!$rawNotifications) return $notifications;
-
-        foreach ($rawNotifications as $notification) {
+        foreach ($result as $notification) {
 
             array_push(
                 $notifications,
@@ -102,37 +86,33 @@ class PdoNotificationRepository implements PdoRepository
         return $notifications;
     }
 
-    public function update($row)
+    public function update(Application $app, $row)
     {
-        $query = "UPDATE `Notifcation` SET fk_user_dest = ?, fk_user_src = ?, `type` = ?, fk_image = ?, created_at = ? WHERE id = ?";
-        $result = $this->db->preparedQuery(
+        $query = "UPDATE `Notification` SET fk_user_dest = ?, fk_user_src = ?, `type` = ?, fk_image = ?, created_at = ? WHERE id = ?";
+        $res = $app['db']->executeUpdate(
             $query,
-            [
+            array(
                 $row->getWho(),
                 $row->getFrom(),
                 $row->getType(),
                 $row->getWhere(),
                 $row->createdAt(),
                 $row->getId()
-            ]
+            )
         );
     }
 
-    public function remove($id)
+    public function remove(Application $app, $id)
     {
-        $query = "DELETE FROM `Notification` WHERE id = ?";
-        $result = $this->db->preparedQuery(
-            $query,
-            [
-                $id
-            ]
-        );
+        $app['db']->delete(PdoNotificationRepository::TABLE_NAME,
+            array(
+                'id' => $id
+            ));
     }
 
-    public function length()
+    public function length(Application $app)
     {
-        $query = "SELECT COUNT(*) AS total FROM Notification";
-        $result = $this->db->query($query);
+        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Notification");
 
         if (!$result) return 0;
 

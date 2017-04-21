@@ -31,18 +31,18 @@ class RenderController {
         $imagesPdo   = new PdoImageRepository($db);
 
         //Images array that will be displayed on the main page
-        $publicImages = $imagesPdo->getAllPublicImages();
+        $publicImages = $imagesPdo->getAllPublicImages($app);
         $publicImages = !$publicImages? [] : $publicImages; // if false, return an empty array, if not return the public images
 
         // let's add all the comments for each image
         foreach ($publicImages as $image) {
 
-            $comments = $commentsPdo->getImageComments($image->getId());
+            $comments = $commentsPdo->getImageComments($app, $image->getId());
 
             if (!$comments) $comments = [];
             $image->setComments($comments);
 
-            $userName = $userPdo->getName($image->getFkUser());
+            $userName = $userPdo->getName($app, $image->getFkUser());
             $image->setUserName($userName);
         }
 
@@ -50,7 +50,7 @@ class RenderController {
 
         //var_dump($app['session']->get('user')['username']);
         $idUser = $this->sessionController->getSessionUserId($app);
-        $image = $this->getProfileImage($idUser);
+        $image = $this->getProfileImage($app, $idUser);
 
         if ($publicImages != null) {
             return $app['twig']->render('home.twig', array(
@@ -144,7 +144,7 @@ class RenderController {
         $image = $imageViewController->prepareImage($id);
 
         $idUser = $this->sessionController->getSessionUserId($app);
-        $profileImage = $this->getProfileImage($idUser);
+        $profileImage = $this->getProfileImage($app, $idUser);
 
         //Image not found
         if (!$image) {
@@ -170,10 +170,10 @@ class RenderController {
      */
     public function renderUserProfile(Application $app, $id) {
 
-        $profileImage = $this->getProfileImage($id);
-        $user = $this->getInfoUser($id);
+        $profileImage = $this->getProfileImage($app, $id);
+        $user = $this->getInfoUser($app, $id);
 
-        $image = $this->getImagesUser($id);
+        $image = $this->getImagesUser($app, $id);
 
         //TODO FALTA QUE LAS IMAGENES SE PUEDAN FILTRAR
 
@@ -185,7 +185,7 @@ class RenderController {
             'mail'=> $user->getEmail(),
             'date'=> $user->getBirthday(),
             'profileName'=> $user->getUsername(),
-            'comments'=>$this->getUserComments($id),
+            'comments'=>$this->getUserComments($app, $id),
             'nImgs'=>'-1', //TODO NO SON LIKES SON NUMERO DE FOTOS PUBLICADAS
             'images'=> $image
 
@@ -198,11 +198,11 @@ class RenderController {
 
         if ($this->sessionController->correctSession($app)){
             $idUser = $this->sessionController->getSessionUserId($app);
-            $profileImage = $this->getProfileImage($idUser);
+            $profileImage = $this->getProfileImage($app, $idUser);
 
             $userUploadImagesController = new UserUploadImagesController();
 
-            $images = $userUploadImagesController->getUserUploadImages($idUser);
+            $images = $userUploadImagesController->getUserUploadImages($app, $idUser);
 
 
             return $app['twig']->render('user_images.twig', array(
@@ -229,39 +229,39 @@ class RenderController {
      * @param $idUser
      * @return string
      */
-    public function getProfileImage($idUser){
+    public function getProfileImage(Application $app, $idUser){
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
 
-        if($pdoUser->getProfileImage($idUser)) {
+        if($pdoUser->getProfileImage($app, $idUser)) {
             return $idUser;
         }
         return "img_profile_default";
     }
 
-    public function getInfoUser($idUser){
+    public function getInfoUser(Application $app, $idUser){
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
 
-        return $pdoUser->get($idUser);
+        return $pdoUser->get($app, $idUser);
     }
 
-    public function getUserLikes($idUser){
+    public function getUserLikes(Application $app, $idUser){
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoImageLikesRepository($db);
 
-        return $pdoUser->getTotalUserLikes($idUser);
+        return $pdoUser->getTotalUserLikes($app, $idUser);
     }
 
-    public function getUserComments($idUser){
+    public function getUserComments(Application $app, $idUser){
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoCommentRepository($db);
 
-        return $pdoUser->getTotalUserComments($idUser);
+        return $pdoUser->getTotalUserComments($app, $idUser);
     }
 
 
-    public function getPublicImages() {
+    public function getPublicImages(Application $app) {
         $db = Database::getInstance("pwgram");
         $pdoImage = new PdoImageRepository($db);
         $pdoUser = new PdoUserRepository($db);
@@ -269,13 +269,13 @@ class RenderController {
         $publicImages = array();
 
         // Obtain all public images in db
-        $imagesFromDB =  $pdoImage->getAll();
+        $imagesFromDB =  $pdoImage->getAll($app);
         if ($imagesFromDB == 0) return false;
         foreach ($imagesFromDB as $imageFromDB) {
             if (!$imageFromDB['private']) {
                 $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false, $imageFromDB['extension'],
                     $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
-                $userName = $pdoUser->getName($imageFromDB['fk_user']);
+                $userName = $pdoUser->getName($app, $imageFromDB['fk_user']);
                 $image->setUserName($userName);
 
                 array_push($publicImages, $image);
@@ -284,7 +284,7 @@ class RenderController {
         return $publicImages;
     }
 
-    public function getImagesUser($id){
+    public function getImagesUser(Application $app,  $id){
 
         $db = Database::getInstance("pwgram");
         $pdoImage = new PdoImageRepository($db);
@@ -293,7 +293,7 @@ class RenderController {
         $publicImages = array();
 
         // Obtain all public images in db
-        $imagesFromDB =  $pdoImage->getAllUserImages($id);
+        $imagesFromDB =  $pdoImage->getAllUserImages($app, $id);
 
         return $imagesFromDB;
     }
@@ -308,9 +308,9 @@ class RenderController {
 
 
             $idUser = $this->sessionController->getSessionUserId($app);
-            $profileImage = $this->getProfileImage($idUser);
+            $profileImage = $this->getProfileImage($app, $idUser);
 
-            $image = $pdoImage->get($idImage);
+            $image = $pdoImage->get($app, $idImage);
 
             if($image->isPrivate()){
                 $private = 'checked';
@@ -339,23 +339,23 @@ class RenderController {
             $imagesPdo   = new PdoImageRepository($db);
 
             //Images array that will be displayed on the main page
-            $userImagesCommented = $imagesPdo->getAllPublicImages();//TODO SOLO LAS fotos QUE EL USUARIO HA DADO LIKE
+            $userImagesCommented = $imagesPdo->getAllPublicImages($app);//TODO SOLO LAS fotos QUE EL USUARIO HA DADO LIKE
             $userImagesCommented = !$userImagesCommented? [] : $userImagesCommented; // if false, return an empty array, if not return the public images
 
             // let's add all the comments for each image
             foreach ($userImagesCommented as $image) {
 
-                $comments = $commentsPdo->getImageComments($image->getId());
+                $comments = $commentsPdo->getImageComments($app, $image->getId());
 
                 if (!$comments) $comments = [];
                 $image->setComments($comments);
-                $userName = $userPdo->getName($image->getFkUser());
+                $userName = $userPdo->getName($app, $image->getFkUser());
                 $image->setUserName($userName);
             }
 
             //var_dump($app['session']->get('user')['username']);
             $idUser = $this->sessionController->getSessionUserId($app);
-            $image = $this->getProfileImage($idUser);
+            $image = $this->getProfileImage($app, $idUser);
             if ($userImagesCommented != null) {
                 return $app['twig']->render('userComments.twig', array(
                     'app'=> ['name' => $app['app.name']],
@@ -391,7 +391,7 @@ class RenderController {
             $image = $imageViewController->prepareImage($idImage);
 
             $idUser = $this->sessionController->getSessionUserId($app);
-            $profileImage = $this->getProfileImage($idUser);
+            $profileImage = $this->getProfileImage($app, $idUser);
 
             //Image not found
             if (!$image) {
