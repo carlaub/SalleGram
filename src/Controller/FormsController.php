@@ -272,15 +272,25 @@ class FormsController {
 
     }
 
-    public function editImageForm(Application $app, $idImage){
+    public function editImageForm(Application $app, Request $request, $idImage){
 
         $sessionController = new SessionController();
         if($sessionController->correctSession($app)){
             $db = Database::getInstance("pwgram");
 
-            //TODO falta coger de la bbdd la imagen y hacer un alter, sera llamar la funcion
+            $pdo = new PdoImageRepository($db);
+
+            $title = $request->request->get('img-title');
+            $private = $request->request->get('img-private') != null;
+
+
+            $newImage = new Image($title, date('Y-m-d H:i:s'), 0, $private);
+            $newImage->setId($idImage);
+
+            $pdo->update($app, $newImage);
 
             return $app -> redirect('/user-images');
+
 
         }else  return $app -> redirect('/login');
 

@@ -329,7 +329,7 @@ class RenderController {
     }
 
 
-    public function userComments(Application $app) {
+    public function renderUserComments(Application $app) {
 
         if($this->sessionController->correctSession($app)){
             $db = Database::getInstance("pwgram");
@@ -341,10 +341,12 @@ class RenderController {
             $userImagesCommented = $imagesPdo->getAllPublicImages($app);//TODO SOLO LAS fotos QUE EL USUARIO HA DADO LIKE
             $userImagesCommented = !$userImagesCommented? [] : $userImagesCommented; // if false, return an empty array, if not return the public images
 
+            $idUser = $this->sessionController->getSessionUserId($app);
+
             // let's add all the comments for each image
             foreach ($userImagesCommented as $image) {
 
-                $comments = $commentsPdo->getImageComments($app, $image->getId());
+                $comments = $commentsPdo->getImageCommentsFromUser($app, $image->getId(), $idUser);
 
                 if (!$comments) $comments = [];
                 $image->setComments($comments);
@@ -353,7 +355,6 @@ class RenderController {
             }
 
             //var_dump($app['session']->get('user')['username']);
-            $idUser = $this->sessionController->getSessionUserId($app);
             $image = $this->getProfileImage($app, $idUser);
             if ($userImagesCommented != null) {
                 return $app['twig']->render('userComments.twig', array(
@@ -377,7 +378,7 @@ class RenderController {
 
 
     }
-    public function editComment(Application $app, $idComment, $idImage){
+    public function renderEditComment(Application $app, $idComment, $idImage){
 
         if($this->sessionController->correctSession($app)){
 

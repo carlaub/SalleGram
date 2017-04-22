@@ -256,16 +256,12 @@ class PdoImageRepository implements PdoRepository
      */
     public function update(Application $app, $row)
     {
-        $query = "UPDATE `Image` SET title = ?, visits = ?, private = ?, created_at = ?, likes = ?, fk_user = ? WHERE id = ?";
+        $query = "UPDATE `Image` SET title = ?, private = ? WHERE id = ?";
         $result = $app['db']->executeUpdate(
             $query,
             array(
                 $row->getTitle(),
-                $row->getVisits(),
                 $row->isPrivate(),
-                $row->getCreatedAt(),
-                $row->getLikes(),
-                $row->getFkUser(),
                 $row->getId()
             )
         );

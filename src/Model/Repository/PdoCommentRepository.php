@@ -149,6 +149,63 @@ class PdoCommentRepository implements PdoRepository
         return $resComments;
     }
 
+
+    /**
+     * @param Application $app
+     * @param $id
+     * @param $idUser
+     * @param int $offset
+     * @param int $limit
+     * @return array|bool
+     */
+    public function getImageCommentsFromUser(Application $app, $id,$idUser, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+
+        if ($offset == 0) {
+
+            $query = "SELECT * FROM `Comment` WHERE fk_image = ? AND fk_user = ?  ORDER BY last_modified ASC";
+            $result = $app['db']->fetchAll(
+                $query,
+                array(
+                    $id,
+                    $idUser
+                )
+            );
+        }
+        else {
+
+            $query = "SELECT * FROM `Comment` WHERE fk_image = ? AND fk_user = ? ORDER BY last_modified ASC LIMIT ?, ?";
+            $result = $app['db']->fetchAll(
+                $query,
+                array(
+                    $id,
+                    $idUser,
+                    $offset,
+                    $limit
+                )
+            );
+        }
+        if (!$result) return false; // an error happened during the execution
+
+        $resComments = [];
+
+        foreach ($result as $comment) {
+
+            array_push($resComments,
+                new Comment(
+                    $comment['content'],
+                    $comment['fk_user'],
+                    $comment['last_modified'],
+                    $comment['fk_image'],
+                    $comment['id']
+                )
+            );
+        }
+
+        return $resComments;
+    }
+
+
+
     public function getTotalUserComments(Application $app, $id) {
 
         $query  = "SELECT COUNT(*) as total FROM Comment WHERE fk_user = ?";

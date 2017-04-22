@@ -71,11 +71,11 @@
                 <div class="personal-info col-md-6 row">
                     <div class="thumbnail">
 
-                        <form class="form-horizontal" enctype="multipart/form-data" id="uploadImageForm" action="/editImage/form//{{ image.id }}" method="POST">
+                        <form class="form-horizontal" enctype="multipart/form-data" id="uploadImageForm" action="/editImage/form/{{ image.id }}" method="POST">
                             <div class="form-group">
                                 <label class="col-lg-4 control-label text-muted">Título: </label>
                                 <div class="col-lg-8">
-                                    <input class="form-control " type="text" value="{{ image.title }}" name="img-title" id="img-title" placeholder="Titulo">
+                                    <input class="form-control " type="text" value="{{ image.title }}" name="img-title" id="img-title" placeholder="Titulo" REQUIRED>
                                 </div>
                             </div>
 

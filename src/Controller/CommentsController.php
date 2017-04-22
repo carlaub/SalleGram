@@ -37,7 +37,7 @@ class CommentsController
         $userid = $this->sessionController->getSessionUserId($app);
         if (!$userid) {
 
-            // TODO 403?
+            // TODO 403
 
             return $app['twig']->render('error.twig', array(
                 'message'=>"El comentario no se ha añadido, usario no conectado."
@@ -65,7 +65,39 @@ class CommentsController
         return $app->redirect("/"); // TODO: add an information message or something similar
     }
 
-    public function editComment(Application $app, $idComment){
+    public function editComment(Application $app, Request $request, $idComment){
+
+        $userid = $this->sessionController->getSessionUserId($app);
+        if (!$userid) {
+
+            // TODO 403
+
+            return $app['twig']->render('error.twig', array(
+                'message'=>"El comentario no se ha añadido, usario no conectado."
+            ));
+        }
+
+
+        $db = Database::getInstance("pwgram");
+        $pdo = new PdoCommentRepository($db);
+
+        $content = $request->get('text');
+
+
+        if (strlen(preg_replace('/\s+/u','',$content))) {
+            //edit comment
+            $today = AppFormatDate::today();
+            $comment = new Comment($content, 0, $today, 0, 0);
+            $comment->setId($idComment);
+
+            $pdo->update($app, $comment);
+
+        }else{
+            //request empty, delete comment
+
+            $pdo->remove($app, $idComment);
+        }
+        return $app -> redirect('/user-comments');
 
     }
 
