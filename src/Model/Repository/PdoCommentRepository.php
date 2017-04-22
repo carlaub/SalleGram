@@ -262,4 +262,20 @@ class PdoCommentRepository implements PdoRepository
 
         return $total['total'];
     }
+
+    public function commentValid(Application $app, $idImage, $idUser) {
+        $query = "SELECT id FROM `Comment` WHERE fk_image = ? AND fk_user = ?";
+        $result = $app['db']->fetchAssoc(
+            $query,
+            array(
+                $idImage,
+                $idUser
+            )
+        );
+
+        if (!$result) return true;
+
+        return false; // User put like
+    }
+
 }

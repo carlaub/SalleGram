@@ -44,10 +44,11 @@ class CommentsController
             ));
         }
 
+        $db = Database::getInstance("pwgram");
+        $pdo = new PdoCommentRepository($db);
 
-        if (strlen(preg_replace('/\s+/u','',$content))){ //  que no pongan solo espacion en blanco
-            $db = Database::getInstance("pwgram");
-            $pdo = new PdoCommentRepository($db);
+        //  que no pongan solo espacion en blanco y no hayan publicado un comentario antes
+        if (strlen(preg_replace('/\s+/u','',$content)) && $pdo->commentValid($app,$imageId,$userid )){
 
             $today = AppFormatDate::today();
             $comment = new Comment($content, $userid, $today, $imageId);
