@@ -345,12 +345,12 @@ class RenderController {
             $commentsPdo = new PdoCommentRepository($db);
             $userPdo     = new PdoUserRepository($db);
             $imagesPdo   = new PdoImageRepository($db);
+            $idUser = $this->sessionController->getSessionUserId($app);
+
 
             //Images array that will be displayed on the main page
-            $userImagesCommented = $imagesPdo->getAllPublicImages($app);//TODO SOLO LAS fotos QUE EL USUARIO HA DADO LIKE
+            $userImagesCommented = $imagesPdo->getAllImagesCommentedByAnUser($app, $idUser);
             $userImagesCommented = !$userImagesCommented? [] : $userImagesCommented; // if false, return an empty array, if not return the public images
-
-            $idUser = $this->sessionController->getSessionUserId($app);
 
             // let's add all the comments for each image
             foreach ($userImagesCommented as $image) {

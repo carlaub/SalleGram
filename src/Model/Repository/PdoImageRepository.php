@@ -242,6 +242,22 @@ class PdoImageRepository implements PdoRepository
         return $this->populateImages($result);
     }
 
+    public function getAllImagesCommentedByAnUser(Application $app, $id) {
+
+        //SELECT * FROM Image WHERE id IN (SELECT fk_image FROM Comment WHERE fk_user = 1);
+        $query = "SELECT * FROM Image WHERE id IN (SELECT fk_image FROM Comment WHERE fk_user = ?)";
+        $result = $app['db']->fetchAll(
+            $query,
+            array(
+                $id
+            )
+        );
+
+        if (!$result) return []; // Any image in DB
+
+        return $this->populateImages($result);
+    }
+
     /**
      * @param Application $app
      * @param int $id               The id of the user.

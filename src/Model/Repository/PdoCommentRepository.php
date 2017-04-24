@@ -209,7 +209,6 @@ class PdoCommentRepository implements PdoRepository
         return $this->populateComments($result);
     }
 
-
     /**
      * @param Application $app
      * @param $id               The id of the user.
