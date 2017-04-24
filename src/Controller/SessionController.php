@@ -17,6 +17,11 @@ use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
 
 
+
+//TODO COOKIES
+
+
+
 /**
  * Class SessionController
  *
@@ -41,8 +46,7 @@ class SessionController
 
             $db = Database::getInstance("pwgram");
             $pdoUser = new PdoUserRepository($db);
-            $id = $pdoUser->validateUserSession($app, $app['session']->get('user')['username'],
-                $app['session']->get('user')['password']);
+            $id = $pdoUser->validateUserSession($app, $app['session']->get('user')['id']);
 
             if ($id != false) return $id;
         }
@@ -58,12 +62,11 @@ class SessionController
      */
     public function correctSession($app) {
 
-        if ($app['session']->get('user') != null) {
+        if ($this->haveSession($app)) {
 
             $db = Database::getInstance("pwgram");
             $pdoUser = new PdoUserRepository($db);
-            if($pdoUser->validateUserLogin($app, $app['session']->get('user')['username'],
-                $app['session']->get('user')['password'])){
+            if($pdoUser->validateUserSession($app, $app['session']->get('user')['id'])){
                 return true;
             }
         }
@@ -73,13 +76,41 @@ class SessionController
 
 
     public function haveSession(Application $app) {
-        //var_dump($app['session']->get('user'));
 
-        if ($app['session']->get('user') === null){
-            return false;
-        }
-        return true;
+        return $app['session']->has('user');
+    }
 
+    /**
+     * @param Application $app
+     * @param $userName
+     * @param $dbPassword
+     */
+    public function setSession(Application $app, $userId) {
+
+        // Only one session at the same time
+        $this->closeSession($app);
+        // Save the session
+        $app['session']->set('user',  array('id' => $userId));
+        $app['session']->start();
+
+
+
+    }
+
+    public function closeSession(Application $app){
+        //TODO REVISAR FUNCION, parece que borra porque el $before de routes funciona pero en applications sale que hahy algo
+
+        //$app['session']->remove('user');
+        $app['session']->clear();
+    }
+
+    public function getSessionName(Application $app){
+
+        $db = Database::getInstance("pwgram");
+        $userPdo = new PdoUserRepository($db);
+
+        if($this->haveSession($app)) return $userPdo->getName($app, $this->getSessionUserId($app));
+        else return false;
     }
 
 }

@@ -1,17 +1,35 @@
 <?php
 
-use pwgram\Controller\homeController;
+//use pwgram\Controller\homeController; //TODO no tenemos homeController no?
+
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+
+$sessionControl = function (Request $request,Application $app) {
+    if ($app['session']->has('userId')){
+        $response = new Response();
+        $content =  $app['twig']->render('error.twig',array(
+            'message'=>"Hace falta estar logeado"
+        ));
+        $response->setContent($content);
+        $response->setStatusCode(Response::HTTP_FORBIDDEN); // 403 code
+        return $response;
+
+    }
+};
 
 
 $app->post('/login/form', 'pwgram\\Controller\\FormsController::loginUser');
 
 $app->post('/register/form', 'pwgram\\Controller\\FormsController::registerUser');
 
-$app->post('/edit_profile/form', 'pwgram\\Controller\\FormsController::updateUser');
+$app->post('/edit_profile/form', 'pwgram\\Controller\\FormsController::updateUser')->before($sessionControl);
 
-$app->post('/uploadImage/form', 'pwgram\\Controller\\FormsController::uploadImage');
+$app->post('/uploadImage/form', 'pwgram\\Controller\\FormsController::uploadImage')->before($sessionControl);
 
-$app->post('/new-comment/{id}', 'pwgram\\Controller\\FormsController::addComment'); //???? TODO no esta no?
+$app->post('/new-comment/{id}', 'pwgram\\Controller\\FormsController::addComment')->before($sessionControl);
 
 $app->get('', 'pwgram\\Controller\\RenderController::renderHome');
 
@@ -25,25 +43,25 @@ $app->get('/dovalidation/{id}', 'pwgram\\Controller\\ValidationController::userV
 
 /*Menu routes, logged user*/
 $app->get('/logout', 'pwgram\\Controller\\RenderController::logout');
-$app->get('/upload-image', 'pwgram\\Controller\\RenderController::renderUploadImage');
+$app->get('/upload-image', 'pwgram\\Controller\\RenderController::renderUploadImage')->before($sessionControl);
 
 
 
-$app->get('/edit-profile', 'pwgram\\Controller\\RenderController::renderEditProfile');
+$app->get('/edit-profile', 'pwgram\\Controller\\RenderController::renderEditProfile')->before($sessionControl);
 
-$app->get('/editImage', 'pwgram\\Controller\\RenderController::renderHome');
+$app->get('/editImage', 'pwgram\\Controller\\RenderController::renderHome')->before($sessionControl);
 $app->get('/profile', 'pwgram\\Controller\\RenderController::renderHome');
 
 /*Comments*/
-$app->get('/new-comment/{id}', 'pwgram\\Controller\\CommentsController::addComment');
-$app->get('/user-comments', 'pwgram\\Controller\\RenderController::renderUserComments');
-$app->get('/edit-comment/{idComment}/{idImage}', 'pwgram\\Controller\\RenderController::renderEditComment');
-$app->get('/delete-comment/{idComment}/{idImage}', 'pwgram\\Controller\\CommentsController::deleteComment');
-$app->get('/edit-user-comment/form/{idComment}', 'pwgram\\Controller\\CommentsController::editComment');
+$app->get('/new-comment/{id}', 'pwgram\\Controller\\CommentsController::addComment')->before($sessionControl);
+$app->get('/user-comments', 'pwgram\\Controller\\RenderController::renderUserComments')->before($sessionControl);
+$app->get('/edit-comment/{idComment}/{idImage}', 'pwgram\\Controller\\RenderController::renderEditComment')->before($sessionControl);
+$app->get('/delete-comment/{idComment}/{idImage}', 'pwgram\\Controller\\CommentsController::deleteComment')->before($sessionControl);
+$app->get('/edit-user-comment/form/{idComment}', 'pwgram\\Controller\\CommentsController::editComment')->before($sessionControl);
 
 
 /*Like*/
-$app->get('/like/{id}', 'pwgram\\Controller\\LikesController::addLike');
+$app->get('/like/{id}', 'pwgram\\Controller\\LikesController::addLike')->before($sessionControl);
 
 /*Image View*/
 $app->get('/image-view/{id}', 'pwgram\\Controller\\RenderController::renderImageView');
@@ -51,14 +69,14 @@ $app->get('/image-view/{id}', 'pwgram\\Controller\\RenderController::renderImage
 /*User Profile*/
 $app->get('/user-profile/{id}','pwgram\\Controller\\RenderController::renderUserProfile');
 
-$app->get('/user-images/', 'pwgram\\Controller\\RenderController::renderUserImages');
+$app->get('/user-images/', 'pwgram\\Controller\\RenderController::renderUserImages')->before($sessionControl);
 
-$app->get('/edit-image/{idImage}', 'pwgram\\Controller\\RenderController::renderEditImage');
-$app->get('/delete-image/{idImage}', 'pwgram\\Controller\\FormsController::deleteImage');
-$app->post('/editImage/form/{idImage}', 'pwgram\\Controller\\FormsController::editImageForm');
+$app->get('/edit-image/{idImage}', 'pwgram\\Controller\\RenderController::renderEditImage')->before($sessionControl);
+$app->get('/delete-image/{idImage}', 'pwgram\\Controller\\FormsController::deleteImage')->before($sessionControl);
+$app->post('/editImage/form/{idImage}', 'pwgram\\Controller\\FormsController::editImageForm')->before($sessionControl);
 
 /*Notifications*/
-$app->get('/notifications', 'pwgram\\Controller\\RenderController::renderNotifications');
+$app->get('/notifications', 'pwgram\\Controller\\RenderController::renderNotifications')->before($sessionControl);
 
 
 

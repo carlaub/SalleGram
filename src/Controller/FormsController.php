@@ -18,6 +18,13 @@ class FormsController {
 
     private $request;
 
+    private $sessionController;
+
+
+    public function __construct()
+    {
+        $this->sessionController = new SessionController();
+    }
 
 
     public function getUserFromForm(Request $request) {
@@ -117,6 +124,8 @@ class FormsController {
      */
     public function loginUser(Application $app, Request $request) {
 
+        $sessionController = new SessionController();
+
         $db = Database::getInstance("pwgram");
 
         $userNameOrEmail = $request->request->get('usernameOrMail');
@@ -134,9 +143,10 @@ class FormsController {
                 //Password are equals
                 //TODO: set coookies and sesion
                 $userName = $pdoUser->getUsername($app, $userNameOrEmail);
+                $userId = $pdoUser->getId($app,$userName);
 
 
-                $this->setSession($app, $userName, $dbPassword);
+                $sessionController->setSession($app, $userId);
                 return $app -> redirect('/');
             }
         }
@@ -155,12 +165,14 @@ class FormsController {
     public function updateUser(Application $app, Request $request) {
 
         $db = Database::getInstance("pwgram");
+        $sessionController = new SessionController();
+
 
         $userUpdate = $this->getUserFromForm($request);
         $confirmPassword = $request->request->get('confirm-password');
         $profileImage = $request->files->get('image-path');
 
-        $userName = $app['session']->get('user')['username'];
+        $userName = $this->sessionController->getSessionName($app);
 
         $pdo = new PdoUserRepository($db);
 
@@ -191,7 +203,7 @@ class FormsController {
             }
 
             //updates the info of the session
-            $this->setSession($app,$userUpdate->getUsername(), $userUpdate->getPassword());
+            $sessionController->setSession($app,$userUpdate->getUsername(), $userUpdate->getPassword());
             // updates the database user row with the new data
             $pdo->update($app, $userUpdate);
 
@@ -238,7 +250,7 @@ class FormsController {
         // Correct image, save it and update DB
 
         $pdoUser = new PdoUserRepository($db);
-        $idUser = $pdoUser->getId($app, $app['session']->get('user')['username']);
+        $idUser = $pdoUser->getId($app, $this->sessionController->getSessionName($app));
 
         // Create image entity
         date_default_timezone_set('Europe/Madrid');
@@ -298,20 +310,6 @@ class FormsController {
 
     }
 
-
-    /**
-     * @param Application $app
-     * @param $userName
-     * @param $dbPassword
-     */
-    public function setSession(Application $app, $userName, $dbPassword) {
-
-        // Only one session at the same time
-        $app['session']->clear();
-        // Save the session
-        $app['session']->set('user', array('username' => $userName, 'password' => $dbPassword));
-        $app['session']->start();
-    }
 
 
 

@@ -2,15 +2,16 @@
 
 namespace pwgram\Controller;
 
-
+use Silex\Application;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
 use pwgram\Model\Repository\PdoCommentRepository;
 use pwgram\Model\Repository\PdoImageLikesRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
-use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+
 
 
 class RenderController {
@@ -47,26 +48,23 @@ class RenderController {
             $image->setUserName($userName);
         }
 
+        $image = $this->getProfileImage($app,$this->sessionController->getSessionUserId($app));
 
-
-        //var_dump($app['session']->get('user')['username']);
-        $idUser = $this->sessionController->getSessionUserId($app);
-        $image = $this->getProfileImage($app, $idUser);
 
         if ($publicImages != null) {
             return $app['twig']->render('home.twig', array(
                 'app'=> ['name' => $app['app.name']],
-                'name'=> $app['session']->get('user')['username'],
+                'name'=> $this->sessionController->getSessionName($app),
                 'img'=> $image,
-                'logged'=> $idUser,
+                'logged'=> $this->sessionController->haveSession($app),
                 'images'=>$publicImages
             ));
         } else {
             return $app['twig']->render('homeWelcome.twig', array(
                 'app'=> ['name' => $app['app.name']],
-                'name'=> $app['session']->get('user')['username'],
+                'name'=> $this->sessionController->getSessionName($app),
                 'img'=> $image,
-                'logged'=> $idUser,
+                'logged'=> $this->sessionController->haveSession($app),
                 'p'=> 'Sube fotos y compartelas con tus amigos ',
                 'images'=>$publicImages
             ));
@@ -141,10 +139,15 @@ class RenderController {
      */
     public function renderImageView(Application $app, $id) {
         $imageViewController = new ImageViewController();
+        $db = Database::getInstance("pwgram");
+        $idUser = $this->sessionController->getSessionUserId($app);
+
+
+        $user = new PdoUserRepository($db);
+        $user->get($app, $idUser);
 
         $image = $imageViewController->prepareImage($app, $id);
 
-        $idUser = $this->sessionController->getSessionUserId($app);
         $profileImage = $this->getProfileImage($app, $idUser);
 
         //Image not found
@@ -158,7 +161,7 @@ class RenderController {
         return $app['twig']->render('image-view.twig', array(
             'app'=> ['name' => $app['app.name']],
             'image'=>$image,
-            'name'=> $app['session']->get('user')['username'],
+            'name'=> $user->getName($app, $idUser),
             'profileImage'=> $profileImage,
             'logged'=> $idUser
         ));
@@ -182,17 +185,16 @@ class RenderController {
 
         return $app['twig']->render('user-profile.twig', array(
             'app'=> ['name' => $app['app.name']],
-            'name'=> $app['session']->get('user')['username'],
+            'name'=> $this->sessionController->getSessionName($app),
             'profileImg'=> $profileImage,
             'logged'=> $this->sessionController->getSessionUserId($app),
             'mail'=> $user->getEmail(),
             'date'=> $user->getBirthday(),
             'profileName'=> $user->getUsername(),
             'comments'=>$this->getUserComments($app, $id),
-            'nImgs'=> $totalUserImages, //TODO NO SON LIKES SON NUMERO DE FOTOS PUBLICADAS
+            'nImgs'=> $totalUserImages,
             'images'=> $image
 
-            //TODO IMAGENES DEL USUARIO
         ));
     }
 
@@ -210,7 +212,7 @@ class RenderController {
 
             return $app['twig']->render('user_images.twig', array(
                 'app'=> ['name' => $app['app.name']],
-                'name'=> $app['session']->get('user')['username'],
+                'name'=> $this->sessionController->getSessionName($app),
                 'img'=> $profileImage,
                 'logged'=> $idUser,
                 'images'=> $images
@@ -221,16 +223,12 @@ class RenderController {
     }
 
     /**
-     *
+     * @param Application $app
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function renderNotification(Application $app) {
-
-    }
-
-
     public function logout(Application $app) {
-        $app['session']->clear();//solo una sesion a la vez
-        return $this->renderHome($app);
+        $this->sessionController->closeSession($app);
+        return $app -> redirect('/');
     }
 
 
@@ -332,7 +330,7 @@ class RenderController {
 
             return $app['twig']->render('edit-image.twig', array(
                 'app'=> ['name' => $app['app.name']],
-                'name'=> $app['session']->get('user')['username'],
+                'name'=> $this->sessionController->getSessionName($app),
                 'img'=> $profileImage,
                 'logged'=> $idUser,
                 'image'=> $image,
@@ -353,10 +351,10 @@ class RenderController {
         $image = $this->getProfileImage($app, $idUser);
 
         $content = $app['twig']->render('notifications.twig',
-            ['name' => $app['session']->get('user')['username'],
-                'img'=> $image,
-                'logged'=> $idUser
-        ]);
+            [   'name'      => $this->sessionController->getSessionName($app),
+                'img'       => $image,
+                'logged'    => $idUser
+            ]);
 
         $response = new Response();
         $response->setStatusCode($response::HTTP_OK);
@@ -392,12 +390,11 @@ class RenderController {
                 $image->setUserName($userName);
             }
 
-            //var_dump($app['session']->get('user')['username']);
             $image = $this->getProfileImage($app, $idUser);
             if ($userImagesCommented != null) {
                 return $app['twig']->render('userComments.twig', array(
                     'app'=> ['name' => $app['app.name']],
-                    'name'=> $app['session']->get('user')['username'],
+                    'name'=> $this->sessionController->getSessionName($app),
                     'img'=> $image,
                     'idUser'=> $idUser,
                     'images'=>$userImagesCommented
@@ -405,7 +402,7 @@ class RenderController {
             } else {
                 return $app['twig']->render('homeWelcome.twig', array(
                     'app'=> ['name' => $app['app.name']],
-                    'name'=> $app['session']->get('user')['username'],
+                    'name'=> $this->sessionController->getSessionName($app),
                     'img'=> $image,
                     'logged'=> $idUser,
                     'p'=>'Aun no has hecho ningún comentario',
@@ -442,7 +439,7 @@ class RenderController {
             return $app['twig']->render('edit-comment.twig', array(
                 'app'=> ['name' => $app['app.name']],
                 'image'=>$image,
-                'name'=> $app['session']->get('user')['username'],
+                'name'=> $this->sessionController->getSessionName($app),
                 'profileImage'=> $profileImage,
                 'logged'=> $idUser,
                 'userComment'=> "",

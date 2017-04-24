@@ -40,7 +40,7 @@ class LikesController {
         $pdoNotification = new PdoNotificationRepository($db);
         $pdoImage = new PdoImageRepository($db);
 
-        $idUser = $pdoUser->getId($app, $app['session']->get('user')['username']);
+        $idUser = $pdoUser->getId($app,$this->sessionController->getSessionName($app));
 
         //Validate that user not put like on this photo
         if ($pdoImageLike->likevalid($app, $id, $idUser)) {

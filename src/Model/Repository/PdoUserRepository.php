@@ -280,13 +280,12 @@ class PdoUserRepository implements PdoRepository {
      * @param $userName
      * @param $password HASHED!!!
      */
-    public function validateUserSession(Application $app, $userName, $password) {
-        $query = "SELECT id FROM `User` WHERE username = ? AND password = ?";
+    public function validateUserSession(Application $app, $userId) {
+        $query = "SELECT id FROM `User` WHERE id = ?";
         $result = $app['db']->fetchAssoc(
                     $query,
                     [
-                        $userName,
-                        $password
+                        $userId
                     ]
                 );
         if (!$result) return false; // an error happened during the execution
