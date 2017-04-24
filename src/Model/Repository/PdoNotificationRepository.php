@@ -78,6 +78,7 @@ class PdoNotificationRepository implements PdoRepository
                     $notification['fk_user_src'],
                     $notification['type'],
                     $notification['fk_image'],
+                    $notification['created_at'],
                     $notification['id']
                 )
             );

@@ -336,8 +336,13 @@ class PdoImageRepository implements PdoRepository
         return $total['total'];
     }
 
+    /**
+     * Return the image author
+     * @param Application $app
+     * @param $id
+     * @return mixed
+     */
     public function getAuthor(Application $app, $id) {
-        var_dump($id);
         $query = "SELECT fk_user FROM Image WHERE id = ?";
         $result = $app['db']->fetchAssoc(
             $query,
@@ -349,7 +354,26 @@ class PdoImageRepository implements PdoRepository
         return $result['fk_user'];
     }
 
+    /**
+     * Return the image's title
+     * @param Application $app
+     * @param $id
+     */
+    public function getTitle(Application $app, $id) {
+        $query = "SELECT title FROM Image WHERE id = ?";
+        $result = $app['db']->fetchAssoc(
+            $query,
+            array(
+                $id
+            )
+        );
 
+        return $result['title'];
+    }
+    /**
+     * @param $queryResult
+     * @return array
+     */
     private function populateImages($queryResult) {
 
         $images = [];

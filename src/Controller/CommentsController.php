@@ -10,7 +10,10 @@ namespace pwgram\Controller;
 
 
 use pwgram\Model\AppFormatDate;
+use pwgram\Model\Entity\Notification;
 use pwgram\Model\Repository\PdoCommentRepository;
+use pwgram\Model\Repository\PdoImageRepository;
+use pwgram\Model\Repository\PdoNotificationRepository;
 use Silex\Application;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Comment;
@@ -45,15 +48,27 @@ class CommentsController
         }
 
         $db = Database::getInstance("pwgram");
-        $pdo = new PdoCommentRepository($db);
+        $pdoComment = new PdoCommentRepository($db);
+        $pdoNotification = new PdoNotificationRepository($db);
+        $pdoImage = new PdoImageRepository($db);
 
         //  que no pongan solo espacion en blanco y no hayan publicado un comentario antes
-        if (strlen(preg_replace('/\s+/u','',$content)) && $pdo->commentValid($app,$imageId,$userid )){
+        if (strlen(preg_replace('/\s+/u','',$content)) && $pdoComment->commentValid($app,$imageId,$userid )){
 
             $today = AppFormatDate::today();
             $comment = new Comment($content, $userid, $today, $imageId);
 
-            $res = $pdo->add($app, $comment);
+            $res = $pdoComment->add($app, $comment);
+
+            //Add notification
+            $idAuthor = $pdoImage->getAuthor($app, $imageId);
+
+
+            //Create new notification
+            $notification = new Notification($idAuthor, $userid, 1, $imageId, date('Y-m-d H:i:s'));
+            //Update  notifications
+            var_dump($notification);
+            $pdoNotification->add($app, $notification);
 
             if (!$res) {
 

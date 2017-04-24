@@ -26,6 +26,13 @@ class Notification
     private $who;
 
     /**
+     * @var string  used principally when notifications are printed in Notifications section
+     *              this variable is set before notifications.twig render. Notifications.twig need
+     *              it for show the username without doing a bbdd request itself.
+     */
+    private $fromUsername;
+
+    /**
      * @var int     id of the user who <b>caused</b> the notification
      */
     private $from;
@@ -42,6 +49,11 @@ class Notification
      * @var int FK of the image liked or commented.
      */
     private $where;
+
+    /**
+     * @var string used principally when notifications are printed.
+     */
+    private $imgTitle;
 
     private $createdAt;
 
@@ -150,6 +162,29 @@ class Notification
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @param string $username
+     */
+    public function setFromUsername(string $username)
+    {
+        $this->fromUsername = $username;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFromUsername() {
+        return $this->fromUsername;
+    }
+
+    public function setImgTitle(string $imgTitle) {
+        $this->imgTitle = $imgTitle;
+    }
+
+    public function getImgTitle() {
+        return $this->imgTitle;
     }
 
 

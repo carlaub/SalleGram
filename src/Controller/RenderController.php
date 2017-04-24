@@ -346,22 +346,32 @@ class RenderController {
      */
     public function renderNotifications(Application $app) {
         //TODO: comprovar que esta la sesion
+        if($this->sessionController->correctSession($app)){
+            $db = Database::getInstance("pwgram");
 
-        $idUser = $this->sessionController->getSessionUserId($app);
-        $image = $this->getProfileImage($app, $idUser);
+            $pdoNotifications = new NotificationsController();
 
-        $content = $app['twig']->render('notifications.twig',
-            [   'name'      => $this->sessionController->getSessionName($app),
-                'img'       => $image,
-                'logged'    => $idUser
-            ]);
+            $userNotifications = $pdoNotifications->getUserNotifications($app);
 
-        $response = new Response();
-        $response->setStatusCode($response::HTTP_OK);
-        $response->headers->set('Content-type', 'text/html');
-        $response->setContent($content);
+            $idUser = $this->sessionController->getSessionUserId($app);
+            $image = $this->getProfileImage($app, $idUser);
 
-        return $response;
+            $content = $app['twig']->render('notifications.twig',
+                [   'name'      => $this->sessionController->getSessionName($app),
+                    'img'       => $image,
+                    'logged'    => $idUser,
+                    'notifications' => $userNotifications
+                ]);
+
+            $response = new Response();
+            $response->setStatusCode($response::HTTP_OK);
+            $response->headers->set('Content-type', 'text/html');
+            $response->setContent($content);
+
+            return $response;
+
+        }
+        //TODO error 403
     }
 
 
@@ -410,7 +420,7 @@ class RenderController {
                 ));
             }
         }else return $app -> redirect('/login');
-
+        //TODO error 403
 
     }
     public function renderEditComment(Application $app, $idComment, $idImage){
