@@ -230,5 +230,13 @@ class Image
         return $this->numComments;
     }
 
+    public function getExtension() {
+        return $this->extension;
+    }
+
+    public function setExtension($extension) {
+        $this->extension = $extension;
+    }
+
 
 }

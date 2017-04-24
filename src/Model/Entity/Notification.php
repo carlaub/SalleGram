@@ -32,6 +32,9 @@ class Notification
 
     /**
      * @var int Type of notification: like or comment.
+     *
+     * type 0 -> LIKE
+     * type 1 -> COMMENT
      */
     private $type;
 

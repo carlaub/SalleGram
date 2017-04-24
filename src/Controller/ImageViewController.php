@@ -40,6 +40,7 @@ class ImageViewController {
     }
 
     private function incrementVisits(Application $app, $idImage, PdoImageRepository $pdoImage) {
+
         $pdoImage->incrementVisits($app, $idImage);
     }
 }

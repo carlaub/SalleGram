@@ -10,6 +10,7 @@ use pwgram\Model\Repository\PdoImageLikesRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class RenderController {
@@ -219,6 +220,13 @@ class RenderController {
 
     }
 
+    /**
+     *
+     */
+    public function renderNotification(Application $app) {
+
+    }
+
 
     public function logout(Application $app) {
         $app['session']->clear();//solo una sesion a la vez
@@ -306,9 +314,7 @@ class RenderController {
         return $imagesFromDB;
     }
 
-    public function editImage(Application $app, $idImage){
-
-
+    public function renderEditImage(Application $app, $idImage){
 
         if ($this->sessionController->correctSession($app)){
             $db = Database::getInstance("pwgram");
@@ -335,6 +341,29 @@ class RenderController {
 
         }else return $app -> redirect('/login');
 
+    }
+
+    /**
+     *
+     */
+    public function renderNotifications(Application $app) {
+        //TODO: comprovar que esta la sesion
+
+        $idUser = $this->sessionController->getSessionUserId($app);
+        $image = $this->getProfileImage($app, $idUser);
+
+        $content = $app['twig']->render('notifications.twig',
+            ['name' => $app['session']->get('user')['username'],
+                'img'=> $image,
+                'logged'=> $idUser
+        ]);
+
+        $response = new Response();
+        $response->setStatusCode($response::HTTP_OK);
+        $response->headers->set('Content-type', 'text/html');
+        $response->setContent($content);
+
+        return $response;
     }
 
 

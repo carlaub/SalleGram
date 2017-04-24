@@ -5,8 +5,11 @@ namespace pwgram\Controller;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\ImageLike;
 use pwgram\Model\Entity\Like;
+use pwgram\Model\Entity\Notification;
+use pwgram\Model\Repository\PdoCommentRepository;
 use pwgram\Model\Repository\PdoImageLikesRepository;
 use pwgram\Model\Repository\PdoImageRepository;
+use pwgram\Model\Repository\PdoNotificationRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
 
@@ -34,6 +37,8 @@ class LikesController {
         $db = Database::getInstance("pwgram");
         $pdoImageLike = new PdoImageLikesRepository($db);
         $pdoUser = new PdoUserRepository($db);
+        $pdoNotification = new PdoNotificationRepository($db);
+        $pdoImage = new PdoImageRepository($db);
 
         $idUser = $pdoUser->getId($app, $app['session']->get('user')['username']);
 
@@ -43,6 +48,12 @@ class LikesController {
 
             $pdoImageLike->add($app, $newLike);
             $this->updateImageLikes($app, $id);
+
+            $idAuthor = $pdoImage->getAuthor($app, $id);
+            //Create new notification
+            $notification = new Notification($idUser, $idAuthor, 0, $id, date('Y-m-d H:i:s'));
+            //Update  notifications
+            $pdoNotification->add($app, $notification);
 
             return $app->redirect('/');
         }

@@ -162,3 +162,10 @@ textarea {
     max-width : 1100px;
     word-wrap: break-word;
 }
+
+.jumbotron {
+    margin-right: 100px;
+    margin-left: 100px;
+    font-size: 10px;
+}
+

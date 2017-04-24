@@ -1,0 +1,11 @@
+.text-notification{
+    font-size: 14px;
+    color: #000000;
+}
+
+.notification-box{
+    height: 400px;
+    width: 500px;
+    color: #727272;
+    background-color: #00b3ee;
+}
