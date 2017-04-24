@@ -295,7 +295,7 @@ class PdoCommentRepository implements PdoRepository
         foreach ($queryResult as $comment) {
 
             array_push(
-                $images,
+                $comments,
                     new Comment(
                         $comment['content'],
                         $comment['fk_user'],

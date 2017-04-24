@@ -39,6 +39,7 @@ $app->get('/profile', 'pwgram\\Controller\\RenderController::renderHome');
 $app->get('/new-comment/{id}', 'pwgram\\Controller\\CommentsController::addComment');
 $app->get('/user-comments', 'pwgram\\Controller\\RenderController::renderUserComments');
 $app->get('/edit-comment/{idComment}/{idImage}', 'pwgram\\Controller\\RenderController::renderEditComment');
+$app->get('/delete-comment/{idComment}/{idImage}', 'pwgram\\Controller\\CommentsController::deleteComment');
 $app->get('/edit-user-comment/form/{idComment}', 'pwgram\\Controller\\CommentsController::editComment');
 
 

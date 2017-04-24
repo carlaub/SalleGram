@@ -102,6 +102,29 @@ class CommentsController
 
     }
 
+    public function deleteComment(Application $app, Request $request, $idComment){
+
+        $userid = $this->sessionController->getSessionUserId($app);
+        if (!$userid) {
+
+            // TODO 403
+
+            return $app['twig']->render('error.twig', array(
+                'message'=>"El comentario no se ha añadido, usario no conectado."
+            ));
+        }
+
+
+        $db = Database::getInstance("pwgram");
+        $pdo = new PdoCommentRepository($db);
+
+        $pdo->remove($app, $idComment);
+
+
+        return $app -> redirect('/user-comments');
+
+    }
+
 
 
 }
