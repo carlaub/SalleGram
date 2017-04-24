@@ -174,6 +174,9 @@ class RenderController {
 
         $image = $this->getImagesUser($app, $id);
 
+        $pdo = new PdoImageRepository(Database::getInstance("pwgram"));
+        $totalUserImages    = $pdo->getTotalUserImages($app, $id);
+
         //TODO FALTA QUE LAS IMAGENES SE PUEDAN FILTRAR
 
         return $app['twig']->render('user-profile.twig', array(
@@ -185,7 +188,7 @@ class RenderController {
             'date'=> $user->getBirthday(),
             'profileName'=> $user->getUsername(),
             'comments'=>$this->getUserComments($app, $id),
-            'nImgs'=>'-1', //TODO NO SON LIKES SON NUMERO DE FOTOS PUBLICADAS
+            'nImgs'=> $totalUserImages, //TODO NO SON LIKES SON NUMERO DE FOTOS PUBLICADAS
             'images'=> $image
 
             //TODO IMAGENES DEL USUARIO
@@ -262,20 +265,26 @@ class RenderController {
 
     public function getPublicImages(Application $app) {
         $db = Database::getInstance("pwgram");
-        $pdoImage = new PdoImageRepository($db);
-        $pdoUser = new PdoUserRepository($db);
+        $pdoImage   = new PdoImageRepository($db);
+        $pdoUser    = new PdoUserRepository($db);
+        $pdoComment = new PdoCommentRepository($db);
 
         $publicImages = array();
 
         // Obtain all public images in db
         $imagesFromDB =  $pdoImage->getAll($app);
         if ($imagesFromDB == 0) return false;
+
         foreach ($imagesFromDB as $imageFromDB) {
+
             if (!$imageFromDB['private']) {
+
                 $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false, $imageFromDB['extension'],
-                    $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
+                                    $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
+
                 $userName = $pdoUser->getName($app, $imageFromDB['fk_user']);
                 $image->setUserName($userName);
+                $image->setComments($pdoComment->getImageComments($app, $image->getId()));
 
                 array_push($publicImages, $image);
             }

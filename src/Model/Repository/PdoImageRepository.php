@@ -12,6 +12,7 @@ namespace pwgram\Model\Repository;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
 use Silex\Application;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 /**
  * Class PdoImageRepository
@@ -104,20 +105,27 @@ class PdoImageRepository implements PdoRepository
      */
     public function updateLikes(Application $app, $id, $inc = 1) {
 
-        $this->db->initTransaction();
+        $app['db']->beginTransaction();
 
-        $image = $this->get($app, $id);
-        if (!$image) {              // i think this should never happen, but I am not sure
+        try {
 
-            echo "The operation could not be done, error getting the image from the database.";
-            $this->db->commitTransaction();
-            exit;
+            $image = $this->get($app, $id);
+            if (!$image) {              // i think this should never happen, but I am not sure
+
+                echo "The operation could not be done, error getting the image from the database.";
+                $app['db']->commit();
+                exit;
+            }
+
+            $image->setLikes($image->getLikes() + $inc);
+
+            $this->update($app, $image);
+            $app['db']->commit();
         }
+        catch (Exception $e) {
 
-        $image->setLikes($image->getLikes() + $inc);
-
-        $this->update($app, $image);
-        $this->db->commitTransaction();
+            $app['db']->rollBack();
+        }
     }
 
 
@@ -232,6 +240,27 @@ class PdoImageRepository implements PdoRepository
         if (!$result) return []; // Any image in DB
 
         return $this->populateImages($result);
+    }
+
+    /**
+     * @param Application $app
+     * @param int $id               The id of the user.
+     *
+     * @return int                  The total of images of an user.
+     */
+    public function getTotalUserImages(Application $app, $id) {
+
+        $query = "SELECT COUNT(*) as total FROM Image WHERE fk_user = ?";
+        $result = $app['db']->fetchAssoc(
+            $query,
+            array(
+                $id
+            )
+        );
+
+        if (!$result) return 0;
+
+        return $result['total'];
     }
 
     public function getMostVisitedImages(Application $app, $max = 5) {

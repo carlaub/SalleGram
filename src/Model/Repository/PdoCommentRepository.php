@@ -152,13 +152,13 @@ class PdoCommentRepository implements PdoRepository
 
     /**
      * @param Application $app
-     * @param $id
+     * @param $id               The id of the image.
      * @param $idUser
      * @param int $offset
      * @param int $limit
      * @return array|bool
      */
-    public function getImageCommentsFromUser(Application $app, $id,$idUser, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getImageCommentsFromUser(Application $app, $id, $idUser, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
@@ -186,26 +186,35 @@ class PdoCommentRepository implements PdoRepository
         }
         if (!$result) return false; // an error happened during the execution
 
-        $resComments = [];
+        return $this->populateComments($result);
+    }
 
-        foreach ($result as $comment) {
+    /**
+     * @param Application $app
+     * @param int $id               The id of the user.
+     * @return array|bool           false if an error happened, an array of comments if not.
+     */
+    public function getAllUserComments(Application $app, $id) {
 
-            array_push($resComments,
-                new Comment(
-                    $comment['content'],
-                    $comment['fk_user'],
-                    $comment['last_modified'],
-                    $comment['fk_image'],
-                    $comment['id']
-                )
-            );
-        }
+        $query = "SELECT * FROM `Comment` WHERE fk_user = ? ORDER BY last_modified ASC";
+        $result = $app['db']->fetchAll(
+            $query,
+            array(
+                $id,
+            )
+        );
 
-        return $resComments;
+        if (!$result) return false; // an error happened during the execution
+
+        return $this->populateComments($result);
     }
 
 
-
+    /**
+     * @param Application $app
+     * @param $id               The id of the user.
+     * @return int              The number of comments made by an user.
+     */
     public function getTotalUserComments(Application $app, $id) {
 
         $query  = "SELECT COUNT(*) as total FROM Comment WHERE fk_user = ?";
@@ -219,6 +228,7 @@ class PdoCommentRepository implements PdoRepository
 
         return $result['total'];
     }
+
 
 
     /**
@@ -275,7 +285,29 @@ class PdoCommentRepository implements PdoRepository
 
         if (!$result) return true;
 
-        return false; // User put like
+        return false; // User already put a comment
     }
+
+    private function populateComments($queryResult) {
+
+        $comments = [];
+
+        foreach ($queryResult as $comment) {
+
+            array_push(
+                $images,
+                    new Comment(
+                        $comment['content'],
+                        $comment['fk_user'],
+                        $comment['last_modified'],
+                        $comment['fk_image'],
+                        $comment['id']
+                    )
+                );
+        }
+
+        return $comments;
+    }
+
 
 }
