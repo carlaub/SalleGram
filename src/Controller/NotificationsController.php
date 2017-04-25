@@ -60,7 +60,7 @@ class NotificationsController {
      * @param $app
      * @param $id
      */
-    public function deleteNotification($app, $id) {
+    public function deleteNotification(Application $app, $id) {
         $db = Database::getInstance("pwgram");
         $pdoNotification = new PdoNotificationRepository($db);
 

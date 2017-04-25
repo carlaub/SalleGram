@@ -52,6 +52,7 @@ class PdoNotificationRepository implements PdoRepository
             $notification['fk_user_src'],
             $notification['type'],
             $notification['fk_image'],
+            $notification['created_at'],
             $notification['id']
         );
     }
@@ -97,7 +98,7 @@ class PdoNotificationRepository implements PdoRepository
                 $row->getFrom(),
                 $row->getType(),
                 $row->getWhere(),
-                $row->createdAt(),
+                $row->getCreatedAt(),
                 $row->getId()
             )
         );
@@ -105,19 +106,10 @@ class PdoNotificationRepository implements PdoRepository
 
     public function remove(Application $app, $id)
     {
-        $query = "DELETE FROM Notification WHERE id=?";
-
-        $res = $app['db']->fetchAssoc(
-            $query,
+        $app['db']->delete(PdoNotificationRepository::TABLE_NAME,
             array(
-                $id
-            )
-        );
-
-//        $app['db']->delete(PdoNotificationRepository::TABLE_NAME,
-//            array(
-//                'id' => $id
-//            ));
+                'id' => $id
+            ));
     }
 
     public function length(Application $app)

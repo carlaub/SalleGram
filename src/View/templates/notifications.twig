@@ -63,7 +63,7 @@
                                 <div class="col-md-8 notification-container">
 
                                     <h3 class="notification-title">{{ notification.imgTitle }}</h3>
-                                    {% if notification.type == 0 %}
+                                    {% if notification.type == constant('TYPE_LIKE', notification) %}
                                         {#//LIKE#}
                                         <h4 class="item-title"> Like <i class="glyphicon glyphicon-heart"></i> · <span class="notification-date">{{ notification.createdAt }}</span></h4>
                                         <p class="item-info">A <a class="notification-username" href="/user-profile/{{ notification.from }}">{{ notification.fromUsername }}</a>
@@ -77,7 +77,7 @@
                                 </div>
 
                                 <div class="col-md-1">
-                                    <a href=""><i class="glyphicon glyphicon-trash"></i></a>
+                                    <a href="/delete-notification/{{ notification.id }}"><i class="glyphicon glyphicon-trash"></i></a>
                                 </div>
                             </div>
 

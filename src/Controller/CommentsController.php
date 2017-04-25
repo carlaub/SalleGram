@@ -63,9 +63,8 @@ class CommentsController
             //Add notification
             $idAuthor = $pdoImage->getAuthor($app, $imageId);
 
-
             //Create new notification
-            $notification = new Notification($idAuthor, $userid, 1, $imageId, date('Y-m-d H:i:s'));
+            $notification = new Notification($idAuthor, $userid, Notification::TYPE_COMMENT, $imageId, date('Y-m-d H:i:s'));
             //Update  notifications
             var_dump($notification);
             $pdoNotification->add($app, $notification);

@@ -79,7 +79,7 @@ class PdoImageRepository implements PdoRepository
      */
     public function incrementVisits(Application $app, $id) {
 
-        $this->db->initTransaction();
+        $this->db->initTransaction(); // some day this will work, trust in me
 
         $image = $this->get($app, $id);
         if (!$image) {              // I think this should never happen, but I am not sure
@@ -113,7 +113,7 @@ class PdoImageRepository implements PdoRepository
             if (!$image) {              // i think this should never happen, but I am not sure
 
                 echo "The operation could not be done, error getting the image from the database.";
-                $app['db']->commit();
+                //$app['db']->commit();
                 exit;
             }
 
@@ -301,29 +301,19 @@ class PdoImageRepository implements PdoRepository
      */
     public function update(Application $app, $row)
     {
-        $query = "UPDATE `Image` SET title = ?, private = ? WHERE id = ?";
+        $query = "UPDATE `Image` SET title = ?, private = ?, likes = ?, visits = ? WHERE id = ?";
         $result = $app['db']->executeUpdate(
             $query,
             array(
                 $row->getTitle(),
                 $row->isPrivate(),
+                $row->getLikes(),
+                $row->getVisits(),
                 $row->getId()
             )
         );
     }
 
-    /**
-     * Deletes an existing image from the database.
-     *
-     * @param int $id   The id associated with the image to delete.
-     */
-    public function remove(Application $app, $id)
-    {
-        $app['db']->delete(PdoImageRepository::TABLE_NAME,
-            array(
-                'id' => $id
-            ));
-    }
 
     public function length(Application $app)
     {
@@ -370,6 +360,21 @@ class PdoImageRepository implements PdoRepository
 
         return $result['title'];
     }
+
+
+    /**
+     * Deletes an existing image from the database.
+     *
+     * @param int $id   The id associated with the image to delete.
+     */
+    public function remove(Application $app, $id)
+    {
+        $app['db']->delete(PdoImageRepository::TABLE_NAME,
+            array(
+                'id' => $id
+            ));
+    }
+
     /**
      * @param $queryResult
      * @return array

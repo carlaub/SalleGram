@@ -77,7 +77,7 @@ $app->post('/editImage/form/{idImage}', 'pwgram\\Controller\\FormsController::ed
 
 /*Notifications*/
 $app->get('/notifications', 'pwgram\\Controller\\RenderController::renderNotifications')->before($sessionControl);
-$app->get('/delete-notification/{id}','pwgram\\Controller\\NotificationController::deleteNotification')->before($sessionControl);
+$app->get('/delete-notification/{id}','pwgram\\Controller\\NotificationsController::deleteNotification')->before($sessionControl);
 
 
 

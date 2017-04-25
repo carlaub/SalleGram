@@ -51,7 +51,7 @@ class LikesController {
 
             $idAuthor = $pdoImage->getAuthor($app, $id);
             //Create new notification
-            $notification = new Notification($idAuthor, $idUser, 0, $id, date('Y-m-d H:i:s'));
+            $notification = new Notification($idAuthor, $idUser, Notification::TYPE_LIKE, $id, date('Y-m-d H:i:s'));
             //Update  notifications
             $pdoNotification->add($app, $notification);
 
