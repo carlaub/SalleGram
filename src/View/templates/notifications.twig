@@ -59,7 +59,9 @@
                                     <img src="{{ asset('/upload_img/'~notification.where~'_400x300.jpg','img') }}"
                                          height="50" width="60">
                                 </div>
-                                <div class="col-md-8">
+
+                                <div class="col-md-8 notification-container">
+
                                     <h3 class="notification-title">{{ notification.imgTitle }}</h3>
                                     {% if notification.type == 0 %}
                                         {#//LIKE#}
@@ -72,6 +74,10 @@
                                         <p class="item-info"><a class="notification-username" href="/user-profile/{{ notification.from }}">{{ notification.fromUsername }}</a>
                                             ha comentado tu publicación.</p>
                                     {% endif %}
+                                </div>
+
+                                <div class="col-md-1">
+                                    <a href=""><i class="glyphicon glyphicon-trash"></i></a>
                                 </div>
                             </div>
 

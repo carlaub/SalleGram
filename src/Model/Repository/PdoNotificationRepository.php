@@ -105,10 +105,19 @@ class PdoNotificationRepository implements PdoRepository
 
     public function remove(Application $app, $id)
     {
-        $app['db']->delete(PdoNotificationRepository::TABLE_NAME,
+        $query = "DELETE FROM Notification WHERE id=?";
+
+        $res = $app['db']->fetchAssoc(
+            $query,
             array(
-                'id' => $id
-            ));
+                $id
+            )
+        );
+
+//        $app['db']->delete(PdoNotificationRepository::TABLE_NAME,
+//            array(
+//                'id' => $id
+//            ));
     }
 
     public function length(Application $app)

@@ -55,5 +55,18 @@ class NotificationsController {
         return $notifications;
     }
 
+    /**
+     * Delete notification
+     * @param $app
+     * @param $id
+     */
+    public function deleteNotification($app, $id) {
+        $db = Database::getInstance("pwgram");
+        $pdoNotification = new PdoNotificationRepository($db);
+
+        $pdoNotification->remove($app, $id);
+
+        return $app->redirect('/notifications');
+    }
 
 }

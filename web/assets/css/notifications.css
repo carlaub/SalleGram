@@ -93,6 +93,10 @@
     color: #727272;
 
 }
+
+.notification-container {
+    margin: 10px;
+}
 img {
     vertical-align: middle;
 }
