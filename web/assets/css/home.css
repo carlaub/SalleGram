@@ -172,7 +172,19 @@ textarea {
 }
 
 .button-like {
+    margin-top: 15px;
     color: #ff231e;
+    font-size: 22px;
+}
+.button-like:focus {
+    margin-top: 15px;
+    color: #b21620;
+    font-size: 22px;
+}
+
+.button-like:hover {
+    margin-top: 15px;
+    color: #c41923;
     font-size: 22px;
 }
 
