@@ -2,10 +2,10 @@
 
 namespace pwgram\Controller;
 
-use pwgram\Model\AppFormatDate;
 use Silex\Application;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
+use pwgram\Model\AppFormatDate;
 use pwgram\Model\Repository\PdoCommentRepository;
 use pwgram\Model\Repository\PdoImageLikesRepository;
 use pwgram\Model\Repository\PdoImageRepository;
@@ -32,6 +32,8 @@ class RenderController {
         $commentsPdo = new PdoCommentRepository($db);
         $userPdo     = new PdoUserRepository($db);
         $imagesPdo   = new PdoImageRepository($db);
+        $likesPdo   = new PdoImageLikesRepository($db);
+
 
         //Images array that will be displayed on the main page
         $publicImages = $imagesPdo->getAllPublicImages($app);
@@ -49,9 +51,12 @@ class RenderController {
 
             $userName = $userPdo->getName($app, $image->getFkUser());
             $image->setUserName($userName);
+            $image->setLiked(!($likesPdo->likevalid($app, $image->getId(), $this->sessionController->getSessionUserId($app))));
 
             array_push($imagesDatesFormatted, AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt())));
         }
+
+
 
         $image = $this->getProfileImage($app,$this->sessionController->getSessionUserId($app));
 

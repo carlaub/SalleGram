@@ -96,6 +96,16 @@ class PdoImageLikesRepository implements PdoRepository
                 'id' => $id
             ));
     }
+    public function removeLike(Application $app, $idImage, $idUser)
+    {
+        $app['db']->delete(PdoImageLikesRepository::TABLE_NAME,
+            array(
+                'fk_image' => $idImage,
+                'fk_user' => $idUser
+
+            ));
+    }
+
 
     public function length(Application $app)
     {

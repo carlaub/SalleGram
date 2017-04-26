@@ -148,7 +148,14 @@
                                     <button class="btn btn-info" type="submit">Publicar comentario</button>
                                 </form>
                                 <p>
-                                    <a href="/like/{{ image.id }}" class="btn glyphicon glyphicon-heart-empty" role="button"></a>
+                                    {% if image.liked == false %}
+                                        <a href="/like/{{ image.id }}" class="btn glyphicon glyphicon-heart-empty button-like" role="button"></a>
+                                    {% endif %}
+                                    {% if image.liked == true %}
+                                        <a href="/like/{{ image.id }}" class="btn glyphicon glyphicon-heart button-like " role="button"></a>
+                                    {% endif %}
+
+
                                 </p>
                                 <p>{{ dates[i_date] }}</p>
                                 {% set i_date = i_date + 1 %}

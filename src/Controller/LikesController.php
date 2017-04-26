@@ -56,11 +56,18 @@ class LikesController {
             $pdoNotification->add($app, $notification);
 
             return $app->redirect('/');
+        }else{
+
+
+            $pdoImageLike->removeLike($app, $id, $this->sessionController->getSessionUserId($app));
+            $pdoImage->updateLikes($app, $id, -1);
+
+            return $app->redirect('/');
         }
 
-        return $app['twig']->render('error.twig', array(
-            'message'=>"Ya le has dado like a esta foto"
-        ));
+//        return $app['twig']->render('error.twig', array(
+//            'message'=>"Ya le has dado like a esta foto"
+//        ));
 
     }
 

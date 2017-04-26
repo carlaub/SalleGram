@@ -45,6 +45,12 @@ class Image
      */
     private $fkUser;
 
+    /**
+     * @var bool if user session likes the photo
+     */
+    private $liked;
+
+
 
     public function __construct($title, $createdAt, $fkUser, $private, $extension = ".jpg", $visits = 0, $likes = 0, $id = -1)
     {
@@ -57,6 +63,7 @@ class Image
         $this->extension    = $extension;
         $this->likes        = $likes;
         $this->comments     = [];
+        //$this->liked        = false;
 
     }
 
@@ -236,6 +243,15 @@ class Image
 
     public function setExtension($extension) {
         $this->extension = $extension;
+    }
+
+    public function getLiked() {
+        return $this->liked;
+
+    }
+
+    public function setLiked(bool $liked) {
+        $this->liked = $liked;
     }
 
 
