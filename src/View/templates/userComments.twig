@@ -69,7 +69,7 @@
                                         {% for comment in image.comments %}
                                             {% if comment.fkUser == idUser %}
                                                 <span class="text"> {{ comment.content }} </span>
-                                                <a href="/edit-comment/{{ comment.id }}/{{ image.id }}" class="btn glyphicon glyphicon-pencil" role="button"></a>
+                                                <a href="/edit-comment/{{ comment.id }}/{{ image.id }}" class="btn  glyphicon glyphicon-pencil" role="button"></a>
                                                 <a href="/delete-comment/{{ comment.id }}/{{ image.id }}" class="btn glyphicon glyphicon-trash" role="button"></a>
 
                                             {% endif %}

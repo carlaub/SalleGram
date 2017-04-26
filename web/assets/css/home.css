@@ -186,14 +186,17 @@ textarea {
     margin-left: 60px;
 }
 
-h2{
-    color: #05a88e;
+h2{  color: #05a88e;  }
 
+h4{  color: #05a88e;  }
+
+
+.btn {
+    color: #05a88e;
 }
 
-h4{
-    color: #05a88e;
-
+.btn:hover{
+    color: #014835;
 }
 
 .btn-info {
