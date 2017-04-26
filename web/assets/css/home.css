@@ -186,3 +186,78 @@ textarea {
     margin-left: 60px;
 }
 
+h2{
+    color: #05a88e;
+
+}
+
+h4{
+    color: #05a88e;
+
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #05a88e;
+    border-color: #05876e;
+}
+.btn-info:focus,
+
+.btn-info.focus {
+    color: #fff;
+    background-color: #014835;
+    border-color: #033424;
+}
+.btn-info:hover {
+    color: #fff;
+    background-color: #017053;
+    border-color: #04422e;
+}
+
+.btn-info:active,
+.btn-info.active,
+.open > .dropdown-toggle.btn-info {
+    color: #fff;
+    background-color: #014835;
+    border-color: #033424;
+}
+
+.btn-info:active:hover,
+.btn-info.active:hover,
+.open > .dropdown-toggle.btn-info:hover,
+.btn-info:active:focus,
+.btn-info.active:focus,
+.open > .dropdown-toggle.btn-info:focus,
+.btn-info:active.focus,
+.btn-info.active.focus,
+.open > .dropdown-toggle.btn-info.focus {
+    color: #fff;
+    background-color: #014835;
+    border-color: #033424;
+}
+
+.btn-info:active,
+.btn-info.active,
+.open > .dropdown-toggle.btn-info {
+    background-image: none;
+}
+
+.btn-info.disabled:hover,
+.btn-info[disabled]:hover,
+fieldset[disabled] .btn-info:hover,
+.btn-info.disabled:focus,
+.btn-info[disabled]:focus,
+fieldset[disabled] .btn-info:focus,
+.btn-info.disabled.focus,
+.btn-info[disabled].focus,
+fieldset[disabled] .btn-info.focus {
+    background-color: #014835;
+    border-color: #033424;
+}
+.btn-info .badge {
+    color: #fff;
+    background-color: #014835;
+}
+
+
+
