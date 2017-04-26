@@ -49,7 +49,9 @@
             {#No logeado#}
             {% if logged == false %}
 
+                {% set i_date = 0 %}
                 {% for image in images %}
+
                     <div class="col-sm-6 col-md-4">
                         <div class="thumbnail">
                             <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
@@ -79,7 +81,7 @@
                                     {% set i = 0 %}
 
                                     {% for comment in image.comments %}
-                                        {% set i =i+1 %}
+                                        {% set i = i + 1 %}
                                         {%  if i < 4 %}
                                             <p class="limit"> {{  comment.content }} </p>
                                         {% endif %}
@@ -87,7 +89,8 @@
                                     {% endfor %}
                                 </div>
 
-                                <p>{{ image.createdAt}}</p>
+                                <p>{{ dates[i_date] }}</p>
+                                {% set i_date = i_date + 1 %}
 
                             </div>
                         </div>
@@ -99,6 +102,7 @@
             {#logeado#}
             {% if logged == true %}
 
+                {% set i_date = 0 %}
                 {% for image in images %}
                     <div class="col-sm-6 col-md-4">
                         <div class="thumbnail  ">
@@ -146,7 +150,8 @@
                                 <p>
                                     <a href="/like/{{ image.id }}" class="btn glyphicon glyphicon-heart-empty" role="button"></a>
                                 </p>
-                                <p>{{ image.createdAt}}</p>
+                                <p>{{ dates[i_date] }}</p>
+                                {% set i_date = i_date + 1 %}
 
                             </div>
                         </div>

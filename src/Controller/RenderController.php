@@ -2,6 +2,7 @@
 
 namespace pwgram\Controller;
 
+use pwgram\Model\AppFormatDate;
 use Silex\Application;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
@@ -36,6 +37,8 @@ class RenderController {
         $publicImages = $imagesPdo->getAllPublicImages($app);
         $publicImages = !$publicImages? [] : $publicImages; // if false, return an empty array, if not return the public images
 
+        $imagesDatesFormatted   = [];
+
         // let's add all the comments for each image
         foreach ($publicImages as $image) {
 
@@ -46,6 +49,8 @@ class RenderController {
 
             $userName = $userPdo->getName($app, $image->getFkUser());
             $image->setUserName($userName);
+
+            array_push($imagesDatesFormatted, AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt())));
         }
 
         $image = $this->getProfileImage($app,$this->sessionController->getSessionUserId($app));
@@ -57,7 +62,8 @@ class RenderController {
                 'name'=> $this->sessionController->getSessionName($app),
                 'img'=> $image,
                 'logged'=> $this->sessionController->haveSession($app),
-                'images'=>$publicImages
+                'images'=>$publicImages,
+                'dates' => $imagesDatesFormatted
             ));
         } else {
             return $app['twig']->render('homeWelcome.twig', array(
@@ -65,8 +71,9 @@ class RenderController {
                 'name'=> $this->sessionController->getSessionName($app),
                 'img'=> $image,
                 'logged'=> $this->sessionController->haveSession($app),
-                'p'=> 'Sube fotos y compartelas con tus amigos ',
-                'images'=>$publicImages
+                'p'=> 'Sube fotos y compártelas con tus amigos ',
+                'images'=>$publicImages,
+                'dates' => $imagesDatesFormatted
             ));
         }
 
@@ -150,6 +157,7 @@ class RenderController {
 
         $profileImage = $this->getProfileImage($app, $idUser);
 
+
         //Image not found
         if (!$image) {
             return $app['twig']->render('error.twig',array(
@@ -157,13 +165,16 @@ class RenderController {
             ));
         }
 
+        $dateFormatted = AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt()));
+
         //Image OK
         return $app['twig']->render('image-view.twig', array(
             'app'=> ['name' => $app['app.name']],
             'image'=>$image,
             'name'=> $user->getName($app, $idUser),
             'profileImage'=> $profileImage,
-            'logged'=> $idUser
+            'logged'=> $idUser,
+            'date' => $dateFormatted
         ));
     }
 

@@ -45,4 +45,35 @@ class AppFormatDate
         return $date2->getTimestamp() - $date1->getTimestamp();
     }
 
+    public static function timeFromNowMessage(DateTime $date) {
+        $msg = "";
+
+        $diff = $date->diff(new DateTime());
+
+        if ($diff->d >= 1) {    // more than a day
+
+            if ($diff->h == 0)
+                $msg = "Publicado hace " . $diff->d . " días.";
+
+            else if ($diff->h == 1)
+                $msg = "Publicado hace " . $diff->d . " días y " . $diff->h . " hora.";
+
+            else $msg = "Publicado hace " . $diff->d . " días y " . $diff->h . " horas.";
+        }
+
+        else if ($diff->h > 0)
+
+            $msg = "Publicado hace ". $diff->h . " horas y " . $diff->m . " minutos.";
+
+        else if ($diff->m > 0) $msg = "Publicado ace ". $diff->m . " minutos y ". $diff->s . " segundos.";
+
+        else if ($diff->s > 0)
+
+            if ($diff->s == 1) $msg = "Publicado hace tan solo ". $diff->s ." segundos.";
+            else $msg = "Publicado hace tan solo ". $diff->s ." segundos.";
+
+        else $msg = "Publicado ahora mismo";
+
+        return $msg;
+    }
 }
