@@ -5,6 +5,25 @@
 
     <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
+            <li><a href="/notifications"><span class="glyphicon glyphicon-bell" ></span> </a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <strong>Opciones</strong>
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/upload-image">Añadir imagen</a></li>
+                    <li><a href="/user-images">Imágenes subidas</a></li>
+                    <li><a href="/user-comments">Comentarios del usuario</a></li>
+                    <li><a href="/logout">Cerrar sesion</a></li>
+                </ul>
+            </li>
+            <li><a href="/edit-profile" class="dropdown-toggle" >
+                    {#<span class="glyphicon glyphicon-user"></span> #}
+                    <img class="img-circle" src="{{ asset('/profile_img/'~profileImage~'.jpg','img') }}" height="25" width="25" >
+                    <strong> {{ name }}</strong>
+                </a>
+            </li>
         </ul>
     </div>
 

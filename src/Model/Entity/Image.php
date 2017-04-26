@@ -63,7 +63,6 @@ class Image
         $this->extension    = $extension;
         $this->likes        = $likes;
         $this->comments     = [];
-        //$this->liked        = false;
 
     }
 

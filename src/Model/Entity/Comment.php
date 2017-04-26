@@ -21,6 +21,9 @@ class Comment {
 
     private $fkImage;
 
+    private $userName;
+
+
 
     public function __construct($content, $fkUser, $lastModified, $fkImage, $id = -1) {
 
@@ -99,6 +102,15 @@ class Comment {
      */
     public function setFkImage($fkImage) {
         $this->fkImage = $fkImage;
+    }
+
+
+    public function getUserName() {
+        return $this->userName;
+    }
+
+    public function setUserName($userName) {
+        $this->userName = $userName;
     }
 
 

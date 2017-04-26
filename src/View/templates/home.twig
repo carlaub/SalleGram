@@ -83,15 +83,18 @@
                                     {% for comment in image.comments %}
                                         {% set i = i + 1 %}
                                         {%  if i < 4 %}
-                                            <p class="limit"> {{  comment.content }} </p>
+                                            <p class="limit">
+                                                <strong class="name-image">{{  comment.userName }} :</strong>
+                                                <small> {{  comment.content }}</small>
+                                            </p>
                                         {% endif %}
 
                                     {% endfor %}
                                 </div>
-
-                                <p>{{ dates[i_date] }}</p>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <p class="card-text"><small class="text-muted">{{ dates[i_date] }}</small></p>
                                 {% set i_date = i_date + 1 %}
-
                             </div>
                         </div>
                     </div>
@@ -137,7 +140,10 @@
                                     {% for comment in image.comments %}
                                         {% set i =i+1 %}
                                         {%  if i < 4 %}
-                                            <p class="limit"> {{  comment.content }} </p>
+                                            <p class="limit">
+                                                <strong class="name-image">{{  comment.userName }} :</strong>
+                                                <small> {{  comment.content }}</small>
+                                            </p>
                                         {% endif %}
 
                                     {% endfor %}
@@ -157,9 +163,11 @@
 
 
                                 </p>
-                                <p>{{ dates[i_date] }}</p>
-                                {% set i_date = i_date + 1 %}
 
+                            </div>
+                            <div class="card-footer text-muted">
+                                <p class="card-text"><small class="text-muted">{{ dates[i_date] }}</small></p>
+                                {% set i_date = i_date + 1 %}
                             </div>
                         </div>
                     </div>

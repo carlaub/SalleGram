@@ -26,6 +26,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="/upload-image">Añadir imagen</a></li>
                         <li><a href="/user-images">Imágenes subidas</a></li>
+                        <li><a href="/user-comments">Comentarios del usuario</a></li>
                         <li><a href="/logout">Cerrar sesion</a></li>
                     </ul>
                 </li>
@@ -75,12 +76,15 @@
                             </p>
 
                             {% for comment in image.comments %}
-
-                                <p> {{ comment.content }} </p>
-
+                                <p class="comment">
+                                    <strong class="name-image">{{  comment.userName }} :</strong>
+                                    <small> {{  comment.content }}</small>
+                                </p>
                             {% endfor %}
-                            <p>{{ date }}</p>
 
+                        </div>
+                        <div class="card-footer text-muted">
+                            <p class="card-text"><small class="text-muted">{{ date }}</small></p>
                         </div>
                     </div>
                 </div>
@@ -119,18 +123,27 @@
 
                             {% for comment in image.comments %}
 
-                                <p> {{ comment.content }} </p>
-
+                                <p class="comment">
+                                    <strong class="name-image">{{  comment.userName }} :</strong>
+                                    <small> {{  comment.content }}</small>
+                                </p>
                             {% endfor %}
                             <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
                                     <textarea class="form-control textarea-comment" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>
                                     <button class="btn btn-info" type="submit">Publicar comentario</button>
                             </form>
                             <p>
-                                <a href="/like/{{ image.id }}" class="btn glyphicon glyphicon-heart-empty" role="button"></a>
+                                {% if image.liked == false %}
+                                    <a href="/like/{{ image.id }}" class="btn glyphicon glyphicon-heart-empty button-like" role="button"></a>
+                                {% endif %}
+                                {% if image.liked == true %}
+                                    <a href="/like/{{ image.id }}" class="btn glyphicon glyphicon-heart button-like " role="button"></a>
+                                {% endif %}
                             </p>
-                            <p>{{ date }}</p>
 
+                        </div>
+                        <div class="card-footer text-muted">
+                            <p class="card-text"><small class="text-muted">{{ date }}</small></p>
                         </div>
                     </div>
                 </div>

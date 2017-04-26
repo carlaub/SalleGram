@@ -31,7 +31,15 @@ class ImageViewController {
         $image->setUserName($pdoUser->getName($app, $image->getFkUser()));
         //Set Comment
         $comments = $pdoComents->getImageComments($app, $idImage);
-        if ($comments) $image->setComments($comments);
+        if ($comments){
+            //Set the name of username of the comment
+            foreach ($comments as $commentUser) {
+
+                $commentUser->setUserName($pdoUser->getName($app, $commentUser->getFkUser()));
+            }
+            $image->setComments($comments);
+        }
+
 
         //Increment image visits
         $this->incrementVisits($app, $idImage, $pdoImage);

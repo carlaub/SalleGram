@@ -45,8 +45,15 @@ class RenderController {
         foreach ($publicImages as $image) {
 
             $comments = $commentsPdo->getImageComments($app, $image->getId());
-
+            //Set the name of username of the comment
             if (!$comments) $comments = [];
+            else{
+                foreach ($comments as $commentUser) {
+
+                    $commentUser->setUserName($userPdo->getName($app, $commentUser->getFkUser()));
+                }
+            }
+
             $image->setComments($comments);
 
             $userName = $userPdo->getName($app, $image->getFkUser());
@@ -127,21 +134,19 @@ class RenderController {
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function renderUploadImage(Application $app) {
-       /* if ($app['session']->get('user') === null){
-            //TODO 403 code
-           return $this->renderHome($app);
-        }
+
+        $idUser = $this->sessionController->getSessionUserId($app);
+        $profileImage = $this->getProfileImage($app, $idUser);
+
+
         return $app['twig']->render('uploadImage.twig', array(
-            'app'=> ['name' => $app['app.name']],
-            'logged'=>$this->haveSession($app),
-        ));*/
-       if ($this->sessionController->correctSession($app)){
-           return $app['twig']->render('uploadImage.twig', array(
-               'app'=> ['name' => $app['app.name']],
-               'logged'=>$this->sessionController->haveSession($app),
-           ));
-       }
-       return $app -> redirect('/login');
+           'app'=> ['name' => $app['app.name']],
+           'logged'=>$this->sessionController->haveSession($app),
+            'profileImage'=> $profileImage,
+            'name'=> $this->sessionController->getSessionName($app)
+
+        ));
+
     }
 
     /**
@@ -152,6 +157,8 @@ class RenderController {
     public function renderImageView(Application $app, $id) {
         $imageViewController = new ImageViewController();
         $db = Database::getInstance("pwgram");
+        $likesPdo   = new PdoImageLikesRepository($db);
+
         $idUser = $this->sessionController->getSessionUserId($app);
 
 
@@ -159,6 +166,8 @@ class RenderController {
         $user->get($app, $idUser);
 
         $image = $imageViewController->prepareImage($app, $id);
+        $image->setLiked(!($likesPdo->likevalid($app, $image->getId(), $this->sessionController->getSessionUserId($app))));
+
 
         $profileImage = $this->getProfileImage($app, $idUser);
 
