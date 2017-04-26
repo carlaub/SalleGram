@@ -2,6 +2,7 @@
 
 ini_set('display_errors', 1);
 
+
 require_once __DIR__.'/../vendor/autoload.php';
 
 $app = require __DIR__.'/../app/app.php';
@@ -14,12 +15,17 @@ require __DIR__.'/../app/config/routes.php';
 use pwgram\Model\Entity\User;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Repository\PdoUserRepository;
+use pwgram\Model\Repository\PdoNotificationRepository;
+use pwgram\Model\Entity\Notification;
+use pwgram\Model\AppFormatDate;
+use pwgram\Model\Repository\PdoImageRepository;
+use pwgram\Model\Repository\PdoCommentRepository;
+
 
 date_default_timezone_set('Europe/Madrid');
-/*$db = Database::getInstance("pwgram");
+$db = Database::getInstance("pwgram");
 
-$pdo = new PdoUserRepository($db);*/
-
+$pdo = new PdoUserRepository($db);
 
 $app->run();
 
