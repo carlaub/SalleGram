@@ -67,7 +67,6 @@ class RenderController {
 
         $image = $this->getProfileImage($app,$this->sessionController->getSessionUserId($app));
 
-
         if ($publicImages != null) {
             return $app['twig']->render('home.twig', array(
                 'app'=> ['name' => $app['app.name']],
@@ -96,7 +95,7 @@ class RenderController {
         return $app['twig']->render('login.twig', array(
             'app'=> ['name' => $app['app.name']],
             'logged'=>$this->sessionController->haveSession($app),
-            'data'=>$TotaInfoDeFotos //SERA UN ARRAY
+            'data'=>$TotaInfoDeFotos
         ));
 
     }
@@ -106,17 +105,25 @@ class RenderController {
         return $app['twig']->render('register.twig', array(
             'app'=> ['name' => $app['app.name']],
             'logged'=>false,
-            'data'=>$TotaInfoDeFotos //SERA UN ARRAY
+            'data'=>$TotaInfoDeFotos
         ));
     }
 
     public function renderEditProfile(Application $app) {
         $TotaInfoDeFotos = 0;
+        $db = Database::getInstance("pwgram");
+        $userPdo     = new PdoUserRepository($db);
+        $user = $userPdo->get($app, $this->sessionController->getSessionUserId($app));
 
         return $app['twig']->render('edit_profile.twig', array(
             'app'=> ['name' => $app['app.name']],
+            'name'=> $this->sessionController->getSessionName($app),
+            'birthday' => $user->getBirthday(),
+            'idUser'=> $this->sessionController->getSessionUserId($app),
+            'haveProfileImage'=> $user->getProfileImage(),
+            'img'=> '/profile_img/'.$this->sessionController->getSessionUserId($app).'.jpg',
             'logged'=>false,
-            'data'=>$TotaInfoDeFotos //SERA UN ARRAY
+            'data'=>$TotaInfoDeFotos
         ));
 
     }

@@ -62,13 +62,14 @@ class FormsController {
      */
     public function registerUser(Application $app, Request $request) {
 
+        //TODO if not put anything in image or passwd dont change it!
+
         $db = Database::getInstance("pwgram");
 
         $validator = new Validator();
         $imageProcessing = new ImageProcessing();
 
         $newUser = $this->getUserFromForm($request);
-
         $confirmPassword = $request->request->get('confirm-password');
         $profileImage = $request->files->get('image-path');
 
@@ -166,19 +167,16 @@ class FormsController {
 
         $db = Database::getInstance("pwgram");
         $sessionController = new SessionController();
+        $pdo = new PdoUserRepository($db);
+
 
 
         $userUpdate = $this->getUserFromForm($request);
         $confirmPassword = $request->request->get('confirm-password');
         $profileImage = $request->files->get('image-path');
 
-        $userName = $this->sessionController->getSessionName($app);
 
-        $pdo = new PdoUserRepository($db);
-
-        $currentUserName = $pdo->getUsername($app, $userName);
-        $userId = $pdo->getId($app, $currentUserName);
-
+        $userId = $this->sessionController->getSessionUserId($app);
         $currentUser = $pdo->get($app, $userId);
 
         $userUpdate->setEmail($currentUser->getEmail()); // data from db that does not change
@@ -199,11 +197,13 @@ class FormsController {
                     return $app['twig']->render('error.twig',array(
                         'message'=>"No se han podido aplicar los cambios en el perfil. Imagen no válida.",
                     ));
+                }else{
+
                 }
             }
 
             //updates the info of the session
-            $sessionController->setSession($app,$userUpdate->getUsername(), $userUpdate->getPassword());
+            $sessionController->setSession($app,$userUpdate->getId());
             // updates the database user row with the new data
             $pdo->update($app, $userUpdate);
 

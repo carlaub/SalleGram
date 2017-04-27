@@ -1,48 +1,87 @@
-{% extends "register.twig" %}
+{% extends "base.twig" %}
 
 {% block navbar %}
 
     <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="/">Home</a></li>
+            <li><a href="/notifications"><span class="glyphicon glyphicon-bell" ></span> </a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <strong>Opciones</strong>
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/upload-image">Añadir imagen</a></li>
+                    <li><a href="/user-images">Imágenes subidas</a></li>
+                    <li><a href="/user-comments">Comentarios del usuario</a></li>
+                    <li><a href="/logout">Cerrar sesion</a></li>
+                </ul>
+            </li>
         </ul>
     </div>
-
 {% endblock navbar %}
 
 
 {% block content %}
 
     <div class="container">
-        <h1 class="text-muted">Edita tu perfil</h1>
+        <h1 class="text-muted">Registro</h1>
         <hr>
         <div class="row">
 
             <div class="col-md-9 personal-info">
 
-
                 <form class="form-horizontal" enctype="multipart/form-data" id="editUserForm" action="/edit_profile/form" method="POST">
 
-                    {#
-                        All the fields are the same of register.twig except email, which is not editable.
-                       edit_profile extends register.twig which extends base.twig
-                    #}
-                    {% block username_field %}
+                        <div class="form-group">
+                            <label class="col-lg-4 control-label text-muted">Username</label>
+                            <div class="col-lg-8">
+                                <input class="form-control " type="text" placeholder="Username" name="username" id="username" value="{{ name }}">
+                            </div>
+                        </div>
 
-                        {{ parent() }}
 
-                    {% endblock username_field %}
+                        <div class="form-group">
+                            <label class="col-lg-4 control-label text-muted">Fecha nacimiento:</label>
+                            <div class="col-lg-8">
+                                <input class="form-control" type="date" placeholder="dd/mm/yyyy" name="date" id="date" value="{{ birthday }}">
+                            </div>
+                        </div>
 
-                    {% block editable_fields %}
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-muted">Contraseña:</label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="password" placeholder="******" name="password" id="password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-muted">Confirmar contraseña:</label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="password" placeholder="******" name="confirm-password" id="confirm-password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-muted">Imagen perfil:</label>
+                            <div class="col-md-8">
+                                <input class="form-control" name="image-path" id="image-path" type="file" onchange="readURL(this);">
+                                {% if  haveProfileImage == 0%}
+                                    {#{% set img  %}#}
+                                    <img id="img-preview" height="100" width="100" src="{{ asset(img, 'img') }}" alt="your image">
 
-                        {{ parent() }}
+                                {% endif  %}
 
-                    {% endblock editable_fields %}
+                                {% if haveProfileImage == 1 %}
+                                    <img id="img-preview" height="100" width="100" src="{{ asset(img, 'img') }}" alt="your image">
+
+                                {% endif  %}
+
+                            </div>
+                        </div>
 
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted"></label>
                         <div class="col-md-8">
-                            <button type="submit" class="btn our-btn">Actualizar</button>
+                            <button type="submit" class="btn btn-info">Registrar</button>
                         </div>
                     </div>
                 </form>
@@ -55,6 +94,8 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>
+    <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
     <script type="text/javascript" src="{{ asset('edit_profile.js', 'js') }}"></script>
 
 {% endblock javascripts %}
