@@ -188,17 +188,18 @@ class FormsController {
 
             //Encrypt user password before insert in database
             $userUpdate->setPassword(crypt($userUpdate->getPassword(), '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
-
             //Image not null
             if($profileImage != null) {
 
                 if (!$this->checkUserImage($userUpdate, $validator, $profileImage)) {
-
                     return $app['twig']->render('error.twig',array(
                         'message'=>"No se han podido aplicar los cambios en el perfil. Imagen no válida.",
                     ));
-                }else{
-
+                } else {
+                    // Delete previous Image
+                    unlink('../web/assets/img/profile_img/'. $currentUser->getId().'.jpg');
+                    $imageProcessing = new ImageProcessing();
+                    $imageProcessing->saveProfileImage(strval($currentUser->getId()), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
                 }
             }
 
@@ -305,8 +306,6 @@ class FormsController {
 
 
         }else  return $app -> redirect('/login');
-
-
 
     }
 
