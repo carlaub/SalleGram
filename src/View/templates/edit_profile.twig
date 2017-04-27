@@ -65,13 +65,13 @@
                             <div class="col-md-8">
                                 <input class="form-control" name="image-path" id="image-path" type="file" onchange="readURL(this);">
                                 {% if  haveProfileImage == 0%}
-                                    {#{% set img  %}#}
-                                    <img id="img-preview" height="100" width="100" src="{{ asset(img, 'img') }}" alt="your image">
+                                    {% set img = '/profile_img/img_profile_default.jpg'  %}
+                                    <img class="img-preview" id="img-preview" height="100" width="100" src="{{ asset(img, 'img') }}" alt="your image">
 
                                 {% endif  %}
 
-                                {% if haveProfileImage == 1 %}
-                                    <img id="img-preview" height="100" width="100" src="{{ asset(img, 'img') }}" alt="your image">
+                                {% if haveProfileImage != 0  %}
+                                    <img class="img-preview" id="img-preview" height="100" width="100" src="{{ asset(img, 'img') }}" alt="your image">
 
                                 {% endif  %}
 

@@ -145,7 +145,7 @@ textarea {
 }
 
 .limit{
-    width : 400px;
+    width : 350px;
     text-decoration: none;
     text-overflow: ellipsis;
     display: block;
@@ -272,6 +272,10 @@ fieldset[disabled] .btn-info.focus {
 .btn-info .badge {
     color: #fff;
     background-color: #014835;
+}
+
+.img-preview{
+    margin: 15px;
 }
 
 
