@@ -125,7 +125,6 @@ class RenderController {
             'logged'=>false,
             'data'=>$TotaInfoDeFotos
         ));
-
     }
 
 
