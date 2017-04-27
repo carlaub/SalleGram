@@ -5,9 +5,13 @@ namespace pwgram\Controller;
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
+use pwgram\Model\Entity\Comment;
 use pwgram\Model\Entity\User;
+use pwgram\Model\Repository\PdoImageLikesRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
+use pwgram\Model\Repository\PdoCommentRepository;
+
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -278,7 +282,23 @@ class FormsController {
             $db = Database::getInstance("pwgram");
 
             $pdoImage = new PdoImageRepository($db);
+            $pdoComment = new PdoCommentRepository($db);
+            $pdoLike = new PdoImageLikesRepository($db);
+
+
+            //delete image commments
+            $comments = $pdoComment->getImageComments($app, $idImage);
+            if($comments != null){
+                foreach ($comments as $commentUser) {
+                    $pdoComment->remove($app, $commentUser->getId());
+                }
+            }
+
+            //delete image likes
+            $pdoLike->removeImageLikes($app, $idImage);
+
             $pdoImage->remove($app, $idImage);
+
 
             return $app -> redirect('/user-images');
         }else return $app -> redirect('/login');
