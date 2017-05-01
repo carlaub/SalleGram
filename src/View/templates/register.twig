@@ -1,6 +1,8 @@
 {% extends "base.twig" %}
 
-
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
 {% block navbar %}
 
     <div class="collapse navbar-collapse" id="myNavbar">
@@ -28,16 +30,29 @@
                         <label class="col-lg-4 control-label text-muted">Username</label>
                         <div class="col-lg-8">
                             <input class="form-control " type="text" placeholder="Username" name="username" id="username">
+                            {% if errors.usernameError %}
+
+                                <p class="text-error">{{ errors.stringusernameError }}</p>
+
+                            {% endif %}
+
                         </div>
                     </div>
                     {%  endblock username_field %}
+
+
+
 
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Email: </label>
                         <div class="col-lg-8">
                             <input class="form-control" type="email" placeholder="example@mail.com" name="mail" id="mail">
+                            {% if errors.emailError %}
+                                    <p class="text-error">{{ errors.emailError }}</p>
+                            {% endif %}
                         </div>
                     </div>
+
 
                     {% block editable_fields %}
 
@@ -45,8 +60,12 @@
                         <label class="col-lg-4 control-label text-muted">Fecha nacimiento:</label>
                         <div class="col-lg-8">
                             <input class="form-control" type="date" placeholder="dd/mm/yyyy" name="date" id="date">
+                            {% if errors.dateError %}
+                                    <p class="text-error">{{ errors.stringDateError }}</p>
+                            {% endif %}
                         </div>
                     </div>
+
 
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted">Contraseña:</label>
@@ -58,17 +77,26 @@
                         <label class="col-md-4 control-label text-muted">Confirmar contraseña:</label>
                         <div class="col-md-8">
                             <input class="form-control" type="password" placeholder="******" name="confirm-password" id="confirm-password">
+                            {% if errors.passwordError %}
+                                <p class="text-error">{{ errors.stringPasswordError }}</p>
+                            {% endif %}
                         </div>
                     </div>
+
+
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted">Imagen perfil:</label>
                         <div class="col-md-8">
                             <input class="form-control" name="image-path" id="image-path" type="file" onchange="readURL(this);">
                             <img class="img-preview" id="img-preview" height="100" width="100" src="{{ asset('/profile_img/img_profile_default.jpg', 'img') }}" alt="your image">
+                            {% if errors.imageError %}
+                                    <p class="text-error">{{ erros.stringImageError }}</p>
+                            {% endif %}
                         </div>
                     </div>
 
                     {% endblock editable_fields %}
+
 
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted"></label>
@@ -85,6 +113,8 @@
 {% endblock content %}
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>
+
+    {#TODO: IMPORTANTISIMO DESCOMENTAR#}
+    {#<script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>#}
     <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
 {% endblock javascripts %}

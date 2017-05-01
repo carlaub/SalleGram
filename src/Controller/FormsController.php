@@ -77,8 +77,11 @@ class FormsController {
         $confirmPassword = $request->request->get('confirm-password');
         $profileImage = $request->files->get('image-path');
 
+       // $errors = Array();
 
-        if ($validator->validateNewUser($app, $newUser, $confirmPassword)) {
+        $errors = $validator->validateNewUser($app, $newUser, $confirmPassword);
+        //if ($validator->validateNewUser($app, $newUser, $confirmPassword)) {
+        if(!$validator->haveErrors($errors)) {
             //Image not null
             if($profileImage != null) {
                 //Image validation
@@ -89,10 +92,10 @@ class FormsController {
                 }
             }
         } else {
-
             //Data error
-            //TODO:mostrar errores del formulario des de PHP en twig
-           return $app -> redirect('/register');
+
+            $renderController = new RenderController();
+           return $renderController->renderRegistration($app, $errors);
         }
 
         //Encrypt user password before insert in database

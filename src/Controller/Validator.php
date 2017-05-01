@@ -4,6 +4,8 @@
 namespace pwgram\Controller;
 use pwgram\lib\Database\Database;
 use pwgram\Model\AppFormatDate;
+use pwgram\Model\Entity\Error;
+use pwgram\Model\Entity\FormError;
 use pwgram\Model\Entity\User;
 use pwgram\Model\Repository\PdoUserRepository;
 use \DateTime;
@@ -36,13 +38,23 @@ class Validator
      * @param $passwd2
      * @return bool
      */
-    public function validateUserEditableFields(User $user, $passwd2) {
+    public function validateUserEditableFields(User $user, $passwd2, $errors) {
 
-        if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) return false;
+
+        if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+            $errors->setEmailError(true);
+        } else {
+            $errors->setEmailError(false);
+        }
+
 
         $length = strlen($user->getUsername());
         if ($length == 0 || $length > Validator::MAX_USERNAME
-            || !preg_match('/[a-zA-Z0-9]+$/', $user->getUsername())) return false;
+            || !preg_match('/[a-zA-Z0-9]+$/', $user->getUsername())) {
+            $errors->setUsernameError(true);
+        }else {
+            $errors->setUsernameError(false);
+        }
 
         $passwdLength = strlen($user->getPassword());
         $uppercase  = preg_match('@[A-Z]@', $user->getPassword());
@@ -50,12 +62,23 @@ class Validator
         $number     = preg_match('@[0-9]@', $user->getPassword());
 
         if ($passwdLength < Validator::MIN_PASSWORD || $passwdLength > Validator::MAX_PASSWORD
-            || !$uppercase || !$lowercase || !$number)    return false;
+            || !$uppercase || !$lowercase || !$number) {
+            $errors->setPasswordError(true);
+        } else {
+            $errors->setPasswordError(false);
+        }
 
-        if ($user->getPassword() !== $passwd2)          return false;
+        if ($user->getPassword() !== $passwd2) {
+            $errors->setPasswordError(true);
+        } else {
+            $errors->setPasswordError(false);
+        }
+        if (!$this->validateDate($user->getBirthday())) {
+            $errors->setDateError(true);
+        } else{
+            $errors->setDateError(false);
 
-        if (!$this->validateDate($user->getBirthday())) return false;
-
+        }
         return true;
     }
 
@@ -67,15 +90,23 @@ class Validator
      */
     public function validateNewUser(Application $app, User $user, $passwd2) {
 
-        if (!$this->validateUserEditableFields($user, $passwd2)) return false;
+        $errors = new FormError();
+
+
+       // if (!$this->validateUserEditableFields($user, $passwd2, $errors)) return false;
+        $this->validateUserEditableFields($user, $passwd2, $errors);
+
 
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
 
 
-        if (!$pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail())) return false;
+//        if (!$pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail())) return false;
+        $pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail());
 
-        return true;
+
+        //return true;
+        return $errors;
     }
 
     /**
@@ -179,4 +210,8 @@ class Validator
         }
     }
 
+    function haveErrors($errors) {
+
+       return $errors->haveErrors();
+    }
 }

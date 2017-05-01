@@ -278,5 +278,10 @@ fieldset[disabled] .btn-info.focus {
     margin: 15px;
 }
 
+.text-error {
+    color: darkred;
+    font-size: large;
+}
+
 
 
