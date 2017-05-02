@@ -279,8 +279,8 @@ fieldset[disabled] .btn-info.focus {
 }
 
 .text-error {
-    color: darkred;
-    font-size: large;
+    color: #cc0216;
+    font-size: 12px;
 }
 
 

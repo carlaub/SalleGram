@@ -16,84 +16,125 @@
 
 {% block content %}
 
-    <div class="container">
+    {% if errors.usernameRegisteredError %}
+
+        <div class="container">
         <h1 class="text-muted">Registro</h1>
         <hr>
+
+        <div class="alert alert-danger alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+        <h4>Algo va mal...</h4>
+        <p>{{ errors.stringUsernameRegisteredError }}</p>
+
+    </div>
+    {% endif %}
         <div class="row">
 
             <div class="col-md-9 personal-info">
 
-                <form class="form-horizontal" enctype="multipart/form-data" id="registerUserForm" action="/register/form" method="POST">
+                <form class="form-horizontal" enctype="multipart/form-data" id="registerUserForm"
+                      action="/register/form" method="POST">
 
-                    {%  block username_field %}
-                    <div class="form-group">
-                        <label class="col-lg-4 control-label text-muted">Username</label>
-                        <div class="col-lg-8">
-                            <input class="form-control " type="text" placeholder="Username" name="username" id="username">
-                            {% if errors.usernameError %}
-
-                                <p class="text-error">{{ errors.stringusernameError }}</p>
-
-                            {% endif %}
-
+                    {% block username_field %}
+                        <div class="form-group">
+                            <label class="col-lg-4 control-label text-muted">Username</label>
+                            <div class="col-lg-8">
+                                {% if errors.usernameError %}
+                                    {% set class = "form-control-red" %}
+                                    {% set placeholder = "Username inválido" %}
+                                {% else %}
+                                    {% set class="form-control" %}
+                                    {% set placeholder = "Username" %}
+                                {% endif %}
+                                <input class="{{ class }}" type="text" placeholder="{{ placeholder }}" name="username"
+                                       id="username">
+                            </div>
                         </div>
-                    </div>
-                    {%  endblock username_field %}
-
-
+                    {% endblock username_field %}
 
 
                     <div class="form-group">
                         <label class="col-lg-4 control-label text-muted">Email: </label>
                         <div class="col-lg-8">
-                            <input class="form-control" type="email" placeholder="example@mail.com" name="mail" id="mail">
                             {% if errors.emailError %}
-                                    <p class="text-error">{{ errors.emailError }}</p>
+                                {% set class = "form-control-red" %}
+                                {% set placeholder = "Email inválido" %}
+                            {% else %}
+                                {% set class="form-control" %}
+                                {% set placeholder = "example@mail.com" %}
                             {% endif %}
+                            <input class="{{ class }}" type="email" placeholder="{{ placeholder }}" name="mail"
+                                   id="mail">
                         </div>
                     </div>
 
 
                     {% block editable_fields %}
 
-                    <div class="form-group">
-                        <label class="col-lg-4 control-label text-muted">Fecha nacimiento:</label>
-                        <div class="col-lg-8">
-                            <input class="form-control" type="date" placeholder="dd/mm/yyyy" name="date" id="date">
-                            {% if errors.dateError %}
-                                    <p class="text-error">{{ errors.stringDateError }}</p>
-                            {% endif %}
+                        <div class="form-group">
+                            <label class="col-lg-4 control-label text-muted">Fecha nacimiento:</label>
+                            <div class="col-lg-8">
+                                {% if errors.dateError %}
+                                    {% set class = "form-control-red" %}
+                                {% else %}
+                                    {% set class="form-control" %}
+                                    {% set placeholder = "dd/mm/yyyy" %}
+                                {% endif %}
+                                <input class="{{ class }}" type="date" placeholder="{{ placeholder }}" name="date"
+                                       id="date">
+                                {% if errors.dateError %}
+                                    <p class="text-error">Fecha inválida</p>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
 
 
-                    <div class="form-group">
-                        <label class="col-md-4 control-label text-muted">Contraseña:</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="password" placeholder="******" name="password" id="password">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-muted">Contraseña:</label>
+                            <div class="col-md-8">
+                                {% if errors.passwordError %}
+                                    {% set class = "form-control-red" %}
+                                    {% set placeholder = "Contraseña inválida" %}
+                                {% else %}
+                                    {% set class="form-control" %}
+                                    {% set placeholder = "******" %}
+                                {% endif %}
+                                <input class="{{ class }}" type="password" placeholder="{{ placeholder }}"
+                                       name="password"
+                                       id="password">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label text-muted">Confirmar contraseña:</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="password" placeholder="******" name="confirm-password" id="confirm-password">
-                            {% if errors.passwordError %}
-                                <p class="text-error">{{ errors.stringPasswordError }}</p>
-                            {% endif %}
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-muted">Confirmar contraseña:</label>
+                            <div class="col-md-8">
+                                {% if errors.confirmPasswordError %}
+                                    {% set class = "form-control-red" %}
+                                    {% set placeholder = "las contraseñas no coinciden" %}
+                                {% else %}
+                                    {% set class="form-control" %}
+                                    {% set placeholder = "******" %}
+                                {% endif %}
+                                <input class="{{ class }}" type="password" placeholder="{{ placeholder }}"
+                                       name="confirm-password"
+                                       id="confirm-password">
+                            </div>
                         </div>
-                    </div>
 
 
-                    <div class="form-group">
-                        <label class="col-md-4 control-label text-muted">Imagen perfil:</label>
-                        <div class="col-md-8">
-                            <input class="form-control" name="image-path" id="image-path" type="file" onchange="readURL(this);">
-                            <img class="img-preview" id="img-preview" height="100" width="100" src="{{ asset('/profile_img/img_profile_default.jpg', 'img') }}" alt="your image">
-                            {% if errors.imageError %}
+                        <div class="form-group">
+                            <label class="col-md-4 control-label text-muted">Imagen perfil:</label>
+                            <div class="col-md-8">
+                                <input class="form-control" name="image-path" id="image-path" type="file"
+                                       onchange="readURL(this);">
+                                <img class="img-preview" id="img-preview" height="100" width="100"
+                                     src="{{ asset('/profile_img/img_profile_default.jpg', 'img') }}" alt="your image">
+                                {% if errors.imageError %}
                                     <p class="text-error">{{ erros.stringImageError }}</p>
-                            {% endif %}
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
 
                     {% endblock editable_fields %}
 

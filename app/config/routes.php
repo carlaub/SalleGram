@@ -1,6 +1,5 @@
 <?php
 
-//use pwgram\Controller\homeController; //TODO no tenemos homeController no?
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;

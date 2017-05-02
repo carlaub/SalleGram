@@ -19,7 +19,11 @@ class FormError
 
     private $stringPasswordError = "Constraseña incorrecta.";
 
+    private $stringConfirmPasswordError = "Las contraseñas no coinciden.";
+
     private $stringImageError = "La imagen escogida no es válida";
+
+    private $stringUsernameRegisteredError = "El nombre de usuario o email ya se enceuntra registrado en PWGram!";
 
     private $usernameError = false;
 
@@ -29,7 +33,11 @@ class FormError
 
     private $passwordError = false;
 
+    private $confirmPasswordError = false;
+
     private $imageError = false;
+
+    private $usernameRegisteredError = false;
 
 
     /**
@@ -195,8 +203,63 @@ class FormError
         $this->stringImageError = $stringImageError;
     }
 
+    /**
+     * @return bool
+     */
+    public function isConfirmPasswordError(): bool
+    {
+        return $this->confirmPasswordError;
+    }
+
+    /**
+     * @param bool $confirmPasswordError
+     */
+    public function setConfirmPasswordError(bool $confirmPasswordError)
+    {
+        $this->confirmPasswordError = $confirmPasswordError;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUsernameRegisteredError(): bool
+    {
+        return $this->usernameRegisteredError;
+    }
+
+    /**
+     * @param bool $userRegisteredError
+     */
+    public function setUsernameRegisteredError(bool $usernameRegisteredError)
+    {
+        $this->usernameRegisteredError = $usernameRegisteredError;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStringUsernameRegisteredError(): string
+    {
+        return $this->stringUsernameRegisteredError;
+    }
+
+    /**
+     * @param string $stringUsernameRegisteredError
+     */
+    public function setStringUsernameRegisteredError(string $stringUsernameRegisteredError)
+    {
+        $this->stringUsernameRegisteredError = $stringUsernameRegisteredError;
+    }
+
+
+
+
     public function haveErrors() {
         return ($this->dateError || $this->emailError || $this->usernameError
-        || $this->imageError || $this->passwordError);
+            || $this->imageError || $this->passwordError || $this->confirmPasswordError
+        || $this->usernameRegisteredError);
     }
+
+
+
 }

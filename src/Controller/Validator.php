@@ -69,15 +69,14 @@ class Validator
         }
 
         if ($user->getPassword() !== $passwd2) {
-            $errors->setPasswordError(true);
+            $errors->setConfirmPasswordError(true);
         } else {
-            $errors->setPasswordError(false);
+            $errors->setConfirmPasswordError(false);
         }
         if (!$this->validateDate($user->getBirthday())) {
             $errors->setDateError(true);
         } else{
             $errors->setDateError(false);
-
         }
         return true;
     }
@@ -102,7 +101,11 @@ class Validator
 
 
 //        if (!$pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail())) return false;
-        $pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail());
+        if (!$pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail())){
+            $errors->setUsernameRegisteredError(true);
+        } else {
+            $errors->setUsernameRegisteredError(false);
+        }
 
 
         //return true;
@@ -119,7 +122,7 @@ class Validator
      *
      * @return bool                     true if the new data is correct, false if not.
      */
-    public function validateUserUpdate(Application $app, User $currentUserState, User $userUpdate, $passwd2) {
+    public function validateUserUpdate(Application $app, User $currentUserState, User $userUpdate, $passwd2, $errors) {
 
         if (!$this->validateUserEditableFields($userUpdate, $passwd2)) return false;
 
@@ -128,8 +131,12 @@ class Validator
             $db = Database::getInstance("pwgram");
             $pdoUser = new PdoUserRepository($db);
 
-            if (!$pdoUser->validateUnique($app, $userUpdate->getUsername())) return false;
+            if (!$pdoUser->validateUnique($app, $userUpdate->getUsername())) {
+                $errors.setUsernameRegisteredError(true);
+                return false;
+            }
         }
+        $errors.setUsernameRegisteredError(false);
 
         return true;
     }
@@ -188,11 +195,13 @@ class Validator
         return $date && $dateFormatted->format('Y-m-d') == $date && $date <= $today;
     }
 
-    function validateImage($size, $format) {
+    function validateImage($size, $format, $error) {
         //Size lees than 5M and forman png or jpg
         if ($size < Validator::MAX_IMG_SIZE && ($format == "jpg" || $format == "jpeg")) {
+            $error.setImageError(true);
             return true;
         }
+        $error.setImageError(false);
         return false;
     }
 
@@ -200,9 +209,10 @@ class Validator
      * @param $title
      * @param $image
      */
-    function validateUploadImage($title, $image) {
+    function validateUploadImage($title, $image, $error) {
+        if ($errors == null) $erorrs = new FormError();
         if ($title != null && $image != null
-            && $this->validateImage($image->getClientSize(), $image->getClientOriginalExtension())) {
+            && $this->validateImage($image->getClientSize(), $image->getClientOriginalExtension(), $error)) {
             return true;
         } else {
             return false;

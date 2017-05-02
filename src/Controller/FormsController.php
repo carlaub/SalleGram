@@ -4,6 +4,7 @@ namespace pwgram\Controller;
 
 
 use pwgram\lib\Database\Database;
+use pwgram\Model\Entity\FormError;
 use pwgram\Model\Entity\Image;
 use pwgram\Model\Entity\Comment;
 use pwgram\Model\Entity\User;
@@ -46,10 +47,10 @@ class FormsController {
         return $user;
     }
 
-    public function checkUserImage(User &$user, Validator $validator, $profileImage) {
-
+    public function checkUserImage(User &$user, Validator $validator, $profileImage, $error) {
+        if ($error === null) $error = new FormError();
         //Image validation
-        if ($validator->validateImage($profileImage->getClientSize(), $profileImage->getClientOriginalExtension())) {
+        if ($validator->validateImage($profileImage->getClientSize(), $profileImage->getClientOriginalExtension(), $error)) {
 
             $user->setProfileImage(true);
             return true;
@@ -95,7 +96,7 @@ class FormsController {
             //Data error
 
             $renderController = new RenderController();
-           return $renderController->renderRegistration($app, $errors);
+            return $renderController->renderRegistration($app, $errors);
         }
 
         //Encrypt user password before insert in database
@@ -331,8 +332,4 @@ class FormsController {
         }else  return $app -> redirect('/login');
 
     }
-
-
-
-
 }
