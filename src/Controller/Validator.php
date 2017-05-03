@@ -198,10 +198,10 @@ class Validator
     function validateImage($size, $format, $error) {
         //Size lees than 5M and forman png or jpg
         if ($size < Validator::MAX_IMG_SIZE && ($format == "jpg" || $format == "jpeg")) {
-            $error->setImageError(true);
+            $error->setImageError(false);
             return true;
         }
-        $error->setImageError(false);
+        $error->setImageError(true);
         return false;
     }
 

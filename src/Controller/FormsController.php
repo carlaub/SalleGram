@@ -82,19 +82,13 @@ class FormsController {
 
         $errors = $validator->validateNewUser($app, $newUser, $confirmPassword);
         //if ($validator->validateNewUser($app, $newUser, $confirmPassword)) {
-        if(!$validator->haveErrors($errors)) {
-            //Image not null
-            if($profileImage != null) {
-                //Image validation
-                if (!$this->checkUserImage($newUser, $validator, $profileImage, $errors)) {
 
-                    //TODO: mostrar error de la imagen desde PHP en twig
-                    return $app -> redirect('/register');
-                }
-            }
-        } else {
-            //Data error
+        if($profileImage != null) {
+            //Image validation
+            $this->checkUserImage($newUser, $validator, $profileImage, $errors);
+        }
 
+        if($validator->haveErrors($errors)) {
             $renderController = new RenderController();
             return $renderController->renderRegistration($app, $errors);
         }

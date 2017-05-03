@@ -30,6 +30,21 @@
 
     </div>
     {% endif %}
+
+    {% if errors.imageError %}
+
+        <div class="container">
+        <h1 class="text-muted">Registro</h1>
+        <hr>
+
+        <div class="alert alert-danger alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+        <h4>Algo va mal...</h4>
+        <p>{{ errors.stringImageError }}</p>
+
+    </div>
+    {% endif %}
         <div class="row">
 
             <div class="col-md-9 personal-info">
@@ -130,9 +145,7 @@
                                        onchange="readURL(this);">
                                 <img class="img-preview" id="img-preview" height="100" width="100"
                                      src="{{ asset('/profile_img/img_profile_default.jpg', 'img') }}" alt="your image">
-                                {% if errors.imageError %}
-                                    <p class="text-error">{{ erros.stringImageError }}</p>
-                                {% endif %}
+
                             </div>
                         </div>
 
