@@ -132,11 +132,11 @@ class Validator
             $pdoUser = new PdoUserRepository($db);
 
             if (!$pdoUser->validateUnique($app, $userUpdate->getUsername())) {
-                $errors.setUsernameRegisteredError(true);
+                $errors->setUsernameRegisteredError(true);
                 return false;
             }
         }
-        $errors.setUsernameRegisteredError(false);
+        $errors->setUsernameRegisteredError(false);
 
         return true;
     }
@@ -198,10 +198,10 @@ class Validator
     function validateImage($size, $format, $error) {
         //Size lees than 5M and forman png or jpg
         if ($size < Validator::MAX_IMG_SIZE && ($format == "jpg" || $format == "jpeg")) {
-            $error.setImageError(true);
+            $error->setImageError(true);
             return true;
         }
-        $error.setImageError(false);
+        $error->setImageError(false);
         return false;
     }
 
@@ -209,14 +209,13 @@ class Validator
      * @param $title
      * @param $image
      */
-    function validateUploadImage($title, $image, $error) {
-        if ($errors == null) $erorrs = new FormError();
+    function validateUploadImage($title, $image, $errors) {
+        if ($errors == null) $errors = new FormError();
         if ($title != null && $image != null
-            && $this->validateImage($image->getClientSize(), $image->getClientOriginalExtension(), $error)) {
+            && $this->validateImage($image->getClientSize(), $image->getClientOriginalExtension(), $errors)) {
             return true;
         } else {
             return false;
-
         }
     }
 

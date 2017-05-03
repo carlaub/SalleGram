@@ -86,7 +86,7 @@ class FormsController {
             //Image not null
             if($profileImage != null) {
                 //Image validation
-                if (!$this->checkUserImage($newUser, $validator, $profileImage)) {
+                if (!$this->checkUserImage($newUser, $validator, $profileImage, $errors)) {
 
                     //TODO: mostrar error de la imagen desde PHP en twig
                     return $app -> redirect('/register');
@@ -197,9 +197,10 @@ class FormsController {
             //Encrypt user password before insert in database
             $userUpdate->setPassword(crypt($userUpdate->getPassword(), '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
             //Image not null
+            $errors = new FormError();
             if($profileImage != null) {
 
-                if (!$this->checkUserImage($userUpdate, $validator, $profileImage)) {
+                if (!$this->checkUserImage($userUpdate, $validator, $profileImage, $errors)) {
                     return $app['twig']->render('error.twig',array(
                         'message'=>"No se han podido aplicar los cambios en el perfil. Imagen no válida.",
                     ));
@@ -250,8 +251,9 @@ class FormsController {
         $private = $request->request->get('img-private') != null;
         $image = $request->files->get('img-selected');
 
+        $errors = new FormError();
         // Check if the image accomplish the requirements
-        if (!$validator->validateUploadImage($title, $image)) {
+        if (!$validator->validateUploadImage($title, $image, $errors)) {
             //TODO: error desde php avisando que no se puede subir la imagen seleccionada
             return $app -> redirect('/upload-image');
         }
