@@ -245,17 +245,25 @@ class RenderController {
 
             $images = $userUploadImagesController->getUserUploadImages($app, $idUser);
 
-
-            return $app['twig']->render('user_images.twig', array(
-                'app'=> ['name' => $app['app.name']],
-                'name'=> $this->sessionController->getSessionName($app),
-                'img'=> $profileImage,
-                'logged'=> $idUser,
-                'images'=> $images
-            ));
+            $image = $this->getProfileImage($app, $idUser);
+            if ($images != null) {
+                return $app['twig']->render('user_images.twig', array(
+                    'app'=> ['name' => $app['app.name']],
+                    'name'=> $this->sessionController->getSessionName($app),
+                    'img'=> $profileImage,
+                    'logged'=> $idUser,
+                    'images'=> $images
+                ));
+            } else {
+                return $app['twig']->render('homeWelcome.twig', array(
+                    'app'=> ['name' => $app['app.name']],
+                    'name'=> $this->sessionController->getSessionName($app),
+                    'img'=> $image,
+                    'logged'=> $idUser,
+                    'p'=>'Aun no has subido ninguna foto',
+                ));
+            }
         }
-
-
     }
 
     /**
