@@ -141,20 +141,27 @@ textarea {
 }
 
 .thumbnail{
-    padding: 20px;
+    padding: 10px;
 }
 
 .limit{
-    /*width : 350px;*/
+    max-width : 300px;
+    width : 300px;
+
     text-decoration: none;
     text-overflow: ellipsis;
     display: block;
     overflow: hidden;
     white-space: nowrap;
     text-align: left;
-    margin-left: 60px;
+    margin-left: 40px;
+    font-size: 15px;
 }
 
+.vlimit{
+    height : 100px;
+    word-wrap: break-word;
+}
 
 .limit-image{
     max-width : 1100px;
@@ -318,7 +325,7 @@ html,body {
 }
 
 .container-flex > div[class*='col-'] div,.row-flex > div[class*='col-'] div {
-    width:95%;
+    width:100%;
 }
 
 
@@ -335,7 +342,3 @@ html,body {
     flex: 2;
 }
 
-.card{
-    margin: 100px;
-    max-width: 400px;
-}
