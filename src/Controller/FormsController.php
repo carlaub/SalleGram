@@ -144,7 +144,7 @@ class FormsController {
             // Compare password from db with password entered
             if (crypt($password, $dbPassword) == $dbPassword) {
                 //Password are equals
-                //TODO: set coookies and sesion
+
                 $userName = $pdoUser->getUsername($app, $userNameOrEmail);
                 $userId = $pdoUser->getId($app,$userName);
 

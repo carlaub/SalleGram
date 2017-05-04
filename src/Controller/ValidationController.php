@@ -20,6 +20,11 @@ class validationController {
         }
         //Update user active state in db
         $pdoUser->updateActiveState($app, $id);
+
+
+        $sessionController = new SessionController();
+
+        $sessionController->setSession($app, $id);
         //TODO: loggear usuario
         return $app['twig']->render('welcome.twig',array(
         ));
