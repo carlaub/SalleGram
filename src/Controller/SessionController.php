@@ -98,9 +98,6 @@ class SessionController
     }
 
     public function closeSession(Application $app){
-        //TODO REVISAR FUNCION, parece que borra porque el $before de routes funciona pero en applications sale que hahy algo
-
-        //$app['session']->remove('user');
         $app['session']->clear();
     }
 

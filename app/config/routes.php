@@ -66,7 +66,7 @@ $app->get('/like/{id}', 'pwgram\\Controller\\LikesController::addLike')->before(
 $app->get('/image-view/{id}', 'pwgram\\Controller\\RenderController::renderImageView');
 
 /*User Profile*/
-$app->get('/user-profile/{id}','pwgram\\Controller\\RenderController::renderUserProfile');
+$app->get('/user-profile/{id}/{ordMode}','pwgram\\Controller\\RenderController::renderUserProfile');
 
 $app->get('/user-images/', 'pwgram\\Controller\\RenderController::renderUserImages')->before($sessionControl);
 

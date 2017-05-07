@@ -207,20 +207,25 @@ class RenderController {
      * @param Application $app
      * @param $id
      */
-    public function renderUserProfile(Application $app, $id) {
+    public function renderUserProfile(Application $app, $id, $ordMode) {
+
 
         $profileImage = $this->getProfileImage($app, $id);
         $user = $this->getInfoUser($app, $id);
 
-        $image = $this->getImagesUser($app, $id);
+        $image = $this->getImagesUser($app, $id, $ordMode);
 
         $pdo = new PdoImageRepository(Database::getInstance("pwgram"));
-        $totalUserImages    = $pdo->getTotalUserImages($app, $id);
+
+        $totalUserImages = $pdo->getTotalUserImages($app, $id);
+
+
 
         //TODO FALTA QUE LAS IMAGENES SE PUEDAN FILTRAR
 
         return $app['twig']->render('user-profile.twig', array(
             'app'=> ['name' => $app['app.name']],
+            'idUser'=> $id,
             'name'=> $this->sessionController->getSessionName($app),
             'profileImg'=> $profileImage,
             'logged'=> $this->sessionController->getSessionUserId($app),
@@ -342,7 +347,7 @@ class RenderController {
         return $publicImages;
     }
 
-    public function getImagesUser(Application $app,  $id){
+    public function getImagesUser(Application $app,  $id, $ordMode){
 
         $db = Database::getInstance("pwgram");
         $pdoImage = new PdoImageRepository($db);
@@ -351,7 +356,7 @@ class RenderController {
         $publicImages = array();
 
         // Obtain all public images in db
-        $imagesFromDB =  $pdoImage->getAllUserImages($app, $id);
+        $imagesFromDB =  $pdoImage->getAllUserImages($app, $id, $ordMode);
 
         return $imagesFromDB;
     }

@@ -286,23 +286,6 @@ fieldset[disabled] .btn-info.focus {
     font-size: 12px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 html,body {
     height:100%;
 }
@@ -342,3 +325,18 @@ html,body {
     flex: 2;
 }
 
+.filter-dropdown-box {
+    margin: 0;
+    padding-bottom: inherit;
+    padding-top: 10px;
+}
+
+.profile-information-box {
+    padding-bottom: inherit;
+    padding-top: 10px;
+}
+
+.profile-img-box {
+    padding-bottom: inherit;
+    padding-top: 10px;
+}

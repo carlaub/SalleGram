@@ -212,11 +212,35 @@ class PdoImageRepository implements PdoRepository
      * @param int $limit
      * @return array|bool
      */
-    public function getAllUserImages(Application $app, $id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getAllUserImages(Application $app, $id, $ordMode, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
-            $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC";
+            // Sort pictures according to likes, visits, comments or data
+            switch($ordMode) {
+                case 1:
+                    // Ord by data
+                    $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC";
+                    break;
+                case 2:
+                    // Ord by likes
+                    $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY likes DESC";
+                    break;
+                case 3:
+                    // Ord by comments
+                    $query = "SELECT Image.* , COUNT(Comment.id) AS post_count 
+                              FROM Image  LEFT JOIN Comment ON Image.id = Comment.fk_image
+                              WHERE Image.fk_user = ?
+                              GROUP BY Image.id
+                              ORDER BY post_count DESC";
+                    break;
+                case 4:
+                    // Ord by
+                    $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY visits DESC";
+                    break;
+            }
+
+
             $result = $app['db']->fetchAll(
                 $query,
                 array(
@@ -267,6 +291,7 @@ class PdoImageRepository implements PdoRepository
     public function getTotalUserImages(Application $app, $id) {
 
         $query = "SELECT COUNT(*) as total FROM Image WHERE fk_user = ?";
+
         $result = $app['db']->fetchAssoc(
             $query,
             array(

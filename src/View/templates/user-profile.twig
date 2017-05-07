@@ -11,13 +11,13 @@
                 <li><a href="/register">Register</a></li>
             </ul>
         </div>
-        {% endif %}
+    {% endif %}
 
     {#logeado#}
     {% if logged != false %}
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/notifications"><span class="glyphicon glyphicon-bell" ></span> </a></li>
+                <li><a href="/notifications"><span class="glyphicon glyphicon-bell"></span> </a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <strong>Opciones</strong>
@@ -30,9 +30,10 @@
                         <li><a href="/logout">Cerrar sesion</a></li>
                     </ul>
                 </li>
-                <li><a href="/edit-profile" class="dropdown-toggle" >
+                <li><a href="/edit-profile" class="dropdown-toggle">
                         {#<span class="glyphicon glyphicon-user"></span> #}
-                        <img class="img-circle" src="{{ asset('/profile_img/'~profileImg~'.jpg','img') }}" height="25" width="25" >
+                        <img class="img-circle" src="{{ asset('/profile_img/'~profileImg~'.jpg','img') }}" height="25"
+                             width="25">
                         <strong> {{ name }}</strong>
                     </a>
                 </li>
@@ -43,50 +44,65 @@
 {% endblock navbar %}
 
 {% block content %}
-    <div class="container-fluid bg-1 text-center">
-        <div class="row">
-            <div class="col-xs-6 col-sm-4 col-md-4">
-                <div class="well well-sm">
-                    <div class="row">
-                        <div class="col-sm-4 col-md-4">
-                            <img  src="{{ asset('/profile_img/'~profileImg~'.jpg','img') }}" height="200" width="200" class="img-rounded img-responsive" >
-                        </div>
-                        <div class="col-sm-4 col-md-6">
-                            <h4 class="text-body">{{ profileName }}</h4>
+    <div class="container-fluid bg-1 text-center profile-information-box">
+        <div class="well well-sm">
+            <div class="row">
+                <div class="col-sm-2 col-md-2">
+                    <img src="{{ asset('/profile_img/'~profileImg~'.jpg','img') }}" height="200" width="200"
+                         class="img-rounded img-responsive">
+                </div>
+                <div class="col-sm-4 col-md-6">
+                    <h4 class="text-body">{{ profileName }}</h4>
 
-                            <p>  <i class="glyphicon glyphicon-envelope"></i> <label>{{ mail }}</label></p>
+                    <p><i class="glyphicon glyphicon-envelope"></i> <label>{{ mail }}</label></p>
 
-                            <p>  <i class="glyphicon glyphicon-gift"></i> <label>{{ date }}</label></p>
+                    <p><i class="glyphicon glyphicon-gift"></i> <label>{{ date }}</label></p>
 
-                            <p>
-                                <span class="intro-text conj-span">
-                                    <span>{{ nImgs }}</span>
-                                    <span class="glyphicon glyphicon-picture glyphicon-black" ></span>
-                                </span>
+                    <p>
+                        <span class="intro-text conj-span">
+                            <span>{{ nImgs }}</span>
+                            <span class="glyphicon glyphicon-picture glyphicon-black"></span>
+                        </span>
 
-                                <span class="intro-text conj-span">
-                                    <span>{{ comments }}</span>
-                                    <span class="glyphicon glyphicon-comment glyphicon-black" ></span>
-                                </span>
-                            </p>
-
-                        </div>
-                    </div>
+                        <span class="intro-text conj-span">
+                            <span>{{ comments }}</span>
+                            <span class="glyphicon glyphicon-comment glyphicon-black"></span>
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>
+
+    </div>
+<div class="container-fluid bg-1 text-left filter-dropdown-box">
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Ordenar imagenes
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="/user-profile/{{ idUser }}/2">Número de likes</a></li>
+            <li><a href="/user-profile/{{ idUser }}/3">Número de comentarios</a></li>
+            <li><a href="/user-profile/{{ idUser }}/4">Número de visualizaciones</a></li>
+            <li><a href="/user-profile/{{ idUser }}/1">Fecha de creación</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container-fluid bg-1 text-center profile-img-box">
         <div class="row">
             {% for image in images %}
                 <div class="col-sm-6 col-md-4">
                     <div class="thumbnail">
-                        <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
-                        <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
+                        <a href="/image-view/{{ image.id }}"><h2>{{ image.title }}</h2></a>
+                        <img src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300">
                         <br><br>
                     </div>
                 </div>
             {% endfor %}
         </div>
-    </div>
+</div>
+
 
 
 

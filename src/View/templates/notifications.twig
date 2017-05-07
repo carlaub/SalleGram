@@ -66,12 +66,12 @@
                                     {% if notification.type == constant('TYPE_LIKE', notification) %}
                                         {#//LIKE#}
                                         <h4 class="item-title"> Like <i class="glyphicon glyphicon-heart"></i> · <span class="notification-date">{{ notification.createdAt }}</span></h4>
-                                        <p class="item-info">A <a class="notification-username" href="/user-profile/{{ notification.from }}">{{ notification.fromUsername }}</a>
+                                        <p class="item-info">A <a class="notification-username" href="/user-profile/{{ notification.from }}/1">{{ notification.fromUsername }}</a>
                                             le ha gustado tu publicación.</p>
                                     {% else %}
                                         {#//COMENT#}
                                         <h4 class="item-title"> Comentario <i class="glyphicon glyphicon-comment"></i> · <span class="notification-date">{{ notification.createdAt }}</span></h4>
-                                        <p class="item-info"><a class="notification-username" href="/user-profile/{{ notification.from }}">{{ notification.fromUsername }}</a>
+                                        <p class="item-info"><a class="notification-username" href="/user-profile/{{ notification.from }}/1">{{ notification.fromUsername }}</a>
                                             ha comentado tu publicación.</p>
                                     {% endif %}
                                 </div>
