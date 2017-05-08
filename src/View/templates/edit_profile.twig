@@ -63,7 +63,7 @@
                                     {% set placeholder = "Username" %}
                                 {% endif %}
                                 <input class="{{ class }}" type="text" placeholder="{{ placeholder }}" name="username"
-                                       id="username">
+                                       id="username" value="{{ name }}">
                             </div>
                         </div>
 
@@ -78,7 +78,7 @@
                                     {% set placeholder = "dd/mm/yyyy" %}
                                 {% endif %}
                                 <input class="{{ class }}" type="date" placeholder="{{ placeholder }}" name="date"
-                                       id="date">
+                                       id="date" value="{{ birthday }}">
                                 {% if errors.dateError %}
                                     <p class="text-error">Fecha inválida</p>
                                 {% endif %}
@@ -136,7 +136,9 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted"></label>
                         <div class="col-md-8">
-                            <button type="submit" class="btn btn-info">Guardar cambios</button>
+                            <button id="btn-register" type="submit" class="btn btn-info" data-toggle="popover"
+                                    data-trigger="focus" title="Error"
+                                    data-content="Hay campos del formulario que contienen errores">Guardar Cambios</button>
                         </div>
                     </div>
                 </form>
@@ -148,7 +150,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>
     <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
     <script type="text/javascript" src="{{ asset('edit_profile.js', 'js') }}"></script>
 

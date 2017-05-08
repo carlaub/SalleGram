@@ -50,7 +50,7 @@ class Validator
 
         $length = strlen($user->getUsername());
         if ($length == 0 || $length > Validator::MAX_USERNAME
-            || !preg_match('/[a-zA-Z0-9]+$/', $user->getUsername())) {
+            || !preg_match('/^[a-zA-Z0-9]*$/', $user->getUsername())) {
             $errors->setUsernameError(true);
         }else {
             $errors->setUsernameError(false);
@@ -208,12 +208,31 @@ class Validator
      */
     function validateUploadImage($title, $image, $errors) {
         if ($errors == null) $errors = new FormError();
+
+        if($title == null ) {
+            $errors->setTitleImageError(true);
+        } else {
+            $errors->setTitleImageError(true);
+        }
+
         if ($title != null && $image != null
             && $this->validateImage($image->getClientSize(), $image->getClientOriginalExtension(), $errors)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    function validateEditImage($title, $errors) {
+        if ($errors == null) $errors = new FormError();
+
+        if($title == null ) {
+            $errors->setTitleImageError(true);
+            return false;
+        } else {
+            $errors->setTitleImageError(true);
+        }
+        return true;
     }
 
     function haveErrors($errors) {

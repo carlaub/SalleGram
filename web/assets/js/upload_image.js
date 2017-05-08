@@ -14,7 +14,7 @@ $(document).ready(function() {
 
         }else{
             event.preventDefault();
-            //alert("error validacio");
+            $('#btn-upload-img').popover('show');
         }
 
     });

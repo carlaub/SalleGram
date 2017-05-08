@@ -11,9 +11,10 @@ use pwgram\Model\Repository\PdoCommentRepository;
 use pwgram\Model\Repository\PdoImageLikesRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\Validator\Tests\Constraints\FileValidatorObjectTest;
 
 
 class RenderController {
@@ -91,12 +92,15 @@ class RenderController {
 
     }
 
-    public function renderLogin(Application $app) {
+    public function renderLogin(Application $app, $errors = null) {
+        if ($errors == null) $errors = new FormError();
+
         $TotaInfoDeFotos = 0;
         return $app['twig']->render('login.twig', array(
             'app'=> ['name' => $app['app.name']],
             'logged'=>$this->sessionController->haveSession($app),
-            'data'=>$TotaInfoDeFotos
+            'data'=>$TotaInfoDeFotos,
+            'errors'=>$errors
         ));
 
     }
@@ -148,7 +152,8 @@ class RenderController {
      * @param Application $app
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function renderUploadImage(Application $app) {
+    public function renderUploadImage(Application $app, $errors = null) {
+        if ($errors == null) $errors = new FormError();
 
         $idUser = $this->sessionController->getSessionUserId($app);
         $profileImage = $this->getProfileImage($app, $idUser);
@@ -158,7 +163,8 @@ class RenderController {
            'app'=> ['name' => $app['app.name']],
            'logged'=>$this->sessionController->haveSession($app),
             'profileImage'=> $profileImage,
-            'name'=> $this->sessionController->getSessionName($app)
+            'name'=> $this->sessionController->getSessionName($app),
+            'errors'=> $errors
 
         ));
 
@@ -365,7 +371,9 @@ class RenderController {
         return $imagesFromDB;
     }
 
-    public function renderEditImage(Application $app, $idImage){
+    public function renderEditImage(Application $app, $idImage, $errors = null){
+
+        if ($errors == null) $errors = new FormError();
 
         if ($this->sessionController->correctSession($app)){
             $db = Database::getInstance("pwgram");
@@ -387,7 +395,8 @@ class RenderController {
                 'img'=> $profileImage,
                 'logged'=> $idUser,
                 'image'=> $image,
-                'private'=> $private
+                'private'=> $private,
+                'errors'=> $errors
             ));
 
         }else return $app -> redirect('/login');
@@ -476,6 +485,13 @@ class RenderController {
         //TODO error 403
 
     }
+
+    /**
+     * @param Application $app
+     * @param $idComment
+     * @param $idImage
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function renderEditComment(Application $app, $idComment, $idImage){
 
         if($this->sessionController->correctSession($app)){
@@ -511,6 +527,14 @@ class RenderController {
         }else return $app -> redirect('/login');
     }
 
-
+    public function renderUnknown(\Exception $e, $code, $app) {
+        $response = new Response();
+        $content =  $app['twig']->render('error.twig',array(
+            'message'=>"Error desconocido. Disculpe las molestias!"
+        ));
+        $response->setContent($content);
+        $response->setStatusCode(Response::HTTP_FORBIDDEN); // 403 code
+        return $response;
+    }
 }
 

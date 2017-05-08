@@ -25,6 +25,10 @@ class FormError
 
     private $stringUsernameRegisteredError = "El nombre de usuario o email ya se enceuntra registrado en PWGram!";
 
+    private $stringUserOrPasswordError = "El usuario o la contraseña no coinciden";
+
+    private $stringTitleImageError = "Título no válido.";
+
     private $usernameError = false;
 
     private $emailError = false;
@@ -38,6 +42,10 @@ class FormError
     private $imageError = false;
 
     private $usernameRegisteredError = false;
+
+    private $userOrPasswordError = false;
+
+    private $titleImageError = false;
 
 
     /**
@@ -132,27 +140,11 @@ class FormError
     }
 
     /**
-     * @param string $stringUsernameError
-     */
-    public function setStringUsernameError(string $stringUsernameError)
-    {
-        $this->stringUsernameError = $stringUsernameError;
-    }
-
-    /**
      * @return string
      */
     public function getStringEmailError(): string
     {
         return $this->stringEmailError;
-    }
-
-    /**
-     * @param string $stringEmailError
-     */
-    public function setStringEmailError(string $stringEmailError)
-    {
-        $this->stringEmailError = $stringEmailError;
     }
 
     /**
@@ -164,14 +156,6 @@ class FormError
     }
 
     /**
-     * @param string $stringDateError
-     */
-    public function setStringDateError(string $stringDateError)
-    {
-        $this->stringDateError = $stringDateError;
-    }
-
-    /**
      * @return string
      */
     public function getStringPasswordError(): string
@@ -179,13 +163,7 @@ class FormError
         return $this->stringPasswordError;
     }
 
-    /**
-     * @param string $stringPassword
-     */
-    public function setStringPasswordError(string $stringPasswordError)
-    {
-        $this->stringPasswordError = $stringPasswordError;
-    }
+
 
     /**
      * @return string
@@ -196,12 +174,13 @@ class FormError
     }
 
     /**
-     * @param string $stringImageError
+     * @param bool $confirmPasswordError
      */
-    public function setStringImageError(string $stringImageError)
+    public function setConfirmPasswordError(bool $confirmPasswordError)
     {
-        $this->stringImageError = $stringImageError;
+        $this->confirmPasswordError = $confirmPasswordError;
     }
+
 
     /**
      * @return bool
@@ -212,14 +191,6 @@ class FormError
     }
 
     /**
-     * @param bool $confirmPasswordError
-     */
-    public function setConfirmPasswordError(bool $confirmPasswordError)
-    {
-        $this->confirmPasswordError = $confirmPasswordError;
-    }
-
-    /**
      * @return bool
      */
     public function isUsernameRegisteredError(): bool
@@ -227,13 +198,6 @@ class FormError
         return $this->usernameRegisteredError;
     }
 
-    /**
-     * @param bool $userRegisteredError
-     */
-    public function setUsernameRegisteredError(bool $usernameRegisteredError)
-    {
-        $this->usernameRegisteredError = $usernameRegisteredError;
-    }
 
     /**
      * @return string
@@ -243,12 +207,53 @@ class FormError
         return $this->stringUsernameRegisteredError;
     }
 
+
     /**
-     * @param string $stringUsernameRegisteredError
+     * @return bool
      */
-    public function setStringUsernameRegisteredError(string $stringUsernameRegisteredError)
+    public function isUserOrPasswordError(): bool
     {
-        $this->stringUsernameRegisteredError = $stringUsernameRegisteredError;
+        return $this->userOrPasswordError;
+    }
+
+    /**
+     * @param bool $userOrPasswordError
+     */
+    public function setUserOrPasswordError(bool $userOrPasswordError)
+    {
+        $this->userOrPasswordError = $userOrPasswordError;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStringUserOrPasswordError(): string
+    {
+        return $this->stringUserOrPasswordError;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTitleImageError(): bool
+    {
+        return $this->titleImageError;
+    }
+
+    /**
+     * @param bool $titleImageError
+     */
+    public function setTitleImageError(bool $titleImageError)
+    {
+        $this->titleImageError = $titleImageError;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStringTitleImageError(): string
+    {
+        return $this->stringTitleImageError;
     }
 
 

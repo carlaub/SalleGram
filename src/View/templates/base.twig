@@ -1,62 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        {% block head %}
-            <!-- Theme Made By www.w3schools.com - No Copyright -->
-            <title>PWGram</title>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    {% block head %}
+        <title>PWGram</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-        {% endblock head %}
         {% block stylesheets %}
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
             <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
             <link rel="stylesheet" type="text/css" href="{{ asset('home.css', 'css') }}">
         {% endblock %}
+    {% endblock head %}
 
-    </head>
+</head>
 
-    <body>
+<body>
 
-        <!-- Navbar -->
-        <nav class="navbar navbar-default">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/"> <span class="glyphicon glyphicon-camera glyphicon-black" ></span>
-                        PWGram</a>
-                </div>
-            {% block navbar %}
-
-            {% endblock navbar %}
-                </div>
-
-        </nav>
-
-        <div id="principal-container">
-            {% block content %}
-
-            {% endblock content %}
+<!-- Navbar -->
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"> <span class="glyphicon glyphicon-camera glyphicon-black"></span>
+                PWGram</a>
         </div>
+        {% block navbar %}
 
+        {% endblock navbar %}
+    </div>
 
-        <!-- Footer -->
-        <div id="footer" class="container-fluid bg-4 text-center ">
-            {% block footer %}
-                <p class="text-footer">&copy; Copyright 2017 - PWGram</p>
-            {% endblock footer %}
-        </div>
+</nav>
 
-        {% block javascripts %}
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<div id="principal-container">
+    {% block content %}
 
-        {% endblock javascripts %}
+    {% endblock content %}
+</div>
 
-    </body>
+<!-- Footer -->
+<div id="footer" class="container-fluid bg-4 text-center ">
+    {% block footer %}
+        <p class="text-footer">&copy; Copyright 2017 - PWGram</p>
+        <p class="text-footer-dark">Jorge Melguizo - Carla Urrea - Albert Pernía</p>
+    {% endblock footer %}
+</div>
+
+{% block javascripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock javascripts %}
+
+</body>
 </html>

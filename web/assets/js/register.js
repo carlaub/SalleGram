@@ -11,11 +11,14 @@ $(document).ready(function() {
         var password2 = $("#confirm-password").val();
         var imgPath = $("#imgage-path").val();
 
-        if(validateDate(date) & validateName(username)  & validateEmail(email) && validatePassword(password, password2) && validateImagePath(imgPath)) {
+        if(validateDate(date) & validateName(username)  & validateEmail(email)
+            & validatePassword(password, password2) & validateImagePath(imgPath)) {
             //alert("ok!");
 
         }else{
             event.preventDefault();
+            $('#btn-register').popover('show');
+
             //alert("error validacio");
 
         }
@@ -26,7 +29,7 @@ $(document).ready(function() {
 
         var element = document.getElementById("username");
 
-        var regEx = /[a-zA-Z0-9]+$/;
+        var regEx = /^[a-zA-Z0-9]*$/;
 
         if(userName.length <= 0) {
             element.placeholder = "No has introducido ningún nombre";
@@ -34,7 +37,7 @@ $(document).ready(function() {
             element.className = "form-control-red";
             return false;
         } else if (userName.length > 20){
-            element.placeholder = "El nombre demasiado largo";
+            element.placeholder = "El nombre es demasiado largo";
             element.value = "";
             element.className = "form-control-red";
             return false;

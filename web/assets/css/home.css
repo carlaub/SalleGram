@@ -34,6 +34,10 @@ p {font-size: 16px;
 .text-footer{
     color: #eeeeee;
 }
+
+.text-footer-dark{
+    color: #7d7d7d;
+}
 .margin {margin-bottom: 45px;}
 .bg-1 {
     background-color: #babcb8; /* Green */
@@ -278,7 +282,12 @@ fieldset[disabled] .btn-info.focus {
 }
 
 .img-preview{
-    margin: 15px;
+    margin-top: 15px;
+    padding: 10px;
+    border-color: #818181;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 5px;
 }
 
 .text-error {
@@ -345,4 +354,12 @@ html,body {
     background:none;
     border:none;
     box-shadow:none;
+}
+
+.popover-title{
+    color: #0f0f0f;
+}
+
+.popover-content{
+    color: #0f0f0f;
 }

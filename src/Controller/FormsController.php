@@ -152,9 +152,11 @@ class FormsController {
                 return $app -> redirect('/');
             }
         }
-        return $app['twig']->render('error.twig',array(
-                'message'=>"El usuario o la contraseña no son correctos",
-            ));
+        $error = new FormError();
+        $error->setUserOrPasswordError(true);
+
+        $renderController = new RenderController();
+        return $renderController->renderLogin($app, $error);
 
     }
 
@@ -203,12 +205,13 @@ class FormsController {
         //Image not null
         $errors = new FormError();
         if($profileImage != null) {
-
             // Delete previous Image
             unlink('../web/assets/img/profile_img/'. $currentUser->getId().'.jpg');
             $imageProcessing = new ImageProcessing();
             $imageProcessing->saveProfileImage(strval($currentUser->getId()), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
-
+            $userUpdate->setProfileImage(true);
+        } else {
+            $userUpdate->setProfileImage(false);
         }
 
         //updates the info of the session
@@ -238,7 +241,6 @@ class FormsController {
 
         $db = Database::getInstance("pwgram");
 
-        //TODO: verificar campos de la imagen (tiulo existente, foto existente)
         $validator = new Validator();
 
         $title = $request->request->get('img-title');
@@ -248,8 +250,9 @@ class FormsController {
         $errors = new FormError();
         // Check if the image accomplish the requirements
         if (!$validator->validateUploadImage($title, $image, $errors)) {
-            //TODO: error desde php avisando que no se puede subir la imagen seleccionada
-            return $app -> redirect('/upload-image');
+
+            $renderController = new RenderController();
+            return $renderController->renderUploadImage($app, $errors);
         }
 
         // Correct image, save it and update DB
@@ -307,6 +310,10 @@ class FormsController {
     }
 
     public function editImageForm(Application $app, Request $request, $idImage){
+        $db = Database::getInstance("pwgram");
+
+        $validator = new Validator();
+
 
         $sessionController = new SessionController();
         if($sessionController->correctSession($app)){
@@ -317,9 +324,16 @@ class FormsController {
             $title = $request->request->get('img-title');
             $private = $request->request->get('img-private') != null;
 
-
             $newImage = new Image($title, date('Y-m-d H:i:s'), 0, $private);
             $newImage->setId($idImage);
+
+            $errors = new FormError();
+            // Check if the image accomplish the requirements
+            if (!$validator->validateEditImage($title, $errors)) {
+
+                $renderController = new RenderController();
+                return $renderController->renderUploadImage($app, $errors);
+            }
 
             $pdo->update($app, $newImage);
 

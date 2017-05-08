@@ -37,7 +37,7 @@ class User {
         $this->birthday = $birthday;
         $this->active   = $active;
         $this->id       = $id;
-        $this->profileImage = false; //Default
+        $this->profileImage = $profile_image; //Default
     }
 
     public static function withImgPath($username, $email, $birthday, $active, $imgPath) {

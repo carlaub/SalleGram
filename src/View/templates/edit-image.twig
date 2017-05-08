@@ -75,7 +75,15 @@
                             <div class="form-group">
                                 <label class="col-lg-4 control-label text-muted">Título: </label>
                                 <div class="col-lg-8">
-                                    <input class="form-control " type="text" value="{{ image.title }}" name="img-title" id="img-title" placeholder="Titulo" REQUIRED>
+                                    {% if errors.titleImageError %}
+                                        {% set class = "form-control-red" %}
+                                        {% set placeholder = errors.getStringTitleError %}
+                                    {% else %}
+                                        {% set class="form-control" %}
+                                        {% set placeholder = "Título" %}
+                                    {% endif %}
+
+                                    <input class={{ class }} type="text" value="{{ image.title }}" name="img-title" id="img-title" placeholder="Titulo" REQUIRED>
                                 </div>
                             </div>
 
@@ -109,6 +117,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('upload_image.js', 'js') }}"></script>
+
     <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
 {% endblock javascripts %}

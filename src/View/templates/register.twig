@@ -3,47 +3,39 @@
 {% block stylesheets %}
     {{ parent() }}
 {% endblock %}
-{% block navbar %}
 
+{% block navbar %}
     <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
             <li><a href="/login">Login</a></li>
         </ul>
     </div>
-
-
 {% endblock navbar %}
 
 {% block content %}
-
-    {% if errors.usernameRegisteredError %}
-
-        <div class="container">
+    <div class="container">
         <h1 class="text-muted">Registro</h1>
         <hr>
 
-        <div class="alert alert-danger alert-dismissible fade in" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+        {% if errors.usernameRegisteredError %}
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                     aria-hidden="true">×</span></button>
-        <h4>Algo va mal...</h4>
-        <p>{{ errors.stringUsernameRegisteredError }}</p>
+                <h4>Algo va mal...</h4>
+                <p>{{ errors.stringUsernameRegisteredError }}</p>
 
-    </div>
-    {% endif %}
+            </div>
+        {% endif %}
 
-    {% if errors.imageError %}
-        <div class="container">
-        <h1 class="text-muted">Registro</h1>
-        <hr>
-
-        <div class="alert alert-danger alert-dismissible fade in" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+        {% if errors.imageError %}
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                     aria-hidden="true">×</span></button>
-        <h4>Algo va mal...</h4>
-        <p>{{ errors.stringImageError }}</p>
+                <h4>Algo va mal...</h4>
+                <p>{{ errors.stringImageError }}</p>
+            </div>
+        {% endif %}
 
-    </div>
-    {% endif %}
         <div class="row">
 
             <div class="col-md-9 personal-info">
@@ -53,7 +45,7 @@
 
                     {% block username_field %}
                         <div class="form-group">
-                            <label class="col-lg-4 control-label text-muted">Username</label>
+                            <label class="col-lg-4 control-label text-muted">Username: </label>
                             <div class="col-lg-8">
                                 {% if errors.usernameError %}
                                     {% set class = "form-control-red" %}
@@ -142,7 +134,7 @@
                             <div class="col-md-8">
                                 <input class="form-control" name="image-path" id="image-path" type="file"
                                        onchange="readURL(this);">
-                                <img class="img-preview" id="img-preview" height="100" width="100"
+                                <img class="img-preview" id="img-preview" height="140" width="140"
                                      src="{{ asset('/profile_img/img_profile_default.jpg', 'img') }}" alt="your image">
 
                             </div>
@@ -154,20 +146,23 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted"></label>
                         <div class="col-md-8">
-                            <button type="submit" class="btn btn-info">Registrar</button>
+                            <button id="btn-register" type="submit" class="btn btn-info" data-toggle="popover"
+                                    data-trigger="focus" title="Error"
+                                    data-content="Hay campos del formulario que contienen errores">Registrar</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
     <hr>
 
 {% endblock content %}
+
 {% block javascripts %}
     {{ parent() }}
 
-    {#TODO: IMPORTANTISIMO DESCOMENTAR#}
     <script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>
     <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
 {% endblock javascripts %}

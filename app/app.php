@@ -16,8 +16,5 @@ use Doctrine\DBAL\DriverManager;
 $app = new Application();
 
 $app['app.name'] = 'PWGram';
-//$app['db']       = DriverManager::getConnection();
-
-
 
 return $app;

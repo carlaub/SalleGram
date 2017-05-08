@@ -35,6 +35,16 @@
     <div class="container">
         <h1 class="text-muted">Registro</h1>
         <hr>
+
+        {% if errors.imageError %}
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                <h4>Algo va mal...</h4>
+                <p>{{ errors.stringImageError }}</p>
+
+            </div>
+        {% endif %}
         <div class="row">
 
 
@@ -59,14 +69,17 @@
                         <label class="col-md-4 control-label text-muted">Imagen:</label>
                         <div class="col-md-8">
                             <input class="form-control" name="img-selected" id="img-selected" type="file" onchange="readURL(this);" >
-                            <img id="img-preview"  src="" alt="your image">
+                            <img class="img-preview" id="img-preview" height="130" width="130"
+                                 src="" >
                         </div>
                     </div>
                     <br>
                     <div class="form-group">
                         <label class="col-md-4 control-label text-muted"></label>
                         <div class="col-md-8">
-                            <button type="submit" class="btn btn-info">Subir Imagen</button>
+                            <button id="btn-upload-img" type="submit" class="btn btn-info" data-toggle="popover"
+                                    data-trigger="focus" title="Error"
+                                    data-content="Hay campos del formulario que contienen errores">Subir Imagen</button>
                         </div>
                     </div>
                 </form>

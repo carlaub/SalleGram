@@ -6,8 +6,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
+// TODO cambiar de sitio
 $sessionControl = function (Request $request,Application $app) {
-    if ($app['session']->has('userId')){
+    if (!$app['session']->has('user')){
+
         $response = new Response();
         $content =  $app['twig']->render('error.twig',array(
             'message'=>"Hace falta estar logeado"
@@ -79,6 +81,18 @@ $app->get('/notifications', 'pwgram\\Controller\\RenderController::renderNotific
 $app->get('/delete-notification/{id}','pwgram\\Controller\\NotificationsController::deleteNotification')->before($sessionControl);
 
 
+//TODO: descomentar y preguntar a Jaume
+//$app->error('pwgram\\Controller\\NotificationsController::renderUnknown');
+//$app->error(function (\Exception $e, $code) use ($app) {
+//
+//    $response = new Response();
+//    $content =  $app['twig']->render('error.twig',array(
+//        'message'=>"Contenido no disponible. Disculpe las molestias."
+//    ));
+//    $response->setContent($content);
+//    $response->setStatusCode(Response::HTTP_FORBIDDEN); // 403 code
+//    return $response;
+//});
 
 
 

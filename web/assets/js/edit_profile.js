@@ -15,6 +15,7 @@ $(document).ready(function() {
 
         }else{
             event.preventDefault();
+            $('#btn-register').popover('show');
             //alert("error validacio");
         }
 
