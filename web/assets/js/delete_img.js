@@ -6,12 +6,16 @@ $(document).ready(function() {
         var text;
         var r = confirm("Seguro que quiere borrar la imagen?");
 
-        if (r == true) {
-        } else {
-            event.preventDefault();
-        }
+        if (r == true);
+        else event.preventDefault();
 
     });
+
+
+
+
+
+
 
 });
 
