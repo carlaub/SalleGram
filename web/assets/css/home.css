@@ -340,3 +340,9 @@ html,body {
     padding-bottom: inherit;
     padding-top: 10px;
 }
+
+.btn-delete {
+    background:none;
+    border:none;
+    box-shadow:none;
+}

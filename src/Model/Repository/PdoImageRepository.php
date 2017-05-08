@@ -212,7 +212,7 @@ class PdoImageRepository implements PdoRepository
      * @param int $limit
      * @return array|bool
      */
-    public function getAllUserImages(Application $app, $id, $ordMode, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getAllUserImages(Application $app, $id, $ordMode = 1, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
