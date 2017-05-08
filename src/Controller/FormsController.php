@@ -260,7 +260,7 @@ class FormsController {
         // Create image entity
         date_default_timezone_set('Europe/Madrid');
 
-        $newImage = new Image($title, date('Y-m-d H:i:s'), $idUser, $private, $image->getClientOriginalExtension());
+        $newImage = new Image($title, date('Y-m-d H:i:s'), $idUser, $private);
 
         // Save image information in DB image table
         $pdoImage = new PdoImageRepository($db);

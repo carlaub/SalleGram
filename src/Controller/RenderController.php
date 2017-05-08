@@ -338,7 +338,7 @@ class RenderController {
 
             if (!$imageFromDB['private']) {
 
-                $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false, $imageFromDB['extension'],
+                $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false,
                                     $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
 
                 $userName = $pdoUser->getName($app, $imageFromDB['fk_user']);

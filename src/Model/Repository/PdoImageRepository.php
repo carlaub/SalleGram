@@ -152,7 +152,6 @@ class PdoImageRepository implements PdoRepository
             $image['created_at'],
             $image['fk_user'],
             $image['private'],
-            $image['extension'],
             $image['visits'],
             $image['likes'],
             $image['id']
@@ -417,7 +416,6 @@ class PdoImageRepository implements PdoRepository
                     $image['created_at'],
                     $image['fk_user'],
                     $image['private'],
-                    $image['extension'],
                     $image['visits'],
                     $image['likes'],
                     $image['id']

@@ -31,11 +31,6 @@ class Image
     private $numComments;
 
     /**
-     * @var string The format of the image: jpg, png, etc.
-     */
-    private $extension;
-
-    /**
      * @var array of Comment
      */
     private $comments;
@@ -52,15 +47,14 @@ class Image
 
 
 
-    public function __construct($title, $createdAt, $fkUser, $private, $extension = ".jpg", $visits = 0, $likes = 0, $id = -1)
+    public function __construct($title, $createdAt, $fkUser, $private, $visits = 0, $likes = 0, $id = -1)
     {
         $this->id           = $id;
         $this->title        = $title;
         $this->createdAt    = $createdAt;
         $this->fkUser       = $fkUser;
-        $this->visits       = $visits;
         $this->private      = $private;
-        $this->extension    = $extension;
+        $this->visits       = $visits;
         $this->likes        = $likes;
         $this->comments     = [];
 
@@ -236,13 +230,6 @@ class Image
         return $this->numComments;
     }
 
-    public function getExtension() {
-        return $this->extension;
-    }
-
-    public function setExtension($extension) {
-        $this->extension = $extension;
-    }
 
     public function getLiked() {
         return $this->liked;
