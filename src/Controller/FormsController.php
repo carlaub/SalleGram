@@ -271,7 +271,7 @@ class FormsController {
 
 
         $imageProcessing = new ImageProcessing();
-        $imageProcessing->saveUploadImage($idImage, $image->getClientOriginalExtension(), $image->getRealPath());
+        $imageProcessing->saveUploadImage($idImage, $image->getRealPath());
         return $app -> redirect('/');
     }
 
@@ -286,18 +286,21 @@ class FormsController {
             $pdoLike = new PdoImageLikesRepository($db);
 
 
-            //delete image commments
+            // Delete image commments
             $comments = $pdoComment->getImageComments($app, $idImage);
             if($comments != null){
                 foreach ($comments as $commentUser) {
                     $pdoComment->remove($app, $commentUser->getId());
                 }
             }
-
-            //delete image likes
+            // Delete image likes
             $pdoLike->removeImageLikes($app, $idImage);
-
             $pdoImage->remove($app, $idImage);
+
+            // Delete image server
+            $imageProcessing = new ImageProcessing();
+            $imageProcessing->deleteImage($idImage);
+
 
 
             return $app -> redirect('/user-images');

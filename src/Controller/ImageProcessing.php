@@ -26,7 +26,7 @@ class ImageProcessing {
      * @param $extension
      * @param $path
      */
-    public function saveUploadImage($idImage, $extension, $path) {
+    public function saveUploadImage($idImage, $path, $extension = 'jpg') {
 
         $pathImgSave = "../web/assets/img/upload_img/" . $idImage . ".". $extension;
         //chmod($pathImgSave, 0777);
@@ -110,4 +110,11 @@ class ImageProcessing {
         // Delete original image
         unlink($pathImgSave);
     }
+
+    public function deleteImage($idImage) {
+        unlink("../web/assets/img/upload_img/" . $idImage . "_100x100.jpg");
+        unlink("../web/assets/img/upload_img/" . $idImage . "_400x300.jpg");
+
+    }
+
 }
