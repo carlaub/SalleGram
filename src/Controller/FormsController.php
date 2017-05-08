@@ -301,8 +301,6 @@ class FormsController {
             $imageProcessing = new ImageProcessing();
             $imageProcessing->deleteImage($idImage);
 
-
-
             return $app -> redirect('/user-images');
         }else return $app -> redirect('/login');
 
