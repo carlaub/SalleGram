@@ -155,6 +155,7 @@ class PdoUserRepository implements PdoRepository {
      */
     public function validateUnique(Application $app, $username, $email = "") {
 
+
         $query = "SELECT id FROM `User` WHERE username = ? OR email = ?";
         $res = $app['db']->fetchAssoc($query, array($username, $email));
 

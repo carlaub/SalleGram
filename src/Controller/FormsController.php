@@ -78,10 +78,9 @@ class FormsController {
         $confirmPassword = $request->request->get('confirm-password');
         $profileImage = $request->files->get('image-path');
 
-       // $errors = Array();
+
 
         $errors = $validator->validateNewUser($app, $newUser, $confirmPassword);
-        //if ($validator->validateNewUser($app, $newUser, $confirmPassword)) {
 
         if($profileImage != null) {
             //Image validation
@@ -186,37 +185,38 @@ class FormsController {
 
         $validator = new Validator();
 
-        if ($validator->validateUserUpdate($app, $currentUser, $userUpdate, $confirmPassword)) {
+        $errors = $validator->validateUserUpdate($app, $currentUser, $userUpdate, $confirmPassword);
 
-            //Encrypt user password before insert in database
-            $userUpdate->setPassword(crypt($userUpdate->getPassword(), '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
-            //Image not null
-            $errors = new FormError();
-            if($profileImage != null) {
 
-                if (!$this->checkUserImage($userUpdate, $validator, $profileImage, $errors)) {
-                    return $app['twig']->render('error.twig',array(
-                        'message'=>"No se han podido aplicar los cambios en el perfil. Imagen no válida.",
-                    ));
-                } else {
-                    // Delete previous Image
-                    unlink('../web/assets/img/profile_img/'. $currentUser->getId().'.jpg');
-                    $imageProcessing = new ImageProcessing();
-                    $imageProcessing->saveProfileImage(strval($currentUser->getId()), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
-                }
-            }
-
-            //updates the info of the session
-            $sessionController->setSession($app,$userUpdate->getId());
-            // updates the database user row with the new data
-            $pdo->update($app, $userUpdate);
-
-            return $app -> redirect('/');
+        if($profileImage != null) {
+            //Image validation
+            $this->checkUserImage($userUpdate, $validator, $profileImage, $errors);
         }
 
-        return $app['twig']->render('error.twig',array(
-            'message'=>"No se han podido aplicar los cambios en el perfil.",
-        ));
+        if($validator->haveErrors($errors)) {
+            $renderController = new RenderController();
+            return $renderController->renderEditProfile($app, $errors);
+        }
+
+        //Encrypt user password before insert in database
+        $userUpdate->setPassword(crypt($userUpdate->getPassword(), '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
+        //Image not null
+        $errors = new FormError();
+        if($profileImage != null) {
+
+            // Delete previous Image
+            unlink('../web/assets/img/profile_img/'. $currentUser->getId().'.jpg');
+            $imageProcessing = new ImageProcessing();
+            $imageProcessing->saveProfileImage(strval($currentUser->getId()), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
+
+        }
+
+        //updates the info of the session
+        $sessionController->setSession($app,$userUpdate->getId());
+        // updates the database user row with the new data
+        $pdo->update($app, $userUpdate);
+
+        return $app -> redirect('/');
 
     }
 
@@ -325,7 +325,7 @@ class FormsController {
             return $app -> redirect('/user-images');
 
 
-        }else  return $app -> redirect('/login');
+        } else  return $app -> redirect('/login');
 
     }
 }

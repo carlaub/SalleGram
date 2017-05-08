@@ -114,7 +114,10 @@ class RenderController {
         ));
     }
 
-    public function renderEditProfile(Application $app) {
+    public function renderEditProfile(Application $app, $errors = null) {
+
+        if($errors == null) $errors = new FormError();
+
         $TotaInfoDeFotos = 0;
         $db = Database::getInstance("pwgram");
         $userPdo     = new PdoUserRepository($db);
@@ -128,7 +131,8 @@ class RenderController {
             'haveProfileImage'=> $user->getProfileImage(),
             'img'=> '/profile_img/'.$this->sessionController->getSessionUserId($app).'.jpg',
             'logged'=>false,
-            'data'=>$TotaInfoDeFotos
+            'data'=>$TotaInfoDeFotos,
+            'errors'=>$errors
         ));
     }
 

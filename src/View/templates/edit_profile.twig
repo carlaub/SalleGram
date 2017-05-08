@@ -27,6 +27,25 @@
     <div class="container">
         <h1 class="text-muted">Edición del usuario</h1>
         <hr>
+        {% if errors.usernameRegisteredError %}
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                <h4>Algo va mal...</h4>
+                <p>El nombre de usuario ya esta siendo utilizado.</p>
+
+            </div>
+        {% endif %}
+
+        {% if errors.imageError %}
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                <h4>Algo va mal...</h4>
+                <p>{{ errors.stringImageError }}</p>
+
+            </div>
+        {% endif %}
         <div class="row">
 
             <div class="col-md-9 personal-info">
@@ -36,7 +55,15 @@
                         <div class="form-group">
                             <label class="col-lg-4 control-label text-muted">Username</label>
                             <div class="col-lg-8">
-                                <input class="form-control " type="text" placeholder="Username" name="username" id="username" value="{{ name }}">
+                            {% if errors.usernameError %}
+                                    {% set class = "form-control-red" %}
+                                    {% set placeholder = "Username inválido" %}
+                                {% else %}
+                                    {% set class="form-control" %}
+                                    {% set placeholder = "Username" %}
+                                {% endif %}
+                                <input class="{{ class }}" type="text" placeholder="{{ placeholder }}" name="username"
+                                       id="username">
                             </div>
                         </div>
 
@@ -44,20 +71,48 @@
                         <div class="form-group">
                             <label class="col-lg-4 control-label text-muted">Fecha nacimiento:</label>
                             <div class="col-lg-8">
-                                <input class="form-control" type="date" placeholder="dd/mm/yyyy" name="date" id="date" value="{{ birthday }}">
+                            {% if errors.dateError %}
+                                    {% set class = "form-control-red" %}
+                                {% else %}
+                                    {% set class="form-control" %}
+                                    {% set placeholder = "dd/mm/yyyy" %}
+                                {% endif %}
+                                <input class="{{ class }}" type="date" placeholder="{{ placeholder }}" name="date"
+                                       id="date">
+                                {% if errors.dateError %}
+                                    <p class="text-error">Fecha inválida</p>
+                                {% endif %}
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-md-4 control-label text-muted">Contraseña:</label>
                             <div class="col-md-8">
-                                <input class="form-control" type="password" placeholder="******" name="password" id="password">
+                             {% if errors.passwordError %}
+                                    {% set class = "form-control-red" %}
+                                    {% set placeholder = "Contraseña inválida" %}
+                                {% else %}
+                                    {% set class="form-control" %}
+                                    {% set placeholder = "******" %}
+                                {% endif %}
+                                <input class="{{ class }}" type="password" placeholder="{{ placeholder }}"
+                                       name="password"
+                                       id="password">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label text-muted">Confirmar contraseña:</label>
                             <div class="col-md-8">
-                                <input class="form-control" type="password" placeholder="******" name="confirm-password" id="confirm-password">
+                                {% if errors.confirmPasswordError %}
+                                    {% set class = "form-control-red" %}
+                                    {% set placeholder = "las contraseñas no coinciden" %}
+                                {% else %}
+                                    {% set class="form-control" %}
+                                    {% set placeholder = "******" %}
+                                {% endif %}
+                                <input class="{{ class }}" type="password" placeholder="{{ placeholder }}"
+                                       name="confirm-password"
+                                       id="confirm-password">
                             </div>
                         </div>
                         <div class="form-group">

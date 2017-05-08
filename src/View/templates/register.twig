@@ -32,7 +32,6 @@
     {% endif %}
 
     {% if errors.imageError %}
-
         <div class="container">
         <h1 class="text-muted">Registro</h1>
         <hr>
@@ -169,6 +168,6 @@
     {{ parent() }}
 
     {#TODO: IMPORTANTISIMO DESCOMENTAR#}
-    {#<script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>#}
+    <script type="text/javascript" src="{{ asset('register.js', 'js') }}"></script>
     <script type="text/javascript" src="{{ asset('image_tools.js', 'js') }}"></script>
 {% endblock javascripts %}

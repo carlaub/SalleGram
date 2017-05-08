@@ -91,22 +91,17 @@ class Validator
 
         $errors = new FormError();
 
-
-       // if (!$this->validateUserEditableFields($user, $passwd2, $errors)) return false;
         $this->validateUserEditableFields($user, $passwd2, $errors);
-
 
         $db = Database::getInstance("pwgram");
         $pdoUser = new PdoUserRepository($db);
 
 
-//        if (!$pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail())) return false;
         if (!$pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail())){
             $errors->setUsernameRegisteredError(true);
         } else {
             $errors->setUsernameRegisteredError(false);
         }
-
 
         //return true;
         return $errors;
@@ -122,10 +117,12 @@ class Validator
      *
      * @return bool                     true if the new data is correct, false if not.
      */
-    public function validateUserUpdate(Application $app, User $currentUserState, User $userUpdate, $passwd2, $errors) {
+    public function validateUserUpdate(Application $app, User $currentUserState, User $userUpdate, $passwd2) {
 
-        if (!$this->validateUserEditableFields($userUpdate, $passwd2)) return false;
 
+        $errors = new FormError();
+
+        $this->validateUserEditableFields($userUpdate, $passwd2, $errors);
         if ($currentUserState->getUsername() !== $userUpdate->getUsername()) {
 
             $db = Database::getInstance("pwgram");
@@ -133,12 +130,12 @@ class Validator
 
             if (!$pdoUser->validateUnique($app, $userUpdate->getUsername())) {
                 $errors->setUsernameRegisteredError(true);
-                return false;
+            } else {
+                $errors->setUsernameRegisteredError(false);
             }
         }
-        $errors->setUsernameRegisteredError(false);
 
-        return true;
+        return $errors;
     }
 
     // not checked
