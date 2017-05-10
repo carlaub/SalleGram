@@ -433,6 +433,18 @@ class RenderController {
             $idUser = $this->sessionController->getSessionUserId($app);
             $image = $this->getProfileImage($app, $idUser);
 
+            if(sizeof($userNotifications) == 0) {
+                return $app['twig']->render('homeWelcome.twig', array(
+                    'app'=> ['name' => $app['app.name']],
+                    'name'=> $this->sessionController->getSessionName($app),
+                    'img'=> $image,
+                    'logged'=> $this->sessionController->haveSession($app),
+                    'p'=> ' Aún no tienes ninguna notificación '
+                ));
+            }
+
+
+
             $content = $app['twig']->render('notifications.twig',
                 [   'name'      => $this->sessionController->getSessionName($app),
                     'img'       => $image,
