@@ -363,3 +363,9 @@ html,body {
 .popover-content{
     color: #0f0f0f;
 }
+
+.card-center {
+    margin: 0 auto; /* Added */
+    float: none; /* Added */
+    margin-bottom: 10px; /* Added */
+}

@@ -48,7 +48,7 @@
 
             {#No logeado#}
             {% if logged == false %}
-                <div class="col-sm6 col-md-4">
+                <div class="col-sm6 col-md-4 card-center">
                     <div class="thumbnail limit-image">
                         <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
                         <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
@@ -94,8 +94,8 @@
             {#logeado#}
             {% if logged != false %}
 
-                <div class="col-sm-6 col-md-4">
-                    <div class="thumbnail limit-image">
+                <div class="col-sm-6 col-md-4 card-center">
+                    <div class="thumbnail limit-image ">
                         <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
                         <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
                         <div class="caption">
