@@ -381,7 +381,7 @@ class RenderController {
         $publicImages = array();
 
         // Obtain all public images in db
-        $imagesFromDB =  $pdoImage->getAllUserImages($app, $id, $ordMode);
+        $imagesFromDB =  $pdoImage->getAllUserImagesNonPrivate($app, $id, $ordMode);
 
         return $imagesFromDB;
     }

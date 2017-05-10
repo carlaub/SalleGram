@@ -229,13 +229,13 @@ class PdoImageRepository implements PdoRepository
                     // Ord by comments
                     $query = "SELECT Image.* , COUNT(Comment.id) AS post_count 
                               FROM Image  LEFT JOIN Comment ON Image.id = Comment.fk_image
-                              WHERE Image.fk_user = ?
+                              WHERE Image.fk_user = ? 
                               GROUP BY Image.id
                               ORDER BY post_count DESC";
                     break;
                 case 4:
                     // Ord by
-                    $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY visits DESC";
+                    $query = "SELECT * FROM Image WHERE fk_user = ?  ORDER BY visits DESC";
                     break;
             }
 
@@ -250,6 +250,66 @@ class PdoImageRepository implements PdoRepository
         else {
 
             $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC LIMIT ?, ?";
+            $result = $app['db']->fetchAll(
+                $query,
+                array(
+                    $id,
+                    $offset,
+                    $limit
+                )
+            );
+        }
+
+        if (!$result) return []; // Any image in DB
+
+        return $this->populateImages($result);
+    }
+
+    /**
+     * @param int $id       The id of the user.
+     * @param int $offset
+     * @param int $limit
+     * @return array|bool
+     */
+    public function getAllUserImagesNonPrivate(Application $app, $id, $ordMode = 1, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+
+        if ($offset == 0) {
+
+            // Sort pictures according to likes, visits, comments or data
+            switch($ordMode) {
+                case 1:
+                    // Ord by data
+                    $query = "SELECT * FROM Image WHERE fk_user = ? AND private = 0 ORDER BY created_at DESC";
+                    break;
+                case 2:
+                    // Ord by likes
+                    $query = "SELECT * FROM Image WHERE fk_user = ?  AND private = 0 ORDER BY likes DESC";
+                    break;
+                case 3:
+                    // Ord by comments
+                    $query = "SELECT Image.* , COUNT(Comment.id) AS post_count 
+                              FROM Image  LEFT JOIN Comment ON Image.id = Comment.fk_image
+                              WHERE Image.fk_user = ? AND private = 0
+                              GROUP BY Image.id
+                              ORDER BY post_count DESC";
+                    break;
+                case 4:
+                    // Ord by
+                    $query = "SELECT * FROM Image WHERE fk_user = ?  AND private = 0 ORDER BY visits DESC";
+                    break;
+            }
+
+
+            $result = $app['db']->fetchAll(
+                $query,
+                array(
+                    $id
+                )
+            );
+        }
+        else {
+
+            $query = "SELECT * FROM Image WHERE fk_user = ? AND private = 0 ORDER BY created_at DESC LIMIT ?, ?";
             $result = $app['db']->fetchAll(
                 $query,
                 array(
