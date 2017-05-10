@@ -67,8 +67,6 @@ class FormsController {
      */
     public function registerUser(Application $app, Request $request) {
 
-        //TODO if not put anything in image or passwd dont change it!
-
         $db = Database::getInstance("pwgram");
 
         $validator = new Validator();
@@ -89,7 +87,7 @@ class FormsController {
 
         if($validator->haveErrors($errors)) {
             $renderController = new RenderController();
-            return $renderController->renderRegistration($app, $errors);
+            return $renderController->renderRegistration($app, $errors, $newUser);
         }
 
         //Encrypt user password before insert in database
@@ -105,6 +103,7 @@ class FormsController {
 
         //Send validation email
         $emailManager = new EmailManager();
+
         //TODO: cambiar mail
         $emailSentOK = $emailManager->sendEmail("albertpv95@icloud.com", $idUser);
 

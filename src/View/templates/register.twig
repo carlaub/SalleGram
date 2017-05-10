@@ -50,12 +50,14 @@
                                 {% if errors.usernameError %}
                                     {% set class = "form-control-red" %}
                                     {% set placeholder = "Username inválido" %}
+                                    {% set value = "" %}
                                 {% else %}
                                     {% set class="form-control" %}
                                     {% set placeholder = "Username" %}
+                                    {% set value =  user.username  %}
                                 {% endif %}
                                 <input class="{{ class }}" type="text" placeholder="{{ placeholder }}" name="username"
-                                       id="username">
+                                       id="username" value={{ value }}>
                             </div>
                         </div>
                     {% endblock username_field %}
@@ -67,12 +69,14 @@
                             {% if errors.emailError %}
                                 {% set class = "form-control-red" %}
                                 {% set placeholder = "Email inválido" %}
+                                {% set value = "" %}
                             {% else %}
                                 {% set class="form-control" %}
                                 {% set placeholder = "example@mail.com" %}
+                                {% set value = user.email %}
                             {% endif %}
                             <input class="{{ class }}" type="email" placeholder="{{ placeholder }}" name="mail"
-                                   id="mail">
+                                   id="mail" value={{ user.email }}>
                         </div>
                     </div>
 
@@ -84,12 +88,14 @@
                             <div class="col-lg-8">
                                 {% if errors.dateError %}
                                     {% set class = "form-control-red" %}
+                                    {% set value = "" %}
                                 {% else %}
                                     {% set class="form-control" %}
                                     {% set placeholder = "dd/mm/yyyy" %}
+                                    {% set value = user.birthday %}
                                 {% endif %}
                                 <input class="{{ class }}" type="date" placeholder="{{ placeholder }}" name="date"
-                                       id="date">
+                                       id="date" value={{ value }}>
                                 {% if errors.dateError %}
                                     <p class="text-error">Fecha inválida</p>
                                 {% endif %}

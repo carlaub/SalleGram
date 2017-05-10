@@ -256,6 +256,11 @@ class FormError
         return $this->stringTitleImageError;
     }
 
+    public function setUsernameRegisteredError(bool $usernameRegisteredError) {
+        $this->usernameRegisteredError = $usernameRegisteredError;
+
+    }
+
 
 
 

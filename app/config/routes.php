@@ -81,8 +81,7 @@ $app->get('/notifications', 'pwgram\\Controller\\RenderController::renderNotific
 $app->get('/delete-notification/{id}','pwgram\\Controller\\NotificationsController::deleteNotification')->before($sessionControl);
 
 
-//TODO: descomentar y preguntar a Jaume
-//$app->error('pwgram\\Controller\\NotificationsController::renderUnknown');
+// TODO: DESCOMENTAR!!!!
 //$app->error(function (\Exception $e, $code) use ($app) {
 //
 //    $response = new Response();

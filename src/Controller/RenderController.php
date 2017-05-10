@@ -3,6 +3,7 @@
 namespace pwgram\Controller;
 
 use pwgram\Model\Entity\FormError;
+use pwgram\Model\Entity\User;
 use Silex\Application;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
@@ -105,16 +106,18 @@ class RenderController {
 
     }
 
-    public function renderRegistration(Application $app, $errors = null) {
+    public function renderRegistration(Application $app, $errors = null, $user = null) {
         $TotaInfoDeFotos = 0;
 
         if($errors == null) $errors = new FormError();
+        if($user == null) $user = new User();
 
         return $app['twig']->render('register.twig', array(
             'app'=> ['name' => $app['app.name']],
             'logged'=>false,
             'data'=>$TotaInfoDeFotos,
-            'errors'=>$errors
+            'errors'=>$errors,
+            'user'=>$user
         ));
     }
 
