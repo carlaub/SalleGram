@@ -16,7 +16,6 @@ $(document).ready(function() {
             type: 'post',
             success: function (response) {
 
-                console.log("response: " + response);
                 callback(JSON.parse(response));
             }
         });
@@ -144,6 +143,8 @@ $(document).ready(function() {
 
             $("#icon_load_more").remove();
         }
+
+        imagesLoaded += loaded;
     }
 
 
