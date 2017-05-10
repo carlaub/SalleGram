@@ -10,6 +10,7 @@ use pwgram\Model\Entity\Comment;
 use pwgram\Model\Entity\User;
 use pwgram\Model\Repository\PdoImageLikesRepository;
 use pwgram\Model\Repository\PdoImageRepository;
+use pwgram\Model\Repository\PdoNotificationRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use pwgram\Model\Repository\PdoCommentRepository;
 
@@ -286,17 +287,29 @@ class FormsController {
             $pdoImage = new PdoImageRepository($db);
             $pdoComment = new PdoCommentRepository($db);
             $pdoLike = new PdoImageLikesRepository($db);
+            $pdoNotification = new PdoNotificationRepository($db);
+
 
 
             // Delete image commments
             $comments = $pdoComment->getImageComments($app, $idImage);
             if($comments != null){
-                foreach ($comments as $commentUser) {
-                    $pdoComment->remove($app, $commentUser->getId());
+                foreach ($comments as $comment) {
+                    $pdoComment->remove($app, $comment->getId());
                 }
             }
+
+            //delete image notifications
+            $notifications = $pdoNotification->getNotificationsImage($app, $idImage);
+            if($notifications != null){
+                foreach ($notifications as $notification) {
+                    $pdoNotification->remove($app, $notification->getId());
+                }
+            }
+
             // Delete image likes
             $pdoLike->removeImageLikes($app, $idImage);
+            //delete image
             $pdoImage->remove($app, $idImage);
 
             // Delete image server
@@ -307,6 +320,7 @@ class FormsController {
         }else return $app -> redirect('/login');
 
     }
+
 
     public function editImageForm(Application $app, Request $request, $idImage){
         $db = Database::getInstance("pwgram");

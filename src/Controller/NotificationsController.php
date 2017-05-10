@@ -49,7 +49,6 @@ class NotificationsController {
             $imgTitle = $pdoImage->getTitle($app, $imgId);
 
             $notification->setFromUsername($username);
-            var_dump($imgTitle);
            // if($imgTitle != null)
             $notification->setImgTitle($imgTitle);
         }

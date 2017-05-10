@@ -104,6 +104,36 @@ class PdoNotificationRepository implements PdoRepository
         );
     }
 
+
+    public function getNotificationsImage(Application $app, $id) {
+        $notifications = [];
+
+        $query  = "SELECT * FROM `Notification` WHERE fk_image = ?";
+        $result = $app['db']->fetchAll($query, array($id));
+
+        if (!$result) return $notifications; // an error happened during the execution
+
+        foreach ($result as $notification) {
+
+            array_push(
+                $notifications,
+                new Notification(
+                    $notification['fk_user_dest'],
+                    $notification['fk_user_src'],
+                    $notification['type'],
+                    $notification['fk_image'],
+                    $notification['created_at'],
+                    $notification['id']
+                )
+            );
+        }
+
+        return $notifications;
+    }
+
+
+
+
     public function remove(Application $app, $id)
     {
         $app['db']->delete(PdoNotificationRepository::TABLE_NAME,
