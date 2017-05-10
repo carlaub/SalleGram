@@ -50,7 +50,7 @@ class ImageViewController {
         //Set Username
         $image->setUserName($pdoUser->getName($app, $image->getFkUser()));
         //Set Comment
-        $comments = $pdoComents->getImageComments($app, $idImage);
+        $comments = $pdoComents->getImageComments($app, $idImage, 0, PdoCommentRepository::APP_MAX_COMMENTS_PAGINATED);
         if ($comments){
             //Set the name of username of the comment
             foreach ($comments as $commentUser) {

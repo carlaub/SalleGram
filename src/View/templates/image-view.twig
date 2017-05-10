@@ -128,6 +128,14 @@
                                     <small> {{  comment.content }}</small>
                                 </p>
                             {% endfor %}
+
+
+                            {% if image.comments|length < image.numComments %}
+
+                                <!-- Used to know which image is clicked to load more comments -->
+                                <a id="icon_load_more_comments" class="btn glyphicon glyphicon-plus"></a>
+                            {% endif %}
+
                             <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
                                     <textarea class="form-control textarea-comment" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>
                                     <button class="btn btn-info" type="submit">Publicar comentario</button>
@@ -149,10 +157,21 @@
                 </div>
             {% endif %}
 
-
-
-
         </div>
+
     </div>
 
+    {% block javascripts %}
+        {{ parent() }}
+
+        <script>
+
+            var imageView = {{ image|json_encode|raw }};
+        </script>
+
+        <script type="text/javascript" src="{{ asset('comments.js', 'js') }}"></script>
+
+    {% endblock %}
+
 {% endblock content %}
+

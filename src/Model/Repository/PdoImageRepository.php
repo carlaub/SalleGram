@@ -32,7 +32,8 @@ use Symfony\Component\Config\Definition\Exception\Exception;
  */
 class PdoImageRepository implements PdoRepository
 {
-    const TABLE_NAME    = "Image";
+    const TABLE_NAME            = "Image";
+    const APP_MAX_IMG_PAGINATED = 5;
 
     /**
      * @var Database class instance.
@@ -181,12 +182,13 @@ class PdoImageRepository implements PdoRepository
 
         if ($offset == 0) {
 
-            $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY created_at";
+            $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY created_at DESC LIMIT ?";
             $result = $app['db']->fetchAll(
                 $query,
                 array(
-                    $limit
-                )
+                    (int) $limit
+                ),
+                array (\PDO::PARAM_INT)
             );
         }
         else {
@@ -194,15 +196,27 @@ class PdoImageRepository implements PdoRepository
             $result = $app['db']->fetchAll(
                 $query,
                 array(
-                    $offset,
-                    $limit
-                )
+                    (int) $offset,
+                    (int) $limit
+                ),
+                array(\PDO::PARAM_INT, \PDO::PARAM_INT)
             );
         }
 
         if (!$result) return []; // Any image in DB
 
         return $this->populateImages($result);
+    }
+
+    public function getTotalOfPublicImages(Application $app) {
+
+        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Image WHERE private IS FALSE");
+
+        if (!$result) return 0;
+
+        $total = $result->fetch();
+
+        return $total['total'];
     }
 
     /**
@@ -365,12 +379,13 @@ class PdoImageRepository implements PdoRepository
 
     public function getMostVisitedImages(Application $app, $max = 5) {
 
-        $query = "SELECT * FROM Image ORDER BY visits ASC LIMIT ?";
+        $query = "SELECT * FROM Image ORDER BY visits DESC LIMIT ?";
         $result = $app['db']->fetchAll(
             $query,
             array(
                 $max
-            )
+            ),
+            array(\PDO::PARAM_INT)
         );
 
         if(!$result) return []; // Any image in DB
@@ -468,6 +483,8 @@ class PdoImageRepository implements PdoRepository
         $images = [];
 
         foreach ($queryResult as $image) {
+
+            if ($image['private'] === null) $image['private'] = false;
 
             array_push(
                 $images,

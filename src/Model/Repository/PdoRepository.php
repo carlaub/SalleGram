@@ -7,7 +7,7 @@ use Silex\Application;
 
 interface PdoRepository {
 
-    const MAX_RESULTS_LIMIT   = 18446744073709551615;
+    const MAX_RESULTS_LIMIT   = 18446744073709551;
 
     public function add     (Application $app, $row);
 

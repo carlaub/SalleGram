@@ -28,8 +28,7 @@ class RenderController {
         $this->sessionController = new SessionController();
     }
 
-    public function renderHome(Application $app) {
-        //TODO: This is a first solution but must be rethinked for pagination
+    public function renderHome(Application $app, $publicImages = null, $mostVisitedLayout = false) {
 
         $db = Database::getInstance("pwgram");
         $commentsPdo = new PdoCommentRepository($db);
@@ -38,16 +37,18 @@ class RenderController {
         $likesPdo   = new PdoImageLikesRepository($db);
 
 
-        //Images array that will be displayed on the main page
-        $publicImages = $imagesPdo->getAllPublicImages($app);
-        $publicImages = !$publicImages? [] : $publicImages; // if false, return an empty array, if not return the public images
+        if ($publicImages == null) {
 
+            //Images array that will be displayed on the main page
+            $publicImages = $imagesPdo->getAllPublicImages($app, 0, PdoImageRepository::APP_MAX_IMG_PAGINATED);
+            $publicImages = !$publicImages ? [] : $publicImages; // if false, return an empty array, if not return the public images
+        }
         $imagesDatesFormatted   = [];
 
         // let's add all the comments for each image
         foreach ($publicImages as $image) {
 
-            $comments = $commentsPdo->getImageComments($app, $image->getId());
+            $comments = $commentsPdo->getImageComments($app, $image->getId(), 0, 3);
             //Set the name of username of the comment
             if (!$comments) $comments = [];
             else{
@@ -63,6 +64,8 @@ class RenderController {
             $image->setUserName($userName);
             $image->setLiked(!($likesPdo->likevalid($app, $image->getId(), $this->sessionController->getSessionUserId($app))));
 
+            $image->setNumComments($commentsPdo->getTotalImageComments($app, $image->getId()));
+
             array_push($imagesDatesFormatted, AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt())));
         }
 
@@ -77,7 +80,8 @@ class RenderController {
                 'img'=> $image,
                 'logged'=> $this->sessionController->haveSession($app),
                 'images'=>$publicImages,
-                'dates' => $imagesDatesFormatted
+                'dates' => $imagesDatesFormatted,
+                'is_most_visited_layout' => $mostVisitedLayout
             ));
         } else {
             return $app['twig']->render('homeWelcome.twig', array(
@@ -87,10 +91,21 @@ class RenderController {
                 'logged'=> $this->sessionController->haveSession($app),
                 'p'=> 'Sube fotos y compártelas con tus amigos ',
                 'images'=>$publicImages,
-                'dates' => $imagesDatesFormatted
+                'dates' => $imagesDatesFormatted,
+                'is_most_visited_layout' => $mostVisitedLayout
             ));
         }
 
+    }
+
+    public function renderMostVisited(Application $app) {
+
+        $db = Database::getInstance("pwgram");
+        $imagesPdo = new PdoImageRepository($db);
+
+        $imagesPdo = $imagesPdo->getMostVisitedImages($app);
+
+        return $this->renderHome($app, $imagesPdo, true);
     }
 
     public function renderLogin(Application $app, $errors = null) {
@@ -182,7 +197,8 @@ class RenderController {
     {
         $imageViewController = new ImageViewController();
         $db = Database::getInstance("pwgram");
-        $likesPdo = new PdoImageLikesRepository($db);
+        $likesPdo   = new PdoImageLikesRepository($db);
+        $commentsPdo = new PdoCommentRepository($db);
 
         $idUser = $this->sessionController->getSessionUserId($app);
 
@@ -206,7 +222,9 @@ class RenderController {
 //                ));
 //            }
 
-            $dateFormatted = AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt()));
+        $image->setNumComments($commentsPdo->getTotalImageComments($app, $image->getId()));
+
+        $dateFormatted = AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt()));
 
             //Image OK
             return $app['twig']->render('image-view.twig', array(
@@ -217,7 +235,7 @@ class RenderController {
                 'logged' => $idUser,
                 'date' => $dateFormatted
             ));
-        }else { //Image not found
+        } else { //Image not found
             $response = new Response();
             $content =  $app['twig']->render('error.twig',array(
                 'message'=>"Imagen no encontrada"
@@ -359,12 +377,13 @@ class RenderController {
 
             if (!$imageFromDB['private']) {
 
-                $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false,
+                $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false, $imageFromDB['extension'],
                                     $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
 
                 $userName = $pdoUser->getName($app, $imageFromDB['fk_user']);
                 $image->setUserName($userName);
                 $image->setComments($pdoComment->getImageComments($app, $image->getId()));
+                $image->setNumComments($pdoComment->getTotalImageComments($app, $image->getId()));
 
                 array_push($publicImages, $image);
             }

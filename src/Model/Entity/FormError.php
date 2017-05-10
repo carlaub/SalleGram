@@ -198,7 +198,6 @@ class FormError
         return $this->usernameRegisteredError;
     }
 
-
     /**
      * @return string
      */

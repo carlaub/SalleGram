@@ -80,6 +80,10 @@ $app->post('/editImage/form/{idImage}', 'pwgram\\Controller\\FormsController::ed
 $app->get('/notifications', 'pwgram\\Controller\\RenderController::renderNotifications')->before($sessionControl);
 $app->get('/delete-notification/{id}','pwgram\\Controller\\NotificationsController::deleteNotification')->before($sessionControl);
 
+/* Home */
+$app->post('/home-more-images/{lastImage}', 'pwgram\\Controller\\HomeController::onShowMoreImages');
+$app->get('/last-posts', 'pwgram\\Controller\\RenderController::renderHome');
+$app->get('/most-visited', 'pwgram\\Controller\\RenderController::renderMostVisited');
 
 // TODO: DESCOMENTAR!!!!
 //$app->error(function (\Exception $e, $code) use ($app) {

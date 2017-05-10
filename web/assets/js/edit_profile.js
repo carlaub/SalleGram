@@ -95,7 +95,7 @@ $(document).ready(function() {
             element.className = "form-control-red";
             return false;
         }
-        else if(password != password2){
+        else if(password !== password2){
             element.className = "form-control-green";
             element = document.getElementById("confirm-password");
             element.placeholder = "Las contraseñas no coinciden";

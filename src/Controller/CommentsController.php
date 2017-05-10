@@ -138,6 +138,13 @@ class CommentsController
 
     }
 
+    public function onShowMoreComments(Application $app, $lastComment) {
 
+        $db = Database::getInstance("pwgram");
+        $pdo = new PdoCommentRepository($db);
 
+        $nextComments = $pdo->getImageComments($app, $lastComment, $lastComment, $lastComment + PdoCommentRepository::APP_MAX_COMMENTS_PAGINATED);
+
+        $app['objects_json_parser']->objectToJson($nextComments);
+    }
 }

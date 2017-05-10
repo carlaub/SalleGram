@@ -115,5 +115,16 @@ class Comment {
 
 
 
+    /**
+     * This method is created because if called from outside, only returns attributes
+     * that are not private.
+     *
+     * @return array the attributes with its values.
+     */
+    public function getVars() {
+
+        return get_object_vars($this);
+    }
+
 
 }

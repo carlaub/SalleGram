@@ -34,6 +34,8 @@ class PdoCommentRepository implements PdoRepository
 {
     const TABLE_NAME    = "Comment";
 
+    const APP_MAX_COMMENTS_PAGINATED = 3;
+
     /**
      * @var Database class instance.
      */
@@ -109,7 +111,7 @@ class PdoCommentRepository implements PdoRepository
 
         if ($offset == 0) {
 
-            $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC";
+            $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC LIMIT 3";
             $result = $app['db']->fetchAll(
                 $query,
                 array(
@@ -126,7 +128,8 @@ class PdoCommentRepository implements PdoRepository
                     $id,
                     $offset,
                     $limit
-                )
+                ),
+                array(\PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT)
             );
         }
         if (!$result) return false; // an error happened during the execution
@@ -148,7 +151,6 @@ class PdoCommentRepository implements PdoRepository
 
         return $resComments;
     }
-
 
     /**
      * @param Application $app
@@ -211,12 +213,26 @@ class PdoCommentRepository implements PdoRepository
 
     /**
      * @param Application $app
-     * @param $id               The id of the user.
+     * @param int $id               The id of the user.
      * @return int              The number of comments made by an user.
      */
     public function getTotalUserComments(Application $app, $id) {
 
         $query  = "SELECT COUNT(*) as total FROM Comment WHERE fk_user = ?";
+        $result = $comment = $app['db']->fetchAssoc(
+            $query,
+            array(
+                $id
+            )
+        );
+        if (!$result) return 0;
+
+        return $result['total'];
+    }
+
+    public function getTotalImageComments(Application $app, $id) {
+
+        $query  = "SELECT COUNT(*) as total FROM Comment WHERE fk_image = ?";
         $result = $comment = $app['db']->fetchAssoc(
             $query,
             array(

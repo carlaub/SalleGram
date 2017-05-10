@@ -57,6 +57,10 @@ class Image
         $this->visits       = $visits;
         $this->likes        = $likes;
         $this->comments     = [];
+        $this->numComments  = 0;
+        $this->liked        = false;
+        $this->imgPath      = "";
+        $this->userName     = "";
 
     }
 
@@ -213,7 +217,7 @@ class Image
     public function setComments(array $comments)
     {
         $this->comments = $comments;
-        $this->numComments = count($comments);
+        //$this->numComments = count($comments);
     }
 
     /**
@@ -240,5 +244,16 @@ class Image
         $this->liked = $liked;
     }
 
+
+    /**
+     * This method is created because if called from outside, only returns attributes
+     * that are not private.
+     *
+     * @return array the attributes with its values.
+     */
+    public function getVars() {
+
+        return get_object_vars($this);
+    }
 
 }
