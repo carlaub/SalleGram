@@ -110,7 +110,7 @@ class RenderController {
         $TotaInfoDeFotos = 0;
 
         if($errors == null) $errors = new FormError();
-        if($user == null) $user = new User();
+        if($user == null) $user = new User("", "", "", 0);
 
         return $app['twig']->render('register.twig', array(
             'app'=> ['name' => $app['app.name']],

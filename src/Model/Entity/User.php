@@ -20,9 +20,9 @@ class User {
 
     private $birthday;
 
-    private $password; // TODO: se debería guardar en cliente?
+    private $password;
 
-    private $img_path; // Todo: se debería guardar en cliente?
+    private $img_path;
 
     private $active;
 
@@ -37,8 +37,9 @@ class User {
         $this->birthday = $birthday;
         $this->active   = $active;
         $this->id       = $id;
-        $this->profileImage = $profile_image; //Default
+        $this->profileImage = $profile_image;
     }
+
 
     public static function withImgPath($username, $email, $birthday, $active, $imgPath) {
 
