@@ -8,6 +8,7 @@ use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
 
+
 class ImageViewController {
 
     /**
@@ -20,13 +21,32 @@ class ImageViewController {
         $pdoUser = new PdoUserRepository($db);
         $pdoComents = new PdoCommentRepository($db);
 
-        // Verify that the image exist
+
         $image = $pdoImage->get($app, $idImage);
 
         // Image not found
         if(!$image) return false;
 
+        //is a private image?
+        if($image->isPrivate()){
+            $session = new SessionController();
+            if($session->getSessionUserId($app) != $image->getFkUser()) return false;
+        }
+
+        //Increment image visits
+        $this->incrementVisits($app, $idImage, $pdoImage);
+
+
+        // Verify that the image exist
+        $image = $pdoImage->get($app, $idImage);
+
+
+
+
+
+
         // Image found
+        $image = $pdoImage->get($app, $idImage);//return doing this for the increment of visits
         //Set Username
         $image->setUserName($pdoUser->getName($app, $image->getFkUser()));
         //Set Comment
@@ -41,8 +61,8 @@ class ImageViewController {
         }
 
 
-        //Increment image visits
-        $this->incrementVisits($app, $idImage, $pdoImage);
+//        //Increment image visits
+//        $this->incrementVisits($app, $idImage, $pdoImage);
 
         return $image;
     }

@@ -178,10 +178,11 @@ class RenderController {
      * @param $id
      * @return mixed
      */
-    public function renderImageView(Application $app, $id) {
+    public function renderImageView(Application $app, $id)
+    {
         $imageViewController = new ImageViewController();
         $db = Database::getInstance("pwgram");
-        $likesPdo   = new PdoImageLikesRepository($db);
+        $likesPdo = new PdoImageLikesRepository($db);
 
         $idUser = $this->sessionController->getSessionUserId($app);
 
@@ -190,30 +191,41 @@ class RenderController {
         $user->get($app, $idUser);
 
         $image = $imageViewController->prepareImage($app, $id);
-        $image->setLiked(!($likesPdo->likevalid($app, $image->getId(), $this->sessionController->getSessionUserId($app))));
+        if ($image != false) {
+
+            $image->setLiked(!($likesPdo->likevalid($app, $image->getId(), $this->sessionController->getSessionUserId($app))));
 
 
-        $profileImage = $this->getProfileImage($app, $idUser);
+            $profileImage = $this->getProfileImage($app, $idUser);
 
 
-        //Image not found
-        if (!$image) {
-            return $app['twig']->render('error.twig',array(
-                'message'=>"Imagen no encontrada.",
+//            //Image not found
+//            if (!$image) {
+//                return $app['twig']->render('error.twig', array(
+//                    'message' => "Imagen no encontrada.",
+//                ));
+//            }
+
+            $dateFormatted = AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt()));
+
+            //Image OK
+            return $app['twig']->render('image-view.twig', array(
+                'app' => ['name' => $app['app.name']],
+                'image' => $image,
+                'name' => $user->getName($app, $idUser),
+                'profileImage' => $profileImage,
+                'logged' => $idUser,
+                'date' => $dateFormatted
             ));
+        }else { //Image not found
+            $response = new Response();
+            $content =  $app['twig']->render('error.twig',array(
+                'message'=>"Imagen no encontrada"
+            ));
+            $response->setContent($content);
+            $response->setStatusCode(Response::HTTP_FORBIDDEN); // 403 code
+            return $response;
         }
-
-        $dateFormatted = AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt()));
-
-        //Image OK
-        return $app['twig']->render('image-view.twig', array(
-            'app'=> ['name' => $app['app.name']],
-            'image'=>$image,
-            'name'=> $user->getName($app, $idUser),
-            'profileImage'=> $profileImage,
-            'logged'=> $idUser,
-            'date' => $dateFormatted
-        ));
     }
 
     /**
