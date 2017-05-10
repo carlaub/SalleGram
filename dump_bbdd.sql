@@ -1,27 +1,23 @@
-
-
-CREATE DATABASE pwgram; use pwgram;
-
 -- phpMyAdmin SQL Dump
 -- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost:8880
--- Tiempo de generación: 16-04-2017 a las 18:12:09
--- Versión del servidor: 5.6.35
--- Versión de PHP: 7.1.1
+-- Host: localhost:8880
+-- Generation Time: May 10, 2017 at 08:49 PM
+-- Server version: 5.6.35
+-- PHP Version: 7.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Base de datos: `pwgram`
+-- Database: `pwgram`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Comment`
+-- Table structure for table `Comment`
 --
 
 CREATE TABLE `Comment` (
@@ -32,11 +28,10 @@ CREATE TABLE `Comment` (
   `fk_image` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Image`
+-- Table structure for table `Image`
 --
 
 CREATE TABLE `Image` (
@@ -51,10 +46,11 @@ CREATE TABLE `Image` (
   `fk_user` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Image_likes`
+-- Table structure for table `Image_likes`
 --
 
 CREATE TABLE `Image_likes` (
@@ -63,23 +59,33 @@ CREATE TABLE `Image_likes` (
   `fk_image` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `Image_likes`
+--
+
+INSERT INTO `Image_likes` (`id`, `fk_user`, `fk_image`) VALUES
+(1, 4, 48);
+
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Notification`
+-- Table structure for table `Notification`
 --
 
 CREATE TABLE `Notification` (
   `id` int(11) NOT NULL,
   `fk_user_dest` int(11) NOT NULL,
   `fk_user_src` int(11) NOT NULL,
-  `type` int(11) NOT NULL
+  `type` int(11) NOT NULL,
+  `fk_image` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `User`
+-- Table structure for table `User`
 --
 
 CREATE TABLE `User` (
@@ -93,66 +99,73 @@ CREATE TABLE `User` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Índices para tablas volcadas
+-- Dumping data for table `User`
+--
+
+INSERT INTO `User` (`id`, `username`, `email`, `birthdate`, `password`, `profile_image`, `active`) VALUES
+(4, 'jorge1', 'jorgemt10@hotmail.com', '0012-12-12', '$2a$07$usesomadasdsadsadsadaepfVyqwEzvlYHfvOq6ONeArMWtk6DbrC', 1, 0),
+
+--
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `Comment`
+-- Indexes for table `Comment`
 --
 ALTER TABLE `Comment`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `Image`
+-- Indexes for table `Image`
 --
 ALTER TABLE `Image`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `Image_likes`
+-- Indexes for table `Image_likes`
 --
 ALTER TABLE `Image_likes`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `Notification`
+-- Indexes for table `Notification`
 --
 ALTER TABLE `Notification`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `User`
+-- Indexes for table `User`
 --
 ALTER TABLE `User`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `Comment`
+-- AUTO_INCREMENT for table `Comment`
 --
 ALTER TABLE `Comment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT de la tabla `Image`
+-- AUTO_INCREMENT for table `Image`
 --
 ALTER TABLE `Image`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 --
--- AUTO_INCREMENT de la tabla `Image_likes`
+-- AUTO_INCREMENT for table `Image_likes`
 --
 ALTER TABLE `Image_likes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT de la tabla `Notification`
+-- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT de la tabla `User`
+-- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
