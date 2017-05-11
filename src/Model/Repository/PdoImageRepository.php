@@ -380,6 +380,7 @@ class PdoImageRepository implements PdoRepository
     public function getMostVisitedImages(Application $app, $max = 5) {
 
         $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY visits DESC LIMIT ?";
+
         $result = $app['db']->fetchAll(
             $query,
             array(
