@@ -13,6 +13,7 @@ use pwgram\Controller\CommentsController;
 use Doctrine\DBAL\DriverManager;
 
 
+
 $app = new Application();
 
 $app['app.name'] = 'PWGram';
