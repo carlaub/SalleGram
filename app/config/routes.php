@@ -59,7 +59,7 @@ $app->get('/user-comments', 'pwgram\\Controller\\RenderController::renderUserCom
 $app->get('/edit-comment/{idComment}/{idImage}', 'pwgram\\Controller\\RenderController::renderEditComment')->before($sessionControl);
 $app->get('/delete-comment/{idComment}/{idImage}', 'pwgram\\Controller\\CommentsController::deleteComment')->before($sessionControl);
 $app->get('/edit-user-comment/form/{idComment}', 'pwgram\\Controller\\CommentsController::editComment')->before($sessionControl);
-
+$app->post('/image-more-comments/{idImage}/{lastComment}', 'pwgram\\Controller\\CommentsController::onShowMoreComments');
 
 /*Like*/
 $app->get('/like/{id}', 'pwgram\\Controller\\LikesController::addLike')->before($sessionControl);

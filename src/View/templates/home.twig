@@ -98,6 +98,7 @@
                                 <div class="">
                                     {% set i = 0 %}
 
+                                    <div id="comments_list_{{ image.id }}">
                                     {% for comment in image.comments %}
                                         {#{% set i = i + 1 %}#}
                                         {#{%  if i < 4 %}#}
@@ -108,6 +109,17 @@
                                         {#{% endif %}#}
 
                                     {% endfor %}
+
+                                    </div>
+
+                                    {% if image.comments|length < image.numComments %}
+
+                                        <div id="load_comments_{{ image.id }}">
+                                            <!-- Used to know which image is clicked to load more comments -->
+                                            <a id="icon_load_more_comments" class="btn glyphicon glyphicon-plus" data-var="{{ image.id }}"></a>
+                                        </div>
+
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="card-footer text-muted">
@@ -155,6 +167,7 @@
                                 <div class="">
                                     {% set i = 0 %}
 
+                                    <div id="comments_list_{{ image.id }}"></div>
                                     {% for comment in image.comments %}
                                         {#{% set i =i+1 %}#}
                                         {#{%  if i < 4 %}#}
@@ -166,6 +179,15 @@
 
                                     {% endfor %}
 
+
+                                    {% if image.comments|length < image.numComments %}
+
+                                        <div id="load_comments_{{ image.id }}">
+                                            <!-- Used to know which image is clicked to load more comments -->
+                                            <a id="icon_load_more_comments" class="btn glyphicon glyphicon-plus" data-var="{{ image.id }}"></a>
+                                        </div>
+
+                                    {% endif %}
 
                                 </div>
                                 <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
@@ -206,6 +228,7 @@
        {{ parent() }}
 
         <script type="text/javascript" src="{{ asset('home.js', 'js') }}"></script>
+        <script type="text/javascript" src="{{ asset('comments.js', 'js') }}"></script>
 
     {% endblock javascripts %}
 

@@ -15,20 +15,30 @@ $(document).ready(function() {
     function requestMoreImages(callback) {
 
 
-        var start = imagesLoaded; // + START_IMAGES;
-
-        console.log("START: " + start);
         $.ajax({
-            url: '/home-more-images/' + start,
+            url: '/home-more-images/' + imagesLoaded,
             type: 'post',
             success: function (response) {
 
-                console.log("imagesLoaded: " + imagesLoaded);
-                console.log("response: " + response);
                 callback(JSON.parse(response));
             }
         });
         return false;
+    }
+
+    function renderMoreCommentsButton(image) {
+        var res = "";
+
+        if (image.numComments <= 3) return res;
+
+        var href = "load_comments_" + image.id;
+
+        res += '<div id=' + href + '>';
+        res +=  '<!-- Used to know which image is clicked to load more comments -->'
+                + '<a id="icon_load_more_comments" class="btn glyphicon glyphicon-plus" data-var=' + image.id + '></a>'
+                + '</div>';
+
+        return res;
     }
 
     function renderCommentArea(logged, image) {
@@ -56,7 +66,7 @@ $(document).ready(function() {
 
         for (var i = 0; i < comments.length; i++) {
 
-            res = '<p class="limit"> <strong class="name-image">';
+            res += '<p class="comment"> <strong class="name-image">';
             res += comments[i].userName + " :";
             res += '</strong><small> ' + comments[i].content + '</small></p>';
         }
@@ -101,6 +111,8 @@ $(document).ready(function() {
             // TODO: no se hace con {{ asset etc }}, preguntar
             var imgAsset = "assets/img/upload_img/" + element.id + '_400x300.jpg';
 
+            var commentId = "comments_list_" + element.id;
+
             $('#img-container').append(
 
                 '<div class=" col-sm-6 col-md-4"> <div class="thumbnail"> ' +
@@ -120,7 +132,13 @@ $(document).ready(function() {
                 + '<span class="glyphicon glyphicon-comment glyphicon-black" ></span>'
                 + '</span> </p> <div class="">'
 
+                + '<div id=' + commentId + '>'
+
                 + renderComments(comment)
+
+                + '</div>'
+
+                + renderMoreCommentsButton(element)
 
                 + renderCommentArea(logged, element)
 
@@ -157,7 +175,7 @@ $(document).ready(function() {
 
 
 
-        console.log("IMAGES HERE: " + imagesLoaded + " and loaded: " + loaded);
+        //console.log("IMAGES HERE: " + imagesLoaded + " and loaded: " + loaded);
     }
 
 

@@ -125,9 +125,9 @@ class PdoCommentRepository implements PdoRepository
             $result = $app['db']->fetchAll(
                 $query,
                 array(
-                    $id,
-                    $offset,
-                    $limit
+                    (int) $id,
+                    (int) $offset,
+                    (int) $limit
                 ),
                 array(\PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT)
             );
@@ -237,7 +237,8 @@ class PdoCommentRepository implements PdoRepository
             $query,
             array(
                 $id
-            )
+            ),
+            array(\PDO::PARAM_INT)
         );
         if (!$result) return 0;
 

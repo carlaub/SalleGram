@@ -71,11 +71,11 @@ class HomeController
 
         return json_encode(array(
 
-            'logged' => $this->sessionController->correctSession($app),
-            'images' => $app['objects_json_parser']->objectToJson($nextImages),
-            'comments' => json_encode($commentsPerImage),
-            'dates'  => json_encode($imagesDatesFormatted),
-            'loaded' => json_encode($total),
+            'logged'    => $this->sessionController->correctSession($app),
+            'images'    => $app['objects_json_parser']->objectToJson($nextImages),
+            'comments'  => json_encode($commentsPerImage),
+            'dates'     => json_encode($imagesDatesFormatted),
+            'loaded'    => json_encode($total),
             'total_public_images' => json_encode($pdo->getTotalOfPublicImages($app))
         ));
         //return json_encode($imagesDatesFormatted);

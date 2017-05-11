@@ -121,19 +121,23 @@
                                 </span>
                             </p>
 
+                            <div id="comments_list_{{ image.id }}">
                             {% for comment in image.comments %}
 
                                 <p class="comment">
                                     <strong class="name-image">{{  comment.userName }} :</strong>
-                                    <small> {{  comment.content }}</small>
+                                    <small> {{ comment.content }}</small>
                                 </p>
                             {% endfor %}
 
+                            </div>
 
                             {% if image.comments|length < image.numComments %}
 
-                                <!-- Used to know which image is clicked to load more comments -->
-                                <a id="icon_load_more_comments" class="btn glyphicon glyphicon-plus"></a>
+                                <div id="load_comments_{{ image.id }}">
+                                    <!-- Used to know which image is clicked to load more comments -->
+                                    <a id="icon_load_more_comments" class="btn glyphicon glyphicon-plus" data-var="{{ image.id }}"></a>
+                                </div>
                             {% endif %}
 
                             <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
@@ -163,8 +167,6 @@
 
     {% block javascripts %}
         {{ parent() }}
-
-        {#<script>var imageView = {{ image|json_encode|raw }};</script>#}
 
         <script type="text/javascript" src="{{ asset('comments.js', 'js') }}"></script>
 

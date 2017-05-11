@@ -11,10 +11,23 @@ $(document).ready(function() {
 
     const START_COMMENTS  = 3;
 
-    function requestMoreComments(callback) {
+
+    /**
+     * A hashed array that stores the number of comments loaded
+     * for each image.
+     *
+     * @type {Array}
+     */
+    var commentsCount     = [];
+
+
+    function requestMoreComments(imageId, lastComment, callback) {
+
+        // because if lastComment is zero, we want to start loading from the third comment cause the first three surely are already loaded
+        if (lastComment === 0) lastComment = START_COMMENTS;
 
         $.ajax({
-            url: '/image-more-comments/' + totalImages[comment].comments.length + START_COMMENTS,
+            url: '/image-more-comments/' + imageId + '/' + lastComment,
             type: 'post',
             success: function (response) {
 
@@ -24,35 +37,80 @@ $(document).ready(function() {
         return false;
     }
 
-    function onMoreCommentsResponse(data) {
+    function renderComments(comments) {
 
-        for (var index in data) {
+        var res = "";
 
-            console.log("image: " + data[index]);
-            totalImages[comment].push(data[index]);
+        comments = JSON.parse(comments);
+
+        for (var i = 0; i < comments.length; i++) {
+
+            res += '<p class="comment"> <strong class="name-image">';
+            res += comments[i].userName + " :";
+            res += '</strong><small> ' + comments[i].content + '</small></p>';
         }
 
-        console.log("total images: " + totalImages);
+        return res;
+    }
+
+    function onMoreCommentsResponse(data) {
+
+        var comments = data['comments'];
+        var loaded   = parseInt(JSON.parse(data['loaded']));
+        var imageId  = parseInt(JSON.parse(data['image']));
+        var total    = parseInt(JSON.parse(data['total_image_comments']));
+
+        if (imageId === -1) return;
+
+        $('#comments_list_' + imageId).append(
+
+            renderComments(comments)
+        );
+
+        updateCommentsCount(imageId, loaded);
+
+
+        // if there are not more possible comments, we remove the + button
+        if (commentsCount[imageId] === total) {
+
+            var id = 'load_comments_' + imageId;
+
+            var node = document.getElementById(id);
+            node.remove();
+        }
+    }
+
+    function updateCommentsCount(id, count) {
+
+        if (id in commentsCount) commentsCount[id] += count;
+
+        else {
+
+            commentsCount.push(id);
+            commentsCount[id] = count + START_COMMENTS;
+        }
+    }
+
+    function recoverLastCommentImage(id) {
+
+        if (id in commentsCount) return commentsCount[id];
+
+        return 0;
     }
 
 
-    $("#icon_load_more_comments").unbind('click').click(function (event) {
+   // $("#icon_load_more_comments").unbind('click').on('click', function (event) {
+    $(document).unbind('click').on('click', '#icon_load_more_comments', function (event) {
 
-        console.log("event");
+        console.log("COMMENT +");
 
-        var myJSVar = $('#image-data').data('var');
-        console.dir("VAR: " + myJSVar);
-
-        console.dir("image: " + imageView);
-
-        console.log("ID: " + imageView.id);
-        console.log("ID2: " + imageView['id']);
+        var imageId = $(event.target).data('var'); // gets the image id
 
         event.preventDefault();
 
-        //requestMoreComments(onMoreCommentsResponse);
+        var lastComment = recoverLastCommentImage(imageId);
+
+        requestMoreComments(imageId, lastComment, onMoreCommentsResponse);
     });
-
-
 
 });

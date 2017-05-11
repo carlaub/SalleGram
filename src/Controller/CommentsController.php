@@ -14,6 +14,7 @@ use pwgram\Model\Entity\Notification;
 use pwgram\Model\Repository\PdoCommentRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoNotificationRepository;
+use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Comment;
@@ -138,13 +139,29 @@ class CommentsController
 
     }
 
-    public function onShowMoreComments(Application $app, $lastComment) {
+    public function onShowMoreComments(Application $app, $idImage, $lastComment) {
 
         $db = Database::getInstance("pwgram");
         $pdo = new PdoCommentRepository($db);
+        $userPdo = new PdoUserRepository($db);
 
-        $nextComments = $pdo->getImageComments($app, $lastComment, $lastComment, $lastComment + PdoCommentRepository::APP_MAX_COMMENTS_PAGINATED);
+        $nextComments = $pdo->getImageComments($app, $idImage, $lastComment, PdoCommentRepository::APP_MAX_COMMENTS_PAGINATED);
 
-        $app['objects_json_parser']->objectToJson($nextComments);
+        foreach ($nextComments as $comment) {
+
+            $user = $userPdo->get($app, $comment->getFkUser());
+            $comment->setUserName($user->getUsername());
+        }
+
+        $result = array(
+
+            'loaded'    =>  count($nextComments),
+            'image'     =>  $idImage,
+            'comments'  =>  $app['objects_json_parser']->objectToJson($nextComments),
+            'total_image_comments' => $pdo->getTotalImageComments($app, $idImage)
+        );
+
+
+        return json_encode($result);
     }
 }
