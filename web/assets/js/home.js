@@ -5,17 +5,23 @@
 
 $(document).ready(function() {
 
-    var imagesLoaded = 0;
+    var imagesLoaded = 5;
 
-    const START_IMAGES  = 5;
+    const IMAGES_PER_PAGE  = 5;
 
     function requestMoreImages(callback) {
 
+
+        var start = imagesLoaded; // + START_IMAGES;
+
+        console.log("START: " + start);
         $.ajax({
-            url: '/home-more-images/' + imagesLoaded + START_IMAGES,
+            url: '/home-more-images/' + start,
             type: 'post',
             success: function (response) {
 
+                console.log("imagesLoaded: " + imagesLoaded);
+                console.log("response: " + response);
                 callback(JSON.parse(response));
             }
         });
@@ -139,12 +145,16 @@ $(document).ready(function() {
         renderNewImages(logged, images, comments, dates);
 
         // all images have been loaded, so we remove the pagination button
-        if (loaded === total) {
+        if (loaded + imagesLoaded === total || loaded < IMAGES_PER_PAGE) {
 
             $("#icon_load_more").remove();
         }
 
         imagesLoaded += loaded;
+
+
+
+        console.log("IMAGES HERE: " + imagesLoaded + " and loaded: " + loaded);
     }
 
 

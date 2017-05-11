@@ -36,13 +36,16 @@ class HomeController
         $userPdo      = new PdoUserRepository($db);
         $likesPdo       = new PdoImageLikesRepository($db);
 
-        $nextImages = $pdo->getAllPublicImages($app, $lastImage, $lastImage + PdoImageRepository::APP_MAX_IMG_PAGINATED);
+        $nextImages = $pdo->getAllPublicImages($app, $lastImage, PdoImageRepository::APP_MAX_IMG_PAGINATED);
 
         $imagesDatesFormatted   = [];
         $commentsPerImage       = [];
 
+        $total = 0;
         // let's add all the comments for each image
         foreach ($nextImages as $image) {
+
+            $total++;
 
             $comments = $commentsPdo->getImageComments($app, $image->getId(), 0, 3);
             //Set the name of username of the comment
@@ -72,7 +75,7 @@ class HomeController
             'images' => $app['objects_json_parser']->objectToJson($nextImages),
             'comments' => json_encode($commentsPerImage),
             'dates'  => json_encode($imagesDatesFormatted),
-            'loaded' => json_encode($lastImage + count($nextImages)),
+            'loaded' => json_encode($total),
             'total_public_images' => json_encode($pdo->getTotalOfPublicImages($app))
         ));
         //return json_encode($imagesDatesFormatted);
