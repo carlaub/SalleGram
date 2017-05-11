@@ -42,8 +42,17 @@
     {% endif %}
     <hr>
     <ul class="nav nav-pills">
-        <li role="presentation" class="active"><a id="btn-home" href="/last-posts" class="btn-info">Home</a></li>
-        <li role="presentation"><a id="btn-most-visited" href="/most-visited" class="btn-info">Más vistas</a></li>
+        <li role="presentation" class="active">
+
+            <form method="get" action="/last-posts">
+                <button type="submit" class="btn btn-info">Home</button>
+            </form>
+        </li>
+        <li role="presentation">
+            <form method="get" action="/most-visited">
+                <button type="submit" class="btn btn-info">Más vistas</button>
+            </form>
+        </li>
     </ul>
 
 {% endblock navbar %}
@@ -63,7 +72,7 @@
 
                     <div class=" col-sm-6 col-md-4">
                         <div class="thumbnail">
-                            <a  href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
+                            <a  href="/image-view/{{ image.id }}" ><h2 class="my">{{ image.title }}</h2></a>
                             <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
                             <div class="caption">
                                 <div class="caption">
@@ -118,13 +127,13 @@
                 {% for image in images %}
                     <div class="col-sm-6 col-md-4">
                         <div class="thumbnail  ">
-                            <a href="/image-view/{{ image.id }}" ><h2>{{ image.title }}</h2></a>
+                            <a href="/image-view/{{ image.id }}" role="button"><h2>{{ image.title }}</h2></a>
 
                             <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
 
                             <div class="caption">
                                 <div class="caption">
-                                    <a  href="/user-profile/{{ image.fkUser }}/1" ><h4>{{ image.username }}</h4></a>
+                                    <a  href="/user-profile/{{ image.fkUser }}/1"><h4>{{ image.username }}</h4></a>
                                 </div>
 
                                 <p>
@@ -196,12 +205,6 @@
     {% block javascripts %}
        {{ parent() }}
 
-        <!-- TODO: Preguntar si això és correcte però sinó no hi ha manera que funcioni... -->
-        <script>
-            $(document).ready(function () {
-                $('.dropdown-toggle').dropdown();
-            });
-        </script>
         <script type="text/javascript" src="{{ asset('home.js', 'js') }}"></script>
 
     {% endblock javascripts %}

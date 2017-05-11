@@ -369,3 +369,38 @@ html,body {
     float: none; /* Added */
     margin-bottom: 10px; /* Added */
 }
+
+
+/* mouse over link */
+h2:hover {
+    text-decoration: none;
+    color: #058064;
+}
+
+/* selected link */
+h2:active {
+    text-decoratiosn: none;
+    color: #033424;
+}
+
+/* mouse over link */
+h4:hover {
+    text-decoration: none;
+    color: #058064;
+}
+
+/* selected link */
+h4:active {
+    text-decoration: none;
+    color: #033424;
+}
+
+a{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: none;
+}
+a:focus{
+    text-decoration: none;
+}

@@ -6,6 +6,8 @@
 // twig image.comments array must be accessible
 
 $(document).ready(function() {
+    $('.dropdown-toggle').dropdown();
+
 
     const START_COMMENTS  = 3;
 

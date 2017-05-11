@@ -5,6 +5,9 @@
 
 $(document).ready(function() {
 
+    $('.dropdown-toggle').dropdown();
+
+
     var imagesLoaded = 0;
 
     const START_IMAGES  = 5;
