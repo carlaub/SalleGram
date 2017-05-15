@@ -125,4 +125,10 @@ class SessionController
         }
     }
 
+    public function logout(Application $app)
+    {
+        $this->closeSession($app);
+        return $app->redirect('/');
+    }
+
 }

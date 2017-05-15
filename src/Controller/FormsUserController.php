@@ -5,20 +5,11 @@ namespace pwgram\Controller;
 
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\FormError;
-use pwgram\Model\Entity\Image;
-use pwgram\Model\Entity\Comment;
 use pwgram\Model\Entity\User;
-use pwgram\Model\Repository\PdoImageLikesRepository;
-use pwgram\Model\Repository\PdoImageRepository;
-use pwgram\Model\Repository\PdoNotificationRepository;
 use pwgram\Model\Repository\PdoUserRepository;
-use pwgram\Model\Repository\PdoCommentRepository;
-
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Validator\Exception\ValidatorException;
+
 
 class FormsUserController
 {

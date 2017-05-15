@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use pwgram\Controller\SessionController;
 
 
-// TODO cambiar de sitio
 $sessionControl = function (Request $request,Application $app) {
     if (!$app['session']->has('user')){
 
@@ -44,7 +43,7 @@ $app->get('/validation', 'pwgram\\Controller\\RenderController::renderValidation
 $app->get('/dovalidation/{id}', 'pwgram\\Controller\\ValidationController::userValidation');
 
 /*Menu routes, logged user*/
-$app->get('/logout', 'pwgram\\Controller\\RenderController::logout');
+$app->get('/logout', 'pwgram\\Controller\\SessionController::logout');
 $app->get('/upload-image', 'pwgram\\Controller\\RenderController::renderUploadImage')->before($sessionControl);
 
 
