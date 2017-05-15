@@ -268,9 +268,9 @@ class PdoUserRepository implements PdoRepository {
      * @return bool
      */
     public function validateUserLogin(Application $app, $userNameOrEmail, $password) {
-        $query = "SELECT id FROM `User` WHERE (username = ? OR email = ?) AND password = ?  AND active = 1 ";
+        $query = "SELECT id FROM `User` WHERE (username = ? OR email = ?)   AND active = 1 ";
         $result = $app['db']->fetchAssoc($query,
-                        array($userNameOrEmail, $userNameOrEmail, $password));
+                        array($userNameOrEmail, $userNameOrEmail));
 
         if ($result == false) return false; // an error happened during the execution
 

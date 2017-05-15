@@ -23,15 +23,15 @@ $sessionControl = function (Request $request,Application $app) {
 };
 
 
-$app->post('/login/form', 'pwgram\\Controller\\FormsController::loginUser');
+$app->post('/login/form', 'pwgram\\Controller\\FormsUserController::loginUser');
 
-$app->post('/register/form', 'pwgram\\Controller\\FormsController::registerUser');
+$app->post('/register/form', 'pwgram\\Controller\\FormsUserController::registerUser');
 
-$app->post('/edit_profile/form', 'pwgram\\Controller\\FormsController::updateUser')->before($sessionControl);
+$app->post('/edit_profile/form', 'pwgram\\Controller\\FormsUserController::updateUser')->before($sessionControl);
 
-$app->post('/uploadImage/form', 'pwgram\\Controller\\FormsController::uploadImage')->before($sessionControl);
+$app->post('/uploadImage/form', 'pwgram\\Controller\\FormsImageController::uploadImage')->before($sessionControl);
 
-$app->post('/new-comment/{id}', 'pwgram\\Controller\\FormsController::addComment')->before($sessionControl);
+$app->post('/new-comment/{id}', 'pwgram\\Controller\\CommentsController::addComment')->before($sessionControl);
 
 $app->get('', 'pwgram\\Controller\\RenderController::renderHome');
 
@@ -74,8 +74,8 @@ $app->get('/user-profile/{id}/{ordMode}','pwgram\\Controller\\RenderController::
 $app->get('/user-images/', 'pwgram\\Controller\\RenderController::renderUserImages')->before($sessionControl);
 
 $app->get('/edit-image/{idImage}', 'pwgram\\Controller\\RenderController::renderEditImage')->before($sessionControl);
-$app->get('/delete-image/{idImage}', 'pwgram\\Controller\\FormsController::deleteImage')->before($sessionControl);
-$app->post('/editImage/form/{idImage}', 'pwgram\\Controller\\FormsController::editImageForm')->before($sessionControl);
+$app->get('/delete-image/{idImage}', 'pwgram\\Controller\\FormsImageController::deleteImage')->before($sessionControl);
+$app->post('/editImage/form/{idImage}', 'pwgram\\Controller\\FormsImageController::editImageForm')->before($sessionControl);
 
 /* Notifications */
 $app->get('/notifications', 'pwgram\\Controller\\RenderController::renderNotifications')->before($sessionControl);
