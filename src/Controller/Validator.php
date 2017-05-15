@@ -27,7 +27,7 @@ class Validator
     const MAX_USERNAME  = 20;
     const MIN_PASSWORD  = 6;
     const MAX_PASSWORD  = 12;
-    const MAX_IMG_SIZE  = 5000000000;
+    const MAX_IMG_SIZE  = 50000000000;
 
 
     /**
@@ -194,8 +194,10 @@ class Validator
 
     function validateImage($size, $format, $error) {
         //Size lees than 5M and forman png or jpg
-        if ($size < Validator::MAX_IMG_SIZE && ($format == "jpg" || $format == "jpeg")) {
-            $error->setImageError(false);
+//        if ($size < Validator::MAX_IMG_SIZE && ($format == "jpg" || $format == "jpeg" || $format == "png")) {
+        if ((strcasecmp($format,"jpg") == 0 || $format == "jpeg" || $format == "png")) {
+
+        $error->setImageError(false);
             return true;
         }
         $error->setImageError(true);

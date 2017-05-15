@@ -31,6 +31,7 @@ class ImageViewController {
         if($image->isPrivate()){
             $session = new SessionController();
             if($session->getSessionUserId($app) != $image->getFkUser()) return false;
+
         }
 
         //Increment image visits

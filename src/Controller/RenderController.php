@@ -61,6 +61,7 @@ class RenderController
                 foreach ($comments as $commentUser) {
 
                     $commentUser->setUserName($userPdo->getName($app, $commentUser->getFkUser()));
+                    $commentUser->setFkUser(($this->getProfileImage($app, $commentUser->getFkUser())));//reutilitzo fk user per posar la foto
                 }
             }
 

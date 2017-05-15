@@ -65,7 +65,8 @@ class FormsUserController
 
         if ($profileImage != null) {
             //Image validation
-            $this->checkUserImage($newUser, $validator, $profileImage, $errors);
+            $formsImageController = new FormsImageController($app);
+            $formsImageController->checkUserImage($newUser, $validator, $profileImage, $errors);
         }
 
         if ($validator->haveErrors($errors)) {
@@ -189,7 +190,8 @@ class FormsUserController
 
         if ($profileImage != null) {
             //Image validation
-            $this->checkUserImage($userUpdate, $validator, $profileImage, $errors);
+            $formImage = new FormsImageController();
+            $formImage->checkUserImage($userUpdate, $validator, $profileImage, $errors);
         }
 
         if ($validator->haveErrors($errors)) {
@@ -199,6 +201,7 @@ class FormsUserController
 
         //Encrypt user password before insert in database
         $userUpdate->setPassword(crypt($userUpdate->getPassword(), '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
+        $userUpdate->setActive(true);
         //Image not null
         $errors = new FormError();
         if ($profileImage != null) {
