@@ -136,9 +136,17 @@ class FormsController {
 
         $pdoUser = new PdoUserRepository($db);
 
-        // Get user password from DB
+        //cuenta no activada
         $dbPassword = $pdoUser->getPassword($app, $userNameOrEmail);
+        if  (!$pdoUser->validateUserLogin($app, $userNameOrEmail,$password)){
+            $error = new FormError();
+            $error->setActiveError(true);
 
+            $renderController = new RenderController();
+            return $renderController->renderLogin($app, $error);
+        }
+
+        // Get user password from DB
         if ($dbPassword != false) {
             // Compare password from db with password entered
             if (crypt($password, $dbPassword) == $dbPassword) {

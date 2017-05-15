@@ -110,4 +110,19 @@ class SessionController
         else return false;
     }
 
+
+    public static function sessionControl(Request $request,Application $app) {
+        if (!$app['session']->has('user')){
+
+            $response = new Response();
+            $content =  $app['twig']->render('error.twig',array(
+                'message'=>"Hace falta estar logeado"
+            ));
+            $response->setContent($content);
+            $response->setStatusCode(Response::HTTP_FORBIDDEN); // 403 code
+            return $response;
+
+        }
+    }
+
 }

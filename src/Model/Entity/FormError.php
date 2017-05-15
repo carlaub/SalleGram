@@ -27,6 +27,9 @@ class FormError
 
     private $stringUserOrPasswordError = "El usuario o la contraseña no coinciden";
 
+    private $stringUserActiveError = "La cuenta no ha sido activada";
+
+
     private $stringTitleImageError = "Título no válido.";
 
     private $usernameError = false;
@@ -46,6 +49,25 @@ class FormError
     private $userOrPasswordError = false;
 
     private $titleImageError = false;
+
+    private $activeError = false;
+
+    /**
+     * @return bool
+     */
+    public function isActiveError(): bool
+    {
+        return $this->activeError;
+    }
+
+    /**
+     * @param bool $activeError
+     */
+    public function setActiveError(bool $activeError)
+    {
+        $this->activeError = $activeError;
+    }
+
 
 
     /**
@@ -229,6 +251,22 @@ class FormError
     public function getStringUserOrPasswordError(): string
     {
         return $this->stringUserOrPasswordError;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStringUserActiveError(): string
+    {
+        return $this->stringUserActiveError;
+    }
+
+    /**
+     * @param string $stringUserActiveError
+     */
+    public function setStringUserActiveError(string $stringUserActiveError)
+    {
+        $this->stringUserActiveError = $stringUserActiveError;
     }
 
     /**
