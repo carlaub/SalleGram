@@ -45,7 +45,7 @@ $(document).ready(function() {
 
         for (var i = 0; i < comments.length; i++) {
 
-            res += '<p class="comment"> <strong class="name-image">';
+            res += '<p class="limit"> <strong class="name-image">';
             res += comments[i].userName + " :";
             res += '</strong><small> ' + comments[i].content + '</small></p>';
         }
@@ -101,8 +101,6 @@ $(document).ready(function() {
 
    // $("#icon_load_more_comments").unbind('click').on('click', function (event) {
     $(document).unbind('click').on('click', '#icon_load_more_comments', function (event) {
-
-        console.log("COMMENT +");
 
         var imageId = $(event.target).data('var'); // gets the image id
 

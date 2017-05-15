@@ -4,6 +4,7 @@ namespace pwgram\Controller;
 
 use pwgram\Model\Entity\FormError;
 use pwgram\Model\Entity\User;
+use pwgram\Model\Repository\PdoFollowRepository;
 use Silex\Application;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
@@ -250,7 +251,7 @@ class RenderController {
      * @param Application $app
      * @param $id
      */
-    public function renderUserProfile(Application $app, $id, $ordMode) {
+    public function renderUserProfile(Application $app, $id, $ordMode = 1, $currentUser = -1) {
 
 
         $profileImage = $this->getProfileImage($app, $id);
@@ -263,6 +264,16 @@ class RenderController {
         $totalUserImages = $pdo->getTotalUserImages($app, $id);
 
 
+        $pdoFollow = new PdoFollowRepository();
+
+        if ($currentUser == -1 && $this->sessionController->haveSession($app))
+            $currentUser = $this->sessionController->getSessionUserId($app);
+
+        $followed = $pdoFollow->getIsFollowedBy($app, $currentUser, $id);
+
+
+        if ($this->sessionController->haveSession($app))
+            $currentUser = $this->sessionController->getSessionUserId($app);
 
         //TODO FALTA QUE LAS IMAGENES SE PUEDAN FILTRAR
 
@@ -277,7 +288,9 @@ class RenderController {
             'profileName'=> $user->getUsername(),
             'comments'=>$this->getUserComments($app, $id),
             'nImgs'=> $totalUserImages,
-            'images'=> $image
+            'images'=> $image,
+            'currentUserId' => $currentUser,
+            'followed'      => $followed
 
         ));
     }

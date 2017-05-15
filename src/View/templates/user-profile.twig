@@ -69,6 +69,22 @@
                             <span class="glyphicon glyphicon-comment glyphicon-black"></span>
                         </span>
                     </p>
+
+                    {% if logged == true and currentUserId != idUser %}
+
+                        {% if followed == false %}
+                            <form method="get" action="/follow-user/{{ currentUserId }}/{{ idUser }}">
+                                <button id="follow-button" type="submit" class="btn btn-info">Follow</button>
+                            </form>
+
+                        {% else %}
+
+                            <form method="get" action="/unfollow-user/{{ currentUserId }}/{{ idUser }}">
+                                <button id="unfollow-button" type="submit" class="btn btn-info">Unfollow</button>
+                            </form>
+                        {% endif %}
+
+                    {% endif %}
                 </div>
             </div>
         </div>

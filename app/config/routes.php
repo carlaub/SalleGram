@@ -76,7 +76,7 @@ $app->get('/edit-image/{idImage}', 'pwgram\\Controller\\RenderController::render
 $app->get('/delete-image/{idImage}', 'pwgram\\Controller\\FormsController::deleteImage')->before($sessionControl);
 $app->post('/editImage/form/{idImage}', 'pwgram\\Controller\\FormsController::editImageForm')->before($sessionControl);
 
-/*Notifications*/
+/* Notifications */
 $app->get('/notifications', 'pwgram\\Controller\\RenderController::renderNotifications')->before($sessionControl);
 $app->get('/delete-notification/{id}','pwgram\\Controller\\NotificationsController::deleteNotification')->before($sessionControl);
 
@@ -84,6 +84,13 @@ $app->get('/delete-notification/{id}','pwgram\\Controller\\NotificationsControll
 $app->post('/home-more-images/{lastImage}', 'pwgram\\Controller\\HomeController::onShowMoreImages');
 $app->get('/last-posts', 'pwgram\\Controller\\RenderController::renderHome');
 $app->get('/most-visited', 'pwgram\\Controller\\RenderController::renderMostVisited');
+
+
+/* Follows */
+$app->get('/follow-user/{user}/{who}', 'pwgram\\Controller\\FollowersController::followUser')->before($sessionControl);
+$app->get('/unfollow-user/{user}/{who}', 'pwgram\\Controller\\FollowersController::unfollowUser')->before($sessionControl);
+$app->get('/followers-posts', 'pwgram\\Controller\\FollowersController::renderFollowsList')->before($sessionControl);
+
 
 // TODO: DESCOMENTAR!!!!
 //$app->error(function (\Exception $e, $code) use ($app) {

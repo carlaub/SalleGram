@@ -53,6 +53,11 @@
                 <button type="submit" class="btn btn-info">Más vistas</button>
             </form>
         </li>
+        <li role="presentation">
+            <form method="get" action="/followers-posts">
+                <button type="submit" class="btn btn-info">Seguidos</button>
+            </form>
+        </li>
     </ul>
 
 {% endblock navbar %}
@@ -167,7 +172,7 @@
                                 <div class="">
                                     {% set i = 0 %}
 
-                                    <div id="comments_list_{{ image.id }}"></div>
+                                    <div id="comments_list_{{ image.id }}">
                                     {% for comment in image.comments %}
                                         {#{% set i =i+1 %}#}
                                         {#{%  if i < 4 %}#}
@@ -179,6 +184,7 @@
 
                                     {% endfor %}
 
+                                    </div>
 
                                     {% if image.comments|length < image.numComments %}
 
