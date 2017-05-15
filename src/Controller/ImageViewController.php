@@ -55,8 +55,9 @@ class ImageViewController {
         if ($comments){
             //Set the name of username of the comment
             foreach ($comments as $commentUser) {
-
                 $commentUser->setUserName($pdoUser->getName($app, $commentUser->getFkUser()));
+
+                $commentUser->setFkUser(($this->getProfileImage($app, $commentUser->getFkUser())));//reutilitzo fk user per posar la foto
             }
             $image->setComments($comments);
         }
@@ -72,4 +73,16 @@ class ImageViewController {
 
         $pdoImage->incrementVisits($app, $idImage);
     }
+
+    public function getProfileImage(Application $app, $idUser)
+    {
+        $db = Database::getInstance("pwgram");
+        $pdoUser = new PdoUserRepository($db);
+
+        if ($pdoUser->getProfileImage($app, $idUser)) {
+            return $idUser;
+        }
+        return "img_profile_default";
+    }
+
 }

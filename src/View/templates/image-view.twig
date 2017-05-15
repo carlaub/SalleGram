@@ -75,12 +75,34 @@
                                 </span>
                             </p>
 
-                            {% for comment in image.comments %}
-                                <p class="comment">
-                                    <strong class="name-image">{{  comment.userName }} :</strong>
-                                    <small> {{  comment.content }}</small>
-                                </p>
-                            {% endfor %}
+                            <div class="">
+                                {% set i = 0 %}
+
+                                <div id="comments_list_{{ image.id }}">
+                                    {% for comment in image.comments %}
+                                        {#{% set i =i+1 %}#}
+                                        {#{%  if i < 4 %}#}
+                                        <p class="limit">
+                                            <img class="img-circle"src="{{ asset('/profile_img/'~comment.fkuser~'.jpg','img') }}" height="20" width="20" >
+                                            <strong class="name-image">{{  comment.userName }} :</strong>
+                                            <small> {{  comment.content }}</small>
+                                        </p>
+                                        {#{% endif %}#}
+
+                                    {% endfor %}
+
+                                </div>
+
+                                {% if image.comments|length < image.numComments %}
+
+                                    <div id="load_comments_{{ image.id }}">
+                                        <!-- Used to know which image is clicked to load more comments -->
+                                        <a id="icon_load_more_comments" class="btn glyphicon glyphicon-plus" data-var="{{ image.id }}"></a>
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
 
                         </div>
                         <div class="card-footer text-muted">
@@ -121,24 +143,34 @@
                                 </span>
                             </p>
 
-                            <div id="comments_list_{{ image.id }}">
-                            {% for comment in image.comments %}
+                            <div class="">
+                                {% set i = 0 %}
 
-                                <p class="comment">
-                                    <strong class="name-image">{{  comment.userName }} :</strong>
-                                    <small> {{ comment.content }}</small>
-                                </p>
-                            {% endfor %}
+                                <div id="comments_list_{{ image.id }}">
+                                    {% for comment in image.comments %}
+                                        {#{% set i =i+1 %}#}
+                                        {#{%  if i < 4 %}#}
+                                        <p class="limit">
+                                            <img class="img-circle"src="{{ asset('/profile_img/'~comment.fkuser~'.jpg','img') }}" height="20" width="20" >
+                                            <strong class="name-image">{{  comment.userName }} :</strong>
+                                            <small> {{  comment.content }}</small>
+                                        </p>
+                                        {#{% endif %}#}
+
+                                    {% endfor %}
+
+                                </div>
+
+                                {% if image.comments|length < image.numComments %}
+
+                                    <div id="load_comments_{{ image.id }}">
+                                        <!-- Used to know which image is clicked to load more comments -->
+                                        <a id="icon_load_more_comments" class="btn glyphicon glyphicon-plus" data-var="{{ image.id }}"></a>
+                                    </div>
+
+                                {% endif %}
 
                             </div>
-
-                            {% if image.comments|length < image.numComments %}
-
-                                <div id="load_comments_{{ image.id }}">
-                                    <!-- Used to know which image is clicked to load more comments -->
-                                    <a id="icon_load_more_comments" class="btn glyphicon glyphicon-plus" data-var="{{ image.id }}"></a>
-                                </div>
-                            {% endif %}
 
                             <form accept-charset="UTF-8" action="/new-comment/{{ image.id }}" >
                                     <textarea class="form-control textarea-comment" id="text" name="text" placeholder="Type in your comment" rows="2"></textarea>
