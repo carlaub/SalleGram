@@ -106,8 +106,6 @@ class FollowersController
 
         foreach ($follows as $follow) {
 
-            $sharedUserList = [];
-
             $user = $pdoUser->get($app, $follow->getFkFollows());
             $followImage = $renderController->getProfileImage($app, $follow->getFkFollows());
 
@@ -116,17 +114,8 @@ class FollowersController
             $sharedFollowers = $pdoFollow->getSharedFollows($app, $userId, $follow->getFkFollows());
 
             //var_dump($sharedUserList);
-            foreach ($sharedFollowers as $shared) {
+            // to get the shared followers between the user and the follower
 
-                $userShared = $pdoUser->get($app, $shared->getFkFollows());
-
-                array_push(
-                    $sharedUserList,
-                    $userShared
-                );
-            }
-
-            //var_dump($sharedUserList);
 
             array_push(
                 $users,
@@ -140,10 +129,9 @@ class FollowersController
 
             array_push(
                 $sharedFollowersPerUser,
-                $sharedUserList
+                $this->getSharedFollowersList($app, $sharedFollowers, $follow, $userId, $pdoUser)
             );
         }
-
 
         return $app['twig']->render('follows-list.twig',
             array(
@@ -156,6 +144,25 @@ class FollowersController
                 'user_profile_images'   => $followsProfileImages,
                 'shared_followers'      => $sharedFollowersPerUser
             ));
+    }
+
+    private function getSharedFollowersList($app, $sharedFollowers, $follow, $userId, $pdoUser) {
+        $sharedUserList = [];
+
+        foreach ($sharedFollowers as $shared) {
+
+            if ($shared->getFkUser() == $follow->getFkFollows()
+                || $userId == $shared->getFkUser()) continue;
+
+            $userShared = $pdoUser->get($app, $shared->getFkUser());
+
+            array_push(
+                $sharedUserList,
+                $userShared
+            );
+        }
+
+        return $sharedUserList;
     }
 
 }

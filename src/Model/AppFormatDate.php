@@ -63,7 +63,9 @@ class AppFormatDate
 
         else if ($diff->h > 0)
 
-            $msg = "Publicado hace ". $diff->h . " horas y " . $diff->m . " minutos.";
+            if ($diff->i > 0)
+                $msg = "Publicado hace ". $diff->h . " horas y " . $diff->i. " minutos.";
+            else $msg = "Publicado hace ". $diff->h . " horas.";
 
         else if ($diff->i > 0)
 

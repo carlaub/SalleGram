@@ -73,8 +73,54 @@
                     {#img#}
                     <img  src="{{ asset('/profile_img/'~user_profile_images[index]~'.jpg','img') }}" height="200" width="200" >
                     <br><br>
+
+                <!-- paed until the end -->
+                {% set total_followers = shared_followers[index] | length %}
+                {% set i_follower = 0 %}
+                <p>
+                {% for follower in shared_followers[index] %}
+
+                    {% if total_followers > i_follower + 1 and i_follower < 3 %}
+
+                        <a  href="/user-profile/{{ follower.id }}/1" >{{ follower.userName }}</a>,
+
+                        {% set i_follower = i_follower + 1 %}
+
+                    {% endif %}
+                    {% if total_followers == i_follower + 1 and i_follower < 3 %}
+
+                        <a  href="/user-profile/{{ follower.id }}/1" >{{ follower.userName }}</a>
+
+                        {% set i_follower = i_follower + 1 %}
+
+                    {% endif %}
+
+
+                {% endfor %}
+
+                    {% set other_followers = total_followers - i_follower %}
+
+                    {% if other_followers > 0 %}
+
+                        {% if other_followers == 1 %}
+
+                            y otra persona
+
+                        {% else %}
+
+                            y otras {{ other_followers }} personas
+
+                        {% endif %}
+                    {% endif %}
+
+                    {% if total_followers == 1 %}
+                        también sigue a este usuario</p>
+                    {% elseif total_followers > 1  %}
+                        también siguen a este usuario</p>
+                    {% endif %}
                 </div>
             </div>
+
 
             {% set index = index + 1 %}
         {% endfor %}

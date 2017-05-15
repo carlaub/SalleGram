@@ -53,11 +53,13 @@
                 <button type="submit" class="btn btn-info">Más vistas</button>
             </form>
         </li>
-        <li role="presentation">
-            <form method="get" action="/followers-posts">
-                <button type="submit" class="btn btn-info">Seguidos</button>
-            </form>
-        </li>
+        {% if logged == true %}
+            <li role="presentation">
+                <form method="get" action="/followers-posts">
+                    <button type="submit" class="btn btn-info">Seguidos</button>
+                </form>
+            </li>
+        {% endif %}
     </ul>
 
 {% endblock navbar %}
