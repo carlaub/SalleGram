@@ -9,8 +9,12 @@ use pwgram\Model\Repository\PdoNotificationRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Response;
 
 class NotificationsController {
+
+
+
     public function getUserNotifications(Application $app) {
 
         $sessionController = new SessionController();
@@ -27,6 +31,58 @@ class NotificationsController {
 
         return $notifications;
     }
+
+
+
+    /**
+     *
+     */
+    public function renderNotifications(Application $app) {
+        //TODO: comprovar que esta la sesion
+
+        $sessionController  = new SessionController();
+        $render             = new RenderController();
+
+        if($sessionController->correctSession($app)){
+
+
+            $pdoNotifications = new NotificationsController();
+
+            $userNotifications = $pdoNotifications->getUserNotifications($app);
+
+            $idUser = $sessionController->getSessionUserId($app);
+            $image = $render->getProfileImage($app, $idUser);
+
+            if(sizeof($userNotifications) == 0) {
+                return $app['twig']->render('homeWelcome.twig', array(
+                    'app'=> ['name' => $app['app.name']],
+                    'name'=> $sessionController->getSessionName($app),
+                    'img'=> $image,
+                    'logged'=> $sessionController->haveSession($app),
+                    'p'=> ' Aún no tienes ninguna notificación '
+                ));
+            }
+
+
+
+            $content = $app['twig']->render('notifications.twig',
+                [   'name'      => $sessionController->getSessionName($app),
+                    'img'       => $image,
+                    'logged'    => $idUser,
+                    'notifications' => $userNotifications
+                ]);
+
+            $response = new Response();
+            $response->setStatusCode($response::HTTP_OK);
+            $response->headers->set('Content-type', 'text/html');
+            $response->setContent($content);
+
+            return $response;
+
+        }
+        //TODO error 403
+    }
+
 
     /**
      * This function insert in each comment the username of the user who causes notification

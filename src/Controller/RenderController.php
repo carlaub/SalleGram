@@ -401,51 +401,6 @@ class RenderController
 
     }
 
-    /**
-     * @param Application $app
-     * @return Response
-     */
-    public function renderNotifications(Application $app)
-    {
-        //TODO: comprovar que esta la sesion
-        if ($this->sessionController->correctSession($app)) {
-            $db = Database::getInstance("pwgram");
-
-            $pdoNotifications = new NotificationsController();
-
-            $userNotifications = $pdoNotifications->getUserNotifications($app);
-
-            $idUser = $this->sessionController->getSessionUserId($app);
-            $image = $this->getProfileImage($app, $idUser);
-
-            if (sizeof($userNotifications) == 0) {
-                return $app['twig']->render('homeWelcome.twig', array(
-                    'app' => ['name' => $app['app.name']],
-                    'name' => $this->sessionController->getSessionName($app),
-                    'img' => $image,
-                    'logged' => $this->sessionController->haveSession($app),
-                    'p' => ' Aún no tienes ninguna notificación '
-                ));
-            }
-
-
-            $content = $app['twig']->render('notifications.twig',
-                ['name' => $this->sessionController->getSessionName($app),
-                    'img' => $image,
-                    'logged' => $idUser,
-                    'notifications' => $userNotifications
-                ]);
-
-            $response = new Response();
-            $response->setStatusCode($response::HTTP_OK);
-            $response->headers->set('Content-type', 'text/html');
-            $response->setContent($content);
-
-            return $response;
-
-        }
-        //TODO error 403
-    }
 
     /**
      * @param Application $app

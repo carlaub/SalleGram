@@ -8,12 +8,11 @@ $(document).ready(function() {
     $('.dropdown-toggle').dropdown();
 
 
-    var imagesLoaded = 0;
+    var imagesLoaded = 5;
 
     const IMAGES_PER_PAGE  = 5;
 
     function requestMoreImages(callback) {
-
 
         $.ajax({
             url: '/home-more-images/' + imagesLoaded,

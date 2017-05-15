@@ -45,6 +45,13 @@ class AppFormatDate
         return $date2->getTimestamp() - $date1->getTimestamp();
     }
 
+
+    /**
+     * Creates a message with the time passed from a date until now.
+     *
+     * @param DateTime $date    The date to know the time passed.
+     * @return string           The message result.
+     */
     public static function timeFromNowMessage(DateTime $date) {
         $msg = "";
 

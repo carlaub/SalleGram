@@ -52,29 +52,15 @@ class PdoUserRepository implements PdoRepository {
      */
     public function add(Application $app, $row)
     {
-        //$query  = "INSERT INTO `User`(`username`, `email`, `birthdate`, `password`, `active`, `profile_image`) VALUES(?, ?, ?, ?, ?, ?)";
         $app['db']->insert(PdoUserRepository::TABLE_NAME,
-                            array(
-                                'username'      => $row->getUsername(),
-                                'email'         => $row->getEmail(),
-                                'birthdate'     => $row->getBirthday(),
-                                'password'      => $row->getPassword(),
-                                'active'        => $row->getActive(),
-                                'profile_image' => $row->getProfileImage()
-                            ));
-        /*$result = $this->db->preparedQuery(
-            $query,
-            [
-                $row->getUsername(),
-                $row->getEmail(),
-                $row->getBirthday(),
-                $row->getPassword(),
-                $row->getActive(),
-                $row->getProfileImage()
-            ]
-        );*/
-
-        //if ($result) $row->setPassword(null);
+            array(
+                'username'      => $row->getUsername(),
+                'email'         => $row->getEmail(),
+                'birthdate'     => $row->getBirthday(),
+                'password'      => $row->getPassword(),
+                'active'        => $row->getActive(),
+                'profile_image' => $row->getProfileImage()
+            ));
     }
 
     /**
@@ -172,16 +158,16 @@ class PdoUserRepository implements PdoRepository {
     {
         $query = "UPDATE `User` SET username = ?, password = ?, email = ?, birthdate = ?, active = ?, profile_image = ? WHERE id = ?";
         $res = $app['db']->executeUpdate(
-                            $query,
-                            array(
-                                $row->getUsername(),
-                                $row->getPassword(),
-                                $row->getEmail(),
-                                $row->getBirthday(),
-                                $row->getActive(),
-                                $row->getProfileImage(),
-                                $row->getId())
-                            );
+            $query,
+            array(
+                $row->getUsername(),
+                $row->getPassword(),
+                $row->getEmail(),
+                $row->getBirthday(),
+                $row->getActive(),
+                $row->getProfileImage(),
+                $row->getId())
+        );
 
         if ($res) $row->setPassword(null);
     }
@@ -252,7 +238,9 @@ class PdoUserRepository implements PdoRepository {
      * Update user's active state. Used when user click on validation link.
      * When an user it registers, by default his active value is 0 until he access
      * the link validation via email or via web
-     * @param $id
+     *
+     * @param int $id
+     * @return true     if updated correctly, false if not.
      */
     public function updateActiveState(Application $app, $id) {
         $query = "UPDATE `User` SET active = ? WHERE id = ?";
@@ -264,11 +252,12 @@ class PdoUserRepository implements PdoRepository {
 
     /**
      * @param $userNameOrEmail
-     * @param $password
+     * @param string $password         hashed password
      * @return bool
      */
-    public function validateUserLogin(Application $app, $userNameOrEmail, $password) {
-        $query = "SELECT id FROM `User` WHERE (username = ? OR email = ?)   AND active = 1 ";
+    // we don't have to validate the passwd here because we validate it in FormsUserController:loginUser
+    public function validateUserLogin(Application $app, $userNameOrEmail) {
+        $query = "SELECT id FROM `User` WHERE (username = ? OR email = ?)  AND active = 1 ";
         $result = $app['db']->fetchAssoc($query,
                         array($userNameOrEmail, $userNameOrEmail));
 
