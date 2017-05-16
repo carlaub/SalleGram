@@ -29,6 +29,7 @@ class FormError
 
     private $stringUserActiveError = "La cuenta no ha sido activada";
 
+    private $stringCommentError = "Ya has comentado la foto anteriormente";
 
     private $stringTitleImageError = "Título no válido.";
 
@@ -51,6 +52,10 @@ class FormError
     private $titleImageError = false;
 
     private $activeError = false;
+
+    private $commentError = false;
+
+
 
     /**
      * @return bool
@@ -95,6 +100,30 @@ class FormError
     }
 
     /**
+     * @return string
+     */
+    public function getStringConfirmPasswordError(): string
+    {
+        return $this->stringConfirmPasswordError;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStringCommentError(): string
+    {
+        return $this->stringCommentError;
+    }
+
+    /**
+     * @param bool $commentError
+     */
+    public function setCommentError(bool $commentError)
+    {
+        $this->commentError = $commentError;
+    }
+
+    /**
      * @param mixed $dateError
      */
     public function setDateError($dateError)
@@ -108,6 +137,14 @@ class FormError
     public function getImageError()
     {
         return $this->imageError;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCommentError(): bool
+    {
+        return $this->commentError;
     }
 
     /**

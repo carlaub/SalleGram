@@ -33,7 +33,7 @@ class RenderController
      * @param bool $mostVisitedLayout
      * @return mixed
      */
-    public function renderHome(Application $app, $publicImages = null, $mostVisitedLayout = false)
+    public function renderHome(Application $app, $error = null,  $publicImages = null, $mostVisitedLayout = false)
     {
 
         $db = Database::getInstance("pwgram");
@@ -78,6 +78,7 @@ class RenderController
 
 
         $image = $this->getProfileImage($app, $this->sessionController->getSessionUserId($app));
+        if ($error == null) $error = new FormError();
 
         if ($publicImages != null) {
             return $app['twig']->render('home.twig', array(
@@ -87,7 +88,8 @@ class RenderController
                 'logged' => $this->sessionController->haveSession($app),
                 'images' => $publicImages,
                 'dates' => $imagesDatesFormatted,
-                'is_most_visited_layout' => $mostVisitedLayout
+                'is_most_visited_layout' => $mostVisitedLayout,
+                'errors'=> $error
             ));
         } else {
             return $app['twig']->render('homeWelcome.twig', array(
@@ -115,7 +117,7 @@ class RenderController
 
         $imagesPdo = $imagesPdo->getMostVisitedImages($app);
 
-        return $this->renderHome($app, $imagesPdo, true);
+        return $this->renderHome($app, null, $imagesPdo, true);
     }
 
     /**

@@ -66,8 +66,16 @@
 
 {% block content %}
 
-
     <div class="container-fluid bg-1 text-center">
+        {% if errors.commentError %}
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                <h4>Algo va mal...</h4>
+                <p>{{ errors.stringCommentError }}</p>
+            </div>
+        {% endif %}
+
         <div id="img-container" class="row row-flex row-flex-wrap">
 
 
@@ -240,6 +248,8 @@
 
         <script type="text/javascript" src="{{ asset('home.js', 'js') }}"></script>
         <script type="text/javascript" src="{{ asset('comments.js', 'js') }}"></script>
+        <script type="text/javascript" src="{{ asset('notify.min.js', 'js') }}"></script>
+
 
     {% endblock javascripts %}
 

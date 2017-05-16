@@ -7,7 +7,6 @@ $(document).ready(function() {
 
     $('.dropdown-toggle').dropdown();
 
-
     var imagesLoaded = 5;
 
     const IMAGES_PER_PAGE  = 5;
