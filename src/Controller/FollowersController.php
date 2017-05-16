@@ -151,9 +151,10 @@ class FollowersController
 
         foreach ($sharedFollowers as $shared) {
 
-            if ($shared->getFkUser() == $follow->getFkFollows()
-                || $userId == $shared->getFkUser()) continue;
+            /*if ($shared->getFkUser() == $follow->getFkFollows()
+                || $userId == $shared->getFkUser()) continue;*/
 
+            var_dump($shared->getFkUser(). " fk follows: ". $shared->getFkFollows());
             $userShared = $pdoUser->get($app, $shared->getFkUser());
 
             array_push(

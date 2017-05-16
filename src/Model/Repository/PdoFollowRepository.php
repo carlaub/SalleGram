@@ -79,7 +79,7 @@ class PdoFollowRepository implements PdoRepository
     }
 
     /**
-     * Returns all the users that follows a user A that is also followed by a specific user B.
+     * Returns all the users that follows a user A that are also followed by a specific user B.
      *
      * @param Application $app
      * @param int $id               User B.
@@ -90,19 +90,54 @@ class PdoFollowRepository implements PdoRepository
 
 
         //SELECT * FROM Image WHERE id IN (SELECT fk_image FROM Comment WHERE fk_user = 1);
-        $query = "SELECT * FROM Follow WHERE fk_follows = ? IN (SELECT fk_user FROM Follow WHERE fk_follows = ?)";
+        //$query = "SELECT * FROM Follow WHERE fk_follows = ? IN (SELECT fk_user FROM Follow WHERE fk_follows = ?)";
+        //$query = "SELECT * FROM Follow AS F1 INNER JOIN Follow AS F2 ON F1.fk_follows = ? AND F2.fk_follows = F1.";
+        //$query = "SELECT DISTINCT * FROM Follow WHERE fk_follows = ?";
+
+        $query = "SELECT DISTINCT F2.* FROM Follow AS F1, Follow AS F2 WHERE F1.fk_user = ? AND F1.fk_follows = F2.fk_user AND F2.fk_follows = ?";
+
         $result = $app['db']->fetchAll(
             $query,
             array(
+                (int) $id,
                 (int) $who,
-                (int) $id
             ),
             array(\PDO::PARAM_INT, \PDO::PARAM_INT)
         );
 
         if (!$result) return []; // Any image in DB
 
-        return $this->populateFollows($result);
+
+        $followers = $this->populateFollows($result);
+        var_dump($followers);
+
+        return $followers;
+
+        //$finalFollows = [];
+
+        /*
+        foreach ($follows as $follow) {
+
+            $query = "SELECT DISTINCT * FROM Follow WHERE fk_user = ? AND fk_follows = ?";
+            $result = $app['db']->fetchAll(
+                $query,
+                array(
+                    (int) $follow->getFkUser(),
+                    (int) $id,
+                ),
+                array(\Pdo::PARAM_INT, \PDO::PARAM_INT)
+            );
+
+            if ($result) {
+
+                var_dump($follow->getFkUser());
+
+                array_push($finalFollows, $follow);
+            }
+        }*/
+
+
+        //return $finalFollows;
     }
 
 
