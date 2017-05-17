@@ -23,9 +23,7 @@ use pwgram\Model\Repository\PdoCommentRepository;
 
 
 date_default_timezone_set('Europe/Madrid');
-$db = Database::getInstance("pwgram");
 
-$pdo = new PdoUserRepository($db);
 
 $app->run();
 

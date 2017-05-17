@@ -3,6 +3,13 @@
  */
 
 
+/**
+ * This script is used to manage the pagination of the home view of the application.
+ * Each time the button to load more images is clicked, this script launches an AJAX request
+ * to obtain 5 more photos from the database.
+ *
+ * If there are not more photos to loaded, the script also removes the button to load more photos.
+ */
 $(document).ready(function() {
 
     $('.dropdown-toggle').dropdown();
@@ -99,6 +106,14 @@ $(document).ready(function() {
     }
 
 
+    /**
+     * Renders the new images arrived from the database.
+     *
+     * @param logged    Boolean value to know if the user is or not logged.
+     * @param images    The array of images to load.
+     * @param comments  An array of comments made on the image.
+     * @param dates     The time formatted of when the photo was uploaded.
+     */
     function renderNewImages(logged, images, comments, dates) {
 
         for (var i = 0; i < images.length; i++) {
@@ -111,7 +126,6 @@ $(document).ready(function() {
             var hrefUserProfile = "/user-profile/" + element.fkUser + "/1";
 
 
-            // TODO: no se hace con {{ asset etc }}, preguntar
             var imgAsset = "assets/img/upload_img/" + element.id + '_400x300.jpg';
 
             var commentId = "comments_list_" + element.id;
@@ -155,6 +169,12 @@ $(document).ready(function() {
 
     }
 
+    /**
+     * Parses the response of the AJAX request an calls the render method described above.
+     * Also, if there are not more photos to load, removes the button to load more photos.
+     *
+     * @param data  All the json data.
+     */
     function onMoreImagesResponse(data) {
 
         // I know its already parsed. But magically it do not work without a second parse
@@ -175,10 +195,6 @@ $(document).ready(function() {
         }
 
         imagesLoaded += loaded;
-
-
-
-        //console.log("IMAGES HERE: " + imagesLoaded + " and loaded: " + loaded);
     }
 
 

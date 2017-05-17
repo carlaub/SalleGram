@@ -180,10 +180,9 @@ class CommentsController
 
     public function getProfileImage(Application $app, $idUser)
     {
-        $db = Database::getInstance("pwgram");
-        $pdoUser = new PdoUserRepository($db);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
 
-        if ($pdoUser->getProfileImage($app, $idUser)) {
+        if ($pdoUser->getProfileImage($idUser)) {
             return $idUser;
         }
         return "img_profile_default";

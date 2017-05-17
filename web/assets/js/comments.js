@@ -45,14 +45,12 @@ $(document).ready(function() {
 
         for (var i = 0; i < comments.length; i++) {
 
-            var file = file;
-
             var img = new Image();
             url = "http://grup17.com/assets/img/profile_img/"+ comments[i].fkUser +".jpg";
             img.src = url;
 
             //alert(JSON.stringify(comments[i], null, 4));
-            res += '<p class="limit">';
+            res += '<p class="comment">';
 
             res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/'+comments[i].fkUser+'.jpg" height="20" width="20" >';
 

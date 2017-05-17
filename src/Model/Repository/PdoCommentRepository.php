@@ -116,7 +116,7 @@ class PdoCommentRepository implements PdoRepository
 
         if ($offset == 0) {
 
-            $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC LIMIT 3";
+            $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified DESC LIMIT 3";
             $result = $this->db->fetchAll(
                 $query,
                 array(
@@ -126,7 +126,7 @@ class PdoCommentRepository implements PdoRepository
         }
         else {
 
-            $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC LIMIT ?, ?";
+            $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified DESC LIMIT ?, ?";
             $result = $this->db->fetchAll(
                 $query,
                 array(
