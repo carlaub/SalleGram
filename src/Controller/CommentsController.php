@@ -62,6 +62,13 @@ class CommentsController
             // Scape html tags
             $comment->setContent(strip_tags($comment->getContent()));
 
+            if(!strlen(preg_replace('/\s+/u','',$content))){
+                $renderController = new RenderController();
+                $error = new FormError();
+                $error->setCommentError(true);
+                return $renderController->renderHome($app, $error);
+            }
+
             $res = $pdoComment->add($comment);
 
             //Add notification
@@ -107,8 +114,21 @@ class CommentsController
 
         if (strlen(preg_replace('/\s+/u','',$content))) {
             //edit comment
+
+
             $today = AppFormatDate::today();
             $comment = new Comment($content, 0, $today, 0, 0);
+
+            // Scape html tags
+            $comment->setContent(strip_tags($comment->getContent()));
+
+            if(!strlen(preg_replace('/\s+/u','',$content))){
+                $renderController = new RenderController();
+                $error = new FormError();
+                $error->setCommentError(true);
+                return $renderController->renderHome($app, $error);
+            }
+
             $comment->setId($idComment);
 
             $pdo->update($comment);

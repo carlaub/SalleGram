@@ -50,7 +50,7 @@ $(document).ready(function() {
             img.src = url;
 
             //alert(JSON.stringify(comments[i], null, 4));
-            res += '<p class="comment">';
+            res += '<p class="comment vlimit">';
 
             res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/'+comments[i].fkUser+'.jpg" height="20" width="20" >';
 

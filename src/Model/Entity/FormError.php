@@ -29,7 +29,7 @@ class FormError
 
     private $stringUserActiveError = "La cuenta no ha sido activada";
 
-    private $stringCommentError = "Ya has comentado la foto anteriormente";
+    private $stringCommentError = "No se ha podido comentar la foto";
 
     private $stringTitleImageError = "Título no válido.";
 
