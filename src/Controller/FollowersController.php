@@ -16,6 +16,8 @@ use pwgram\Model\Repository\PdoUserRepository;
 use pwgram\Model\Services\PdoMapper;
 use Silex\Application;
 
+
+
 class FollowersController
 {
 
@@ -63,6 +65,17 @@ class FollowersController
         return $render->renderUserProfile($app,$who, 1, $user);
     }
 
+
+    /**
+     * @param Application $app
+     *
+     * Returns all the users that the current user follows.
+     *
+     * Also, this method returns, for each user folowed, a list of users
+     * that also follows this user that are also followed by the current user.
+     *
+     * @return mixed    The array of followers.
+     */
     public function renderFollowsList(Application $app) {
 
         $sessionController  = new SessionController();

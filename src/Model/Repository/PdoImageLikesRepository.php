@@ -14,7 +14,6 @@ use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\ImageLike;
 use Silex\Application;
 
-// not checked
 class PdoImageLikesRepository implements PdoRepository
 {
 

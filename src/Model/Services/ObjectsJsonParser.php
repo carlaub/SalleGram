@@ -9,9 +9,17 @@
 namespace pwgram\Model\Services;
 
 
+
 class ObjectsJsonParser
 {
 
+    /**
+     * Converts an array of objects to its equivalent in a JSON format
+     * string.
+     *
+     * @param array $array an array of objects.
+     * @return string objects to Json String
+     */
     function objectToJson($array) {
         $result = [];
         $current = null;

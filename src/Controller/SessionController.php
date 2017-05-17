@@ -9,11 +9,7 @@
 namespace pwgram\Controller;
 
 use pwgram\Model\Services\PdoMapper;
-use pwgram\lib\Database\Database;
-use pwgram\Model\Entity\Image;
-use pwgram\Model\Repository\PdoCommentRepository;
-use pwgram\Model\Repository\PdoImageRepository;
-use pwgram\Model\Repository\PdoUserRepository;
+
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
 
