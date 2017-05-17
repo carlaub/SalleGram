@@ -149,7 +149,7 @@ $(document).ready(function() {
                 + '<span class="glyphicon glyphicon-comment glyphicon-black" ></span>'
                 + '</span> </p> <div class="">'
 
-                + '<div id=' + commentId + '>'
+                + '<div class="limit" id=' + commentId + '>'
 
                 + renderComments(comment)
 

@@ -113,7 +113,7 @@
                                 <div class="">
                                     {% set i = 0 %}
 
-                                    <div id="comments_list_{{ image.id }}">
+                                    <div class="limit" id="comments_list_{{ image.id }}">
                                     {% for comment in image.comments %}
                                         {#{% set i = i + 1 %}#}
                                         {#{%  if i < 4 %}#}
@@ -184,7 +184,7 @@
                                 <div class="">
                                     {% set i = 0 %}
 
-                                    <div id="comments_list_{{ image.id }}">
+                                    <div class ="limit" id="comments_list_{{ image.id }}">
                                     {% for comment in image.comments %}
                                         {#{% set i =i+1 %}#}
                                         {#{%  if i < 4 %}#}
@@ -226,7 +226,7 @@
 
                             </div>
                             <div class="card-footer text-muted">
-                                <p class="card-text"><small class="text-muted">{{ dates[i_date] }}</small></p>
+                                <p class="card-text "><small class="text-muted">{{ dates[i_date] }}</small></p>
                                 {% set i_date = i_date + 1 %}
                             </div>
                         </div>

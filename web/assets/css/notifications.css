@@ -78,6 +78,7 @@
     -webkit-transform: translateY(50%);
     transform: translateY(50%);
     margin: 20px;
+    margin-bottom: 50px;
 }
 
 .notification-date {

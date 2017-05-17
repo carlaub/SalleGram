@@ -150,6 +150,8 @@ textarea {
 
 .limit{
     max-width : 300px;
+    min-width : 300px;
+
     width : 300px;
 
     text-decoration: none;
@@ -163,7 +165,9 @@ textarea {
 }
 
 .vlimit{
-    width : 280px;
+    width : 279px;
+    max-width: 280px;
+    min-width: 278px;
     word-wrap: break-word;
 }
 
