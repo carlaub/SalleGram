@@ -48,9 +48,7 @@ $(document).ready(function() {
             var file = file;
 
             var img = new Image();
-
             url = "http://grup17.com/assets/img/profile_img/"+ comments[i].fkUser +".jpg";
-
             img.src = url;
 
             //alert(JSON.stringify(comments[i], null, 4));
