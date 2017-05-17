@@ -130,6 +130,10 @@ $(document).ready(function() {
 
             var commentId = "comments_list_" + element.id;
 
+            if($('#comment-error-alert') !== null)  $("#comment-error-alert").hide();
+
+
+
             $('#img-container').append(
 
                 '<div class=" col-sm-6 col-md-4"> <div class="thumbnail limit-image"> ' +
