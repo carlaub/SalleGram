@@ -1,6 +1,6 @@
 <?php
 use Silex\Provider\FormServiceProvider;
-
+use pwgram\Model\Services\PdoMapper;
 
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
 
@@ -33,6 +33,15 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
         'password' => 'root'
     ),
 ));
+
+
+$app->register(new Silex\Provider\MonologServiceProvider(), array (
+
+    'monolog.logfile'   => __DIR__ . '/../../var/log/prod.log',
+));
+
+
+$app->register(new PdoMapper());
 
 
 
