@@ -86,7 +86,7 @@
                 {% for image in images %}
 
                     <div class=" col-sm-6 col-md-4">
-                        <div class="thumbnail">
+                        <div class="thumbnail limit-image">
                             <a  href="/image-view/{{ image.id }}" ><h2 class="my">{{ image.title }}</h2></a>
                             <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
                             <div class="caption">
@@ -155,7 +155,7 @@
                 {% set i_date = 0 %}
                 {% for image in images %}
                     <div class="col-sm-6 col-md-4">
-                        <div class="thumbnail  ">
+                        <div class="thumbnail limit-image ">
                             <a href="/image-view/{{ image.id }}" role="button"><h2>{{ image.title }}</h2></a>
 
                             <img  src="{{ asset('/upload_img/'~image.id~'_400x300.jpg','img') }}" height="400" width="300" >
