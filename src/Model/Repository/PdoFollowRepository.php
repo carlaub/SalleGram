@@ -18,28 +18,35 @@ class PdoFollowRepository implements PdoRepository
     const TABLE_NAME    = "Follow";
 
 
+    private $db;
+
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+
     /**
      * Adds a follow into the database.
      *
      * @param Application $app
      * @param Follow $row
      */
-    public function add(Application $app, $row)
+    public function add($row)
     {
 
-        $insert = $app['db']->insert(PdoFollowRepository::TABLE_NAME,
+        $insert = $this->db->insert(PdoFollowRepository::TABLE_NAME,
             array(
-                'fk_user'  =>  $row->getFkUser(),
-                'fk_follows'   =>  $row->getFkFollows(),
+                'fk_user'       =>  $row->getFkUser(),
+                'fk_follows'    =>  $row->getFkFollows(),
             ));
 
         return $insert;
     }
 
-    public function get(Application $app, $id)
+    public function get($id)
     {
         $query  = "SELECT * FROM `Follow` WHERE id = ?";
-        $follow = $app['db']->fetchAssoc($query, array($id));
+        $follow = $this->db->fetchAssoc($query, array($id));
 
         if (!$follow) return false; // an error happened during the execution
 
@@ -50,10 +57,10 @@ class PdoFollowRepository implements PdoRepository
         );
     }
 
-    public function getIsFollowedBy(Application $app, $follower, $followed) {
+    public function getIsFollowedBy($follower, $followed) {
 
         $query  = "SELECT * FROM `Follow` WHERE fk_user = ? AND fk_follows = ?";
-        $follow = $app['db']->fetchAssoc(
+        $follow = $this->db->fetchAssoc(
                         $query,
                         array($follower, $followed),
                         array(\PDO::PARAM_INT, \PDO::PARAM_INT));
@@ -61,11 +68,11 @@ class PdoFollowRepository implements PdoRepository
         return $follow;
     }
 
-    public function getUserFollows(Application $app, $id) {
+    public function getUserFollows($id) {
 
         //SELECT * FROM Image WHERE id IN (SELECT fk_image FROM Comment WHERE fk_user = 1);
         $query = "SELECT * FROM Follow WHERE fk_user = ?";
-        $result = $app['db']->fetchAll(
+        $result = $this->db->fetchAll(
             $query,
             array(
                 $id
@@ -79,30 +86,32 @@ class PdoFollowRepository implements PdoRepository
     }
 
     /**
-     * Returns all the users that follows a user A that is also followed by a specific user B.
+     * Returns all the users that follows a user A that are also followed by a specific user B.
      *
      * @param Application $app
      * @param int $id               User B.
      * @param int $who              Shared user A.
      * @return array
      */
-    public function getSharedFollows(Application $app, $id, $who) {
+    public function getSharedFollows($id, $who) {
 
+        $query = "SELECT DISTINCT F2.* FROM Follow AS F1, Follow AS F2 WHERE F1.fk_user = ? AND F1.fk_follows = F2.fk_user AND F2.fk_follows = ?";
 
-        //SELECT * FROM Image WHERE id IN (SELECT fk_image FROM Comment WHERE fk_user = 1);
-        $query = "SELECT * FROM Follow WHERE fk_follows = ? IN (SELECT fk_user FROM Follow WHERE fk_follows = ?)";
-        $result = $app['db']->fetchAll(
+        $result = $this->db->fetchAll(
             $query,
             array(
+                (int) $id,
                 (int) $who,
-                (int) $id
             ),
             array(\PDO::PARAM_INT, \PDO::PARAM_INT)
         );
 
         if (!$result) return []; // Any image in DB
 
-        return $this->populateFollows($result);
+
+        $followers = $this->populateFollows($result);
+
+        return $followers;
     }
 
 
@@ -110,10 +119,10 @@ class PdoFollowRepository implements PdoRepository
      * @param Application $app
      * @param Follow $row
      */
-    public function update(Application $app, $row)
+    public function update($row)
     {
         $query = "UPDATE `Follow` SET fk_user = ?, fk_follows = ? WHERE id = ?";
-        $res = $app['db']->executeUpdate(
+        $res = $this->db->executeUpdate(
             $query,
             array(
                 $row->getFkUser(),
@@ -123,9 +132,9 @@ class PdoFollowRepository implements PdoRepository
         );
     }
 
-    public function remove(Application $app, $id)
+    public function remove($id)
     {
-        $deletion = $app['db']->delete(PdoFollowRepository::TABLE_NAME,
+        $deletion = $this->db->delete(PdoFollowRepository::TABLE_NAME,
                         array(
                             'id' => $id
                         ));
@@ -133,9 +142,9 @@ class PdoFollowRepository implements PdoRepository
         return $deletion;
     }
 
-    public function length(Application $app)
+    public function length()
     {
-        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Follow");
+        $result = $this->db->executeQuery("SELECT COUNT(*) AS total FROM Follow");
 
         if (!$result) return 0;
 

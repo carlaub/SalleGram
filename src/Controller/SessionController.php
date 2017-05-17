@@ -8,14 +8,14 @@
 
 namespace pwgram\Controller;
 
-
+use pwgram\Model\Services\PdoMapper;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
 use pwgram\Model\Repository\PdoCommentRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
-
+use Symfony\Component\HttpFoundation\Response;
 
 
 //TODO COOKIES
@@ -44,9 +44,8 @@ class SessionController
 
         if ($this->haveSession($app)) {
 
-            $db = Database::getInstance("pwgram");
-            $pdoUser = new PdoUserRepository($db);
-            $id = $pdoUser->validateUserSession($app, $app['session']->get('user')['id']);
+            $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
+            $id = $pdoUser->validateUserSession($app['session']->get('user')['id']);
 
             if ($id != false) return $id;
         }
@@ -64,9 +63,8 @@ class SessionController
 
         if ($this->haveSession($app)) {
 
-            $db = Database::getInstance("pwgram");
-            $pdoUser = new PdoUserRepository($db);
-            if($pdoUser->validateUserSession($app, $app['session']->get('user')['id'])){
+            $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
+            if($pdoUser->validateUserSession($app['session']->get('user')['id'])){
                 return true;
             }
         }
@@ -103,15 +101,14 @@ class SessionController
 
     public function getSessionName(Application $app){
 
-        $db = Database::getInstance("pwgram");
-        $userPdo = new PdoUserRepository($db);
+        $userPdo = $app['pdo'](PdoMapper::PDO_USER);
 
-        if($this->haveSession($app)) return $userPdo->getName($app, $this->getSessionUserId($app));
+        if($this->haveSession($app)) return $userPdo->getName($this->getSessionUserId($app));
         else return false;
     }
 
 
-    public static function sessionControl(Request $request,Application $app) {
+    public static function sessionControl(Request $request, Application $app) {
         if (!$app['session']->has('user')){
 
             $response = new Response();

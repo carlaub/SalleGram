@@ -77,19 +77,21 @@
                 <!-- paed until the end -->
                 {% set total_followers = shared_followers[index] | length %}
                 {% set i_follower = 0 %}
+                    {% set user_followers = shared_followers[index] %}
                 <p>
-                {% for follower in shared_followers[index] %}
+
+                {% for follower in user_followers %}
 
                     {% if total_followers > i_follower + 1 and i_follower < 3 %}
 
-                        <a  href="/user-profile/{{ follower.id }}/1" >{{ follower.userName }}</a>,
+                        <a  href="/user-profile/{{ user_followers[i_follower].id }}/1" >{{ user_followers[i_follower].userName }}</a>,
 
                         {% set i_follower = i_follower + 1 %}
 
                     {% endif %}
                     {% if total_followers == i_follower + 1 and i_follower < 3 %}
 
-                        <a  href="/user-profile/{{ follower.id }}/1" >{{ follower.userName }}</a>
+                        <a  href="/user-profile/{{ user_followers[i_follower].id }}/1" >{{ user_followers[i_follower].userName }}</a>
 
                         {% set i_follower = i_follower + 1 %}
 
@@ -114,10 +116,10 @@
                     {% endif %}
 
                     {% if total_followers == 1 %}
-                        también sigue a este usuario</p>
+                    también sigue a este usuario</p>
 
                     {% elseif total_followers > 1  %}
-                        también siguen a este usuario</p>
+                    también siguen a este usuario</p>
                     {% endif %}
 
                 </div>

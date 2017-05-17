@@ -2,16 +2,15 @@
 
 namespace pwgram\Controller;
 
-use pwgram\lib\Database\Database;
-use pwgram\Model\Repository\PdoImageRepository;
+use pwgram\Model\Services\PdoMapper;
 use Silex\Application;
 
 class UserUploadImagesController {
 
     public function getUserUploadImages(Application $app, $idUser) {
-        $db = Database::getInstance("pwgram");
-        $pdoImage = new PdoImageRepository($db);
 
-        return $pdoImage->getAllUserImages($app, $idUser);
+        $pdoImage = $app['pdo'](PdoMapper::PDO_IMAGE);
+
+        return $pdoImage->getAllUserImages($idUser);
     }
 }

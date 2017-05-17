@@ -9,6 +9,7 @@
 namespace pwgram\Model\Repository;
 
 
+use Doctrine\DBAL\Connection;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\ImageLike;
 use Silex\Application;
@@ -24,15 +25,19 @@ class PdoImageLikesRepository implements PdoRepository
      */
     private $db;
 
-    public function __construct(Database $db)
+    /**
+     * PdoImageLikesRepository constructor.
+     * @param Database|Connection $db
+     */
+    public function __construct($db)
     {
         $this->db = $db;
     }
 
 
-    public function add(Application $app, $row)
+    public function add($row)
     {
-        $result = $app['db']->insert(
+        $result = $this->db->insert(
             PdoImageLikesRepository::TABLE_NAME,
             array(
                 'fk_user'   =>  $row->getFkUser(),
@@ -43,10 +48,10 @@ class PdoImageLikesRepository implements PdoRepository
         return !$result;
     }
 
-    public function get(Application $app, $id)
+    public function get($id)
     {
         $query  = "SELECT * FROM `Image_likes` WHERE id = ?";
-        $comment = $app['db']->fetchAssoc(
+        $comment = $this->db->fetchAssoc(
             $query,
             array(
                 $id
@@ -61,10 +66,10 @@ class PdoImageLikesRepository implements PdoRepository
         );
     }
 
-    public function getTotalUserLikes(Application $app, $id) {
+    public function getTotalUserLikes($id) {
 
         $query  = "SELECT COUNT(*) as total FROM Image_likes WHERE fk_user = ?";
-        $total  = $app['db']->fetchAssoc(
+        $total  = $this->db->fetchAssoc(
             $query,
             array(
                 $id
@@ -76,10 +81,10 @@ class PdoImageLikesRepository implements PdoRepository
         return $total['total'];
     }
 
-    public function update(Application $app, $row)
+    public function update($row)
     {
         $query = "UPDATE `Image_likes` SET fk_user = ?, fk_image = ? WHERE id = ?";
-        $result = $app['db']->executeUpdate(
+        $result = $this->db->executeUpdate(
             $query,
             array(
                 $row->getFkUser(),
@@ -89,16 +94,16 @@ class PdoImageLikesRepository implements PdoRepository
         );
     }
 
-    public function remove(Application $app, $id)
+    public function remove($id)
     {
-        $app['db']->delete(PdoImageLikesRepository::TABLE_NAME,
+        $this->db->delete(PdoImageLikesRepository::TABLE_NAME,
             array(
                 'id' => $id
             ));
     }
-    public function removeLike(Application $app, $idImage, $idUser)
+    public function removeLike($idImage, $idUser)
     {
-        $app['db']->delete(PdoImageLikesRepository::TABLE_NAME,
+        $this->db->delete(PdoImageLikesRepository::TABLE_NAME,
             array(
                 'fk_image' => $idImage,
                 'fk_user' => $idUser
@@ -106,9 +111,9 @@ class PdoImageLikesRepository implements PdoRepository
             ));
     }
 
-    public function removeImageLikes(Application $app, $idImage)
+    public function removeImageLikes($idImage)
     {
-        $app['db']->delete(PdoImageLikesRepository::TABLE_NAME,
+        $this->db->delete(PdoImageLikesRepository::TABLE_NAME,
             array(
                 'fk_image' => $idImage
 
@@ -116,9 +121,9 @@ class PdoImageLikesRepository implements PdoRepository
     }
 
 
-    public function length(Application $app)
+    public function length()
     {
-        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Image_likes");
+        $result = $this->db->executeQuery("SELECT COUNT(*) AS total FROM Image_likes");
 
         if (!$result) return 0;
 
@@ -127,9 +132,9 @@ class PdoImageLikesRepository implements PdoRepository
         return $total['total'];
     }
 
-    public function likevalid(Application $app, $idImage, $idUser) {
+    public function likevalid($idImage, $idUser) {
         $query = "SELECT id FROM `Image_likes` WHERE fk_image = ? AND fk_user = ?";
-        $result = $app['db']->fetchAssoc(
+        $result = $this->db->fetchAssoc(
             $query,
             array(
                 $idImage,

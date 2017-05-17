@@ -30,24 +30,15 @@ class FollowersController
      */
     public function followUser(Application $app, $user, $who) {
 
-
         $follow = new Follow($user, $who);
 
-        //$pdoFollow = $app['pdo'](PdoMapper::PDO_FOLLOW);
+        $pdoFollow = $app['pdo'](PdoMapper::PDO_FOLLOW);
 
-        $pdoFollow = new PdoFollowRepository();
-
-        $ok = $pdoFollow->add($app, $follow);
-
-        /*return json_encode(
-                    array (
-                        'follow_ok' =>  $ok
-                    )
-        );*/
+        $pdoFollow->add($follow);
 
         $render = new RenderController();
 
-        return $render->renderUserProfile($app, $who, 1, $user);
+        return $render->renderUserProfile($app,$who, 1, $user);
     }
 
     /**
@@ -60,27 +51,16 @@ class FollowersController
      * @return true if the unfollow is correct, false if not.
      */
     public function unfollowUser(Application $app, $user, $who) {
-        $unfollowed = false;
 
-        //$pdoFollow = $app['pdo'](PdoMapper::PDO_FOLLOW);
-        $pdoFollow = new PdoFollowRepository();
+        $pdoFollow = $app['pdo'](PdoMapper::PDO_FOLLOW);
 
-        $follow = $pdoFollow->getIsFollowedBy($app, $user, $who);
+        $follow = $pdoFollow->getIsFollowedBy($user, $who);
 
-        if ($follow)
-            $unfollowed = $pdoFollow->remove($app, $follow['id']);
-
-        /*return json_encode(
-                    array (
-                        'unfollow_ok' =>  $unfollowed
-                    )
-        );*/
+        if ($follow) $pdoFollow->remove($follow['id']);
 
         $render = new RenderController();
 
-
-        return $render->renderUserProfile($app, $who, 1, $user);
-
+        return $render->renderUserProfile($app,$who, 1, $user);
     }
 
     public function renderFollowsList(Application $app) {
@@ -90,10 +70,10 @@ class FollowersController
 
         $userId = $sessionController->getSessionUserId($app);
 
-        $pdoFollow = new PdoFollowRepository();
-        $pdoUser   = new PdoUserRepository(Database::getInstance('pwgram'));
+        $pdoFollow = $app['pdo'](PdoMapper::PDO_FOLLOW);
+        $pdoUser   = $app['pdo'](PdoMapper::PDO_USER);
 
-        $follows = $pdoFollow->getUserFollows($app, $userId);
+        $follows = $pdoFollow->getUserFollows($userId);
 
         $users = [];
         $followsProfileImages = [];
@@ -106,16 +86,12 @@ class FollowersController
 
         foreach ($follows as $follow) {
 
-            $user = $pdoUser->get($app, $follow->getFkFollows());
+            $user = $pdoUser->get($follow->getFkFollows());
             $followImage = $renderController->getProfileImage($app, $follow->getFkFollows());
 
+            $sharedFollowers = $pdoFollow->getSharedFollows($userId, $follow->getFkFollows());
 
-            //var_dump($follow->getFkFollows());
-            $sharedFollowers = $pdoFollow->getSharedFollows($app, $userId, $follow->getFkFollows());
-
-            //var_dump($sharedUserList);
             // to get the shared followers between the user and the follower
-
 
             array_push(
                 $users,
@@ -129,7 +105,7 @@ class FollowersController
 
             array_push(
                 $sharedFollowersPerUser,
-                $this->getSharedFollowersList($app, $sharedFollowers, $follow, $userId, $pdoUser)
+                $this->getSharedFollowersList($sharedFollowers, $pdoUser)
             );
         }
 
@@ -146,15 +122,12 @@ class FollowersController
             ));
     }
 
-    private function getSharedFollowersList($app, $sharedFollowers, $follow, $userId, $pdoUser) {
+    private function getSharedFollowersList($sharedFollowers, $pdoUser) {
         $sharedUserList = [];
 
         foreach ($sharedFollowers as $shared) {
 
-            if ($shared->getFkUser() == $follow->getFkFollows()
-                || $userId == $shared->getFkUser()) continue;
-
-            $userShared = $pdoUser->get($app, $shared->getFkUser());
+            $userShared = $pdoUser->get($shared->getFkUser());
 
             array_push(
                 $sharedUserList,

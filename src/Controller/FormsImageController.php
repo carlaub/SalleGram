@@ -14,7 +14,7 @@ use pwgram\Model\Repository\PdoUserRepository;
 use pwgram\Model\Repository\PdoCommentRepository;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
-
+use pwgram\Model\Services\PdoMapper;
 
 class FormsImageController {
 
@@ -57,8 +57,6 @@ class FormsImageController {
      */
     public function uploadImage(Application $app, Request $request) {
 
-        $db = Database::getInstance("pwgram");
-
         $validator = new Validator();
 
         $title = $request->request->get('img-title');
@@ -75,8 +73,8 @@ class FormsImageController {
 
         // Correct image, save it and update DB
 
-        $pdoUser = new PdoUserRepository($db);
-        $idUser = $pdoUser->getId($app, $this->sessionController->getSessionName($app));
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
+        $idUser = $pdoUser->getId($this->sessionController->getSessionName($app));
 
         // Create image entity
         date_default_timezone_set('Europe/Madrid');
@@ -84,11 +82,11 @@ class FormsImageController {
         $newImage = new Image($title, date('Y-m-d H:i:s'), $idUser, $private);
 
         // Save image information in DB image table
-        $pdoImage = new PdoImageRepository($db);
+        $pdoImage = $app['pdo'](PdoMapper::PDO_IMAGE);
 
-        $pdoImage->add($app, $newImage);
+        $pdoImage->add($newImage);
 
-        $idImage = $pdoImage->getLastInsertedId($app);
+        $idImage = $pdoImage->getLastInsertedId();
 
 
         $imageProcessing = new ImageProcessing();
@@ -100,57 +98,53 @@ class FormsImageController {
 
         $sessionController = new SessionController();
         if($sessionController->correctSession($app)){
-            $db = Database::getInstance("pwgram");
 
-            $pdoImage = new PdoImageRepository($db);
-            $pdoComment = new PdoCommentRepository($db);
-            $pdoLike = new PdoImageLikesRepository($db);
-            $pdoNotification = new PdoNotificationRepository($db);
+            $pdoImage = $app['pdo'](PdoMapper::PDO_IMAGE);
+            $pdoComment = $app['pdo'](PdoMapper::PDO_COMMENT);
+            $pdoLike = $app['pdo'](PdoMapper::PDO_IMAGE_LIKE);
+            $pdoNotification = $app['pdo'](PdoMapper::PDO_NOTIFICATION);
 
 
 
             // Delete image commments
-            $comments = $pdoComment->getImageComments($app, $idImage);
+            $comments = $pdoComment->getImageComments($idImage);
             if($comments != null){
                 foreach ($comments as $comment) {
-                    $pdoComment->remove($app, $comment->getId());
+                    $pdoComment->remove($comment->getId());
                 }
             }
 
             //delete image notifications
-            $notifications = $pdoNotification->getNotificationsImage($app, $idImage);
+            $notifications = $pdoNotification->getNotificationsImage($idImage);
             if($notifications != null){
                 foreach ($notifications as $notification) {
-                    $pdoNotification->remove($app, $notification->getId());
+                    $pdoNotification->remove($notification->getId());
                 }
             }
 
             // Delete image likes
-            $pdoLike->removeImageLikes($app, $idImage);
+            $pdoLike->removeImageLikes($idImage);
             //delete image
-            $pdoImage->remove($app, $idImage);
+            $pdoImage->remove($idImage);
 
             // Delete image server
             $imageProcessing = new ImageProcessing();
             $imageProcessing->deleteImage($idImage);
 
             return $app -> redirect('/user-images');
-        }else return $app -> redirect('/login');
+        } else return $app -> redirect('/login');
 
     }
 
 
     public function editImageForm(Application $app, Request $request, $idImage){
-        $db = Database::getInstance("pwgram");
 
-        $validator = new Validator();
+        $validator          = new Validator();
+        $sessionController  = new SessionController();
 
-
-        $sessionController = new SessionController();
         if($sessionController->correctSession($app)){
-            $db = Database::getInstance("pwgram");
 
-            $pdo = new PdoImageRepository($db);
+            $pdo = $app['pdo'](PdoMapper::PDO_IMAGE);
 
             $title = $request->request->get('img-title');
             $private = $request->request->get('img-private') != null;
@@ -166,7 +160,7 @@ class FormsImageController {
                 return $renderController->renderUploadImage($app, $errors);
             }
 
-            $pdo->update($app, $newImage);
+            $pdo->update($newImage);
 
             return $app -> redirect('/user-images');
 

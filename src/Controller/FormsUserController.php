@@ -9,7 +9,7 @@ use pwgram\Model\Entity\User;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
-
+use pwgram\Model\Services\PdoMapper;
 
 class FormsUserController
 {
@@ -51,10 +51,8 @@ class FormsUserController
     public function registerUser(Application $app, Request $request)
     {
 
-        $db = Database::getInstance("pwgram");
-
-        $validator = new Validator();
-        $imageProcessing = new ImageProcessing();
+        $validator          = new Validator();
+        $imageProcessing    = new ImageProcessing();
 
         $newUser = $this->getUserFromForm($request);
         $confirmPassword = $request->request->get('confirm-password');
@@ -78,11 +76,11 @@ class FormsUserController
         $newUser->setPassword(crypt($newUser->getPassword(), '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
 
         //All correct, register new user in DB
-        $pdoUser = new PdoUserRepository($db);
-        $pdoUser->add($app, $newUser);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
+        $pdoUser->add($newUser);
 
         //Save User profile image
-        $idUser = $pdoUser->getId($app, $newUser->getUsername());
+        $idUser = $pdoUser->getId($newUser->getUsername());
         if ($newUser->getProfileImage()) $imageProcessing->saveProfileImage(strval($idUser), $profileImage->getClientOriginalExtension(), $profileImage->getRealPath());
 
         //Send validation email
@@ -109,21 +107,18 @@ class FormsUserController
      */
     public function loginUser(Application $app, Request $request)
     {
-
         $error = new FormError();
 
         $sessionController = new SessionController();
 
-        $db = Database::getInstance("pwgram");
-
-        $userNameOrEmail = $request->request->get('usernameOrMail');
-        $password = $request->request->get('password');
+        $userNameOrEmail    = $request->request->get('usernameOrMail');
+        $password           = $request->request->get('password');
 
 
-        $pdoUser = new PdoUserRepository($db);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
 
         //cuenta no activada
-        $dbPassword = $pdoUser->getPassword($app, $userNameOrEmail);
+        $dbPassword = $pdoUser->getPassword($userNameOrEmail);
 
         //var_dump($pdoUser->validateUserLogin($app, $userNameOrEmail, $password));
 
@@ -134,7 +129,7 @@ class FormsUserController
             if (crypt($password, $dbPassword) == $dbPassword) {
                 //Password are equals
 
-                if (!$pdoUser->validateUserLogin($app, $userNameOrEmail, $password)) {
+                if (!$pdoUser->validateUserLogin($userNameOrEmail, $password)) {
                     $error->setActiveError(true);
 
                     $renderController = new RenderController();
@@ -143,8 +138,8 @@ class FormsUserController
                     $error->setActiveError(false);
                 }
 
-                $userName = $pdoUser->getUsername($app, $userNameOrEmail);
-                $userId = $pdoUser->getId($app, $userName);
+                $userName = $pdoUser->getUsername($userNameOrEmail);
+                $userId = $pdoUser->getId($userName);
 
 
                 $sessionController->setSession($app, $userId);
@@ -167,18 +162,17 @@ class FormsUserController
     public function updateUser(Application $app, Request $request)
     {
 
-        $db = Database::getInstance("pwgram");
         $sessionController = new SessionController();
-        $pdo = new PdoUserRepository($db);
+        $pdo = $app['pdo'](PdoMapper::PDO_USER);
 
 
-        $userUpdate = $this->getUserFromForm($request);
-        $confirmPassword = $request->request->get('confirm-password');
-        $profileImage = $request->files->get('image-path');
+        $userUpdate         = $this->getUserFromForm($request);
+        $confirmPassword    = $request->request->get('confirm-password');
+        $profileImage       = $request->files->get('image-path');
 
 
-        $userId = $this->sessionController->getSessionUserId($app);
-        $currentUser = $pdo->get($app, $userId);
+        $userId         = $this->sessionController->getSessionUserId($app);
+        $currentUser    = $pdo->get($userId);
 
         $userUpdate->setEmail($currentUser->getEmail()); // data from db that does not change
         $userUpdate->setId($userId);
@@ -217,7 +211,7 @@ class FormsUserController
         //updates the info of the session
         $sessionController->setSession($app, $userUpdate->getId());
         // updates the database user row with the new data
-        $pdo->update($app, $userUpdate);
+        $pdo->update($userUpdate);
 
         return $app->redirect('/');
 

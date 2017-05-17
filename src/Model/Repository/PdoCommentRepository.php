@@ -8,6 +8,7 @@
 
 namespace pwgram\Model\Repository;
 
+use Doctrine\DBAL\Connection;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Comment;
 use Silex\Application;
@@ -42,7 +43,11 @@ class PdoCommentRepository implements PdoRepository
     private $db;
 
 
-    public function __construct(Database $db)
+    /**
+     * PdoCommentRepository constructor.
+     * @param Database|Connection $db
+     */
+    public function __construct($db)
     {
 
         $this->db = $db;
@@ -55,9 +60,9 @@ class PdoCommentRepository implements PdoRepository
      *
      * @return bool         true if the comment has been added correctly, false if not.
      */
-    public function add(Application $app, $row)
+    public function add($row)
     {
-        $result = $app['db']->insert(
+        $result = $this->db->insert(
             PdoCommentRepository::TABLE_NAME,
             array(
                 'content'       =>  $row->getContent(),
@@ -78,10 +83,10 @@ class PdoCommentRepository implements PdoRepository
      *
      * @return bool|Comment An instance of Comment if it has been found, false if not.
      */
-    public function get(Application $app, $id)
+    public function get($id)
     {
         $query   = "SELECT id, content, last_modified, fk_user, fk_image FROM `Comment` WHERE id = ?";
-        $comment = $app['db']->fetchAssoc(
+        $comment = $this->db->fetchAssoc(
             $query,
             array(
                 $id
@@ -107,12 +112,12 @@ class PdoCommentRepository implements PdoRepository
      * @return false|mixed false if an error happened doing the request or an array of the
      *         comments associated with an image.
      */
-    public function getImageComments(Application $app, $id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getImageComments($id, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
             $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC LIMIT 3";
-            $result = $app['db']->fetchAll(
+            $result = $this->db->fetchAll(
                 $query,
                 array(
                     $id
@@ -122,7 +127,7 @@ class PdoCommentRepository implements PdoRepository
         else {
 
             $query = "SELECT * FROM `Comment` WHERE fk_image = ? ORDER BY last_modified ASC LIMIT ?, ?";
-            $result = $app['db']->fetchAll(
+            $result = $this->db->fetchAll(
                 $query,
                 array(
                     (int) $id,
@@ -160,12 +165,12 @@ class PdoCommentRepository implements PdoRepository
      * @param int $limit
      * @return array|bool
      */
-    public function getImageCommentsFromUser(Application $app, $id, $idUser, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getImageCommentsFromUser($id, $idUser, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
             $query = "SELECT * FROM `Comment` WHERE fk_image = ? AND fk_user = ?  ORDER BY last_modified ASC";
-            $result = $app['db']->fetchAll(
+            $result = $this->db->fetchAll(
                 $query,
                 array(
                     $id,
@@ -176,7 +181,7 @@ class PdoCommentRepository implements PdoRepository
         else {
 
             $query = "SELECT * FROM `Comment` WHERE fk_image = ? AND fk_user = ? ORDER BY last_modified ASC LIMIT ?, ?";
-            $result = $app['db']->fetchAll(
+            $result = $this->db->fetchAll(
                 $query,
                 array(
                     $id,
@@ -196,10 +201,10 @@ class PdoCommentRepository implements PdoRepository
      * @param int $id               The id of the user.
      * @return array|bool           false if an error happened, an array of comments if not.
      */
-    public function getAllUserComments(Application $app, $id) {
+    public function getAllUserComments($id) {
 
         $query = "SELECT * FROM `Comment` WHERE fk_user = ? ORDER BY last_modified ASC";
-        $result = $app['db']->fetchAll(
+        $result = $this->db->fetchAll(
             $query,
             array(
                 $id,
@@ -216,10 +221,10 @@ class PdoCommentRepository implements PdoRepository
      * @param int $id               The id of the user.
      * @return int              The number of comments made by an user.
      */
-    public function getTotalUserComments(Application $app, $id) {
+    public function getTotalUserComments($id) {
 
         $query  = "SELECT COUNT(*) as total FROM Comment WHERE fk_user = ?";
-        $result = $comment = $app['db']->fetchAssoc(
+        $result = $comment = $this->db->fetchAssoc(
             $query,
             array(
                 $id
@@ -230,10 +235,10 @@ class PdoCommentRepository implements PdoRepository
         return $result['total'];
     }
 
-    public function getTotalImageComments(Application $app, $id) {
+    public function getTotalImageComments($id) {
 
         $query  = "SELECT COUNT(*) as total FROM Comment WHERE fk_image = ?";
-        $result = $comment = $app['db']->fetchAssoc(
+        $result = $comment = $this->db->fetchAssoc(
             $query,
             array(
                 $id
@@ -252,10 +257,10 @@ class PdoCommentRepository implements PdoRepository
      *
      * @param Comment $row  The comment to be updated.
      */
-    public function update(Application $app, $row)
+    public function update($row)
     {
         $query = "UPDATE `Comment` SET content = ?, last_modified = ? WHERE id = ?";
-        $result = $app['db']->executeUpdate(
+        $result = $this->db->executeUpdate(
             $query,
             array(
                 $row->getContent(),
@@ -270,17 +275,17 @@ class PdoCommentRepository implements PdoRepository
      *
      * @param int $id   The comment to be deleted.
      */
-    public function remove(Application $app, $id)
+    public function remove($id)
     {
-        $app['db']->delete(PdoCommentRepository::TABLE_NAME,
+        $this->db->delete(PdoCommentRepository::TABLE_NAME,
             array(
                 'id' => $id
             ));
     }
 
-    public function length(Application $app)
+    public function length()
     {
-        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Comment");
+        $result = $this->db->executeQuery("SELECT COUNT(*) AS total FROM Comment");
 
         if (!$result) return 0;
 
@@ -289,9 +294,9 @@ class PdoCommentRepository implements PdoRepository
         return $total['total'];
     }
 
-    public function commentValid(Application $app, $idImage, $idUser) {
+    public function commentValid($idImage, $idUser) {
         $query = "SELECT id FROM `Comment` WHERE fk_image = ? AND fk_user = ?";
-        $result = $app['db']->fetchAssoc(
+        $result = $this->db->fetchAssoc(
             $query,
             array(
                 $idImage,

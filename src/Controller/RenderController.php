@@ -5,6 +5,7 @@ namespace pwgram\Controller;
 use pwgram\Model\Entity\FormError;
 use pwgram\Model\Entity\User;
 use pwgram\Model\Repository\PdoFollowRepository;
+use pwgram\Model\Services\PdoMapper;
 use Silex\Application;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
@@ -24,6 +25,7 @@ class RenderController
 
 
     public function __construct() {
+
         $this->sessionController = new SessionController();
     }
 
@@ -33,20 +35,18 @@ class RenderController
      * @param bool $mostVisitedLayout
      * @return mixed
      */
-    public function renderHome(Application $app, $publicImages = null, $mostVisitedLayout = false)
+    public function renderHome(Application $app, $error = null,  $publicImages = null, $mostVisitedLayout = false)
     {
-
-        $db = Database::getInstance("pwgram");
-        $commentsPdo = new PdoCommentRepository($db);
-        $userPdo = new PdoUserRepository($db);
-        $imagesPdo = new PdoImageRepository($db);
-        $likesPdo = new PdoImageLikesRepository($db);
+        $commentsPdo    = $app['pdo'](PdoMapper::PDO_COMMENT);
+        $userPdo        = $app['pdo'](PdoMapper::PDO_USER);
+        $imagesPdo      = $app['pdo'](PdoMapper::PDO_IMAGE);
+        $likesPdo       = $app['pdo'](PdoMapper::PDO_IMAGE_LIKE);
 
 
         if ($publicImages == null) {
 
             //Images array that will be displayed on the main page
-            $publicImages = $imagesPdo->getAllPublicImages($app, 0, PdoImageRepository::APP_MAX_IMG_PAGINATED);
+            $publicImages = $imagesPdo->getAllPublicImages(0, PdoImageRepository::APP_MAX_IMG_PAGINATED);
             $publicImages = !$publicImages ? [] : $publicImages; // if false, return an empty array, if not return the public images
         }
         $imagesDatesFormatted = [];
@@ -54,48 +54,50 @@ class RenderController
         // let's add all the comments for each image
         foreach ($publicImages as $image) {
 
-            $comments = $commentsPdo->getImageComments($app, $image->getId(), 0, 3);
+            $comments = $commentsPdo->getImageComments($image->getId(), 0, 3);
             //Set the name of username of the comment
             if (!$comments) $comments = [];
             else {
                 foreach ($comments as $commentUser) {
 
-                    $commentUser->setUserName($userPdo->getName($app, $commentUser->getFkUser()));
+                    $commentUser->setUserName($userPdo->getName($commentUser->getFkUser()));
                     $commentUser->setFkUser(($this->getProfileImage($app, $commentUser->getFkUser())));//reutilitzo fk user per posar la foto
                 }
             }
 
             $image->setComments($comments);
 
-            $userName = $userPdo->getName($app, $image->getFkUser());
+            $userName = $userPdo->getName($image->getFkUser());
             $image->setUserName($userName);
-            $image->setLiked(!($likesPdo->likevalid($app, $image->getId(), $this->sessionController->getSessionUserId($app))));
+            $image->setLiked(!($likesPdo->likevalid($image->getId(), $this->sessionController->getSessionUserId($app))));
 
-            $image->setNumComments($commentsPdo->getTotalImageComments($app, $image->getId()));
+            $image->setNumComments($commentsPdo->getTotalImageComments($image->getId()));
 
             array_push($imagesDatesFormatted, AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt())));
         }
 
 
         $image = $this->getProfileImage($app, $this->sessionController->getSessionUserId($app));
+        if ($error == null) $error = new FormError();
 
         if ($publicImages != null) {
             return $app['twig']->render('home.twig', array(
-                'app' => ['name' => $app['app.name']],
-                'name' => $this->sessionController->getSessionName($app),
-                'img' => $image,
-                'logged' => $this->sessionController->haveSession($app),
-                'images' => $publicImages,
-                'dates' => $imagesDatesFormatted,
-                'is_most_visited_layout' => $mostVisitedLayout
+                'app'       => ['name' => $app['app.name']],
+                'name'      => $this->sessionController->getSessionName($app),
+                'img'       => $image,
+                'logged'    => $this->sessionController->haveSession($app),
+                'images'    => $publicImages,
+                'dates'     => $imagesDatesFormatted,
+                'is_most_visited_layout' => $mostVisitedLayout,
+                'errors'    => $error
             ));
         } else {
             return $app['twig']->render('homeWelcome.twig', array(
-                'app' => ['name' => $app['app.name']],
-                'name' => $this->sessionController->getSessionName($app),
-                'img' => $image,
+                'app'   => ['name' => $app['app.name']],
+                'name'  => $this->sessionController->getSessionName($app),
+                'img'   => $image,
                 'logged' => $this->sessionController->haveSession($app),
-                'p' => 'Sube fotos y compártelas con tus amigos ',
+                'p'     => 'Sube fotos y compártelas con tus amigos ',
                 'images' => $publicImages,
                 'dates' => $imagesDatesFormatted,
                 'is_most_visited_layout' => $mostVisitedLayout
@@ -110,12 +112,11 @@ class RenderController
      */
     public function renderMostVisited(Application $app){
 
-        $db = Database::getInstance("pwgram");
-        $imagesPdo = new PdoImageRepository($db);
+        $imagesPdo = $app['pdo'](PdoMapper::PDO_IMAGE);
 
-        $imagesPdo = $imagesPdo->getMostVisitedImages($app);
+        $imagesPdo = $imagesPdo->getMostVisitedImages();
 
-        return $this->renderHome($app, $imagesPdo, true);
+        return $this->renderHome($app, null, $imagesPdo, true);
     }
 
     /**
@@ -129,10 +130,10 @@ class RenderController
 
         $TotaInfoDeFotos = 0;
         return $app['twig']->render('login.twig', array(
-            'app' => ['name' => $app['app.name']],
-            'logged' => $this->sessionController->haveSession($app),
-            'data' => $TotaInfoDeFotos,
-            'errors' => $errors
+            'app'       => ['name' => $app['app.name']],
+            'logged'    => $this->sessionController->haveSession($app),
+            'data'      => $TotaInfoDeFotos,
+            'errors'    => $errors
         ));
 
     }
@@ -151,11 +152,11 @@ class RenderController
         if ($user == null) $user = new User("", "", "", 0);
 
         return $app['twig']->render('register.twig', array(
-            'app' => ['name' => $app['app.name']],
-            'logged' => false,
-            'data' => $TotaInfoDeFotos,
-            'errors' => $errors,
-            'user' => $user
+            'app'           => ['name' => $app['app.name']],
+            'logged'        => false,
+            'data'          => $TotaInfoDeFotos,
+            'errors'        => $errors,
+            'user'          => $user
         ));
     }
 
@@ -170,20 +171,20 @@ class RenderController
         if ($errors == null) $errors = new FormError();
 
         $TotaInfoDeFotos = 0;
-        $db = Database::getInstance("pwgram");
-        $userPdo = new PdoUserRepository($db);
-        $user = $userPdo->get($app, $this->sessionController->getSessionUserId($app));
+
+        $userPdo = $app['pdo'](PdoMapper::PDO_USER);
+        $user = $userPdo->get($this->sessionController->getSessionUserId($app));
 
         return $app['twig']->render('edit_profile.twig', array(
-            'app' => ['name' => $app['app.name']],
-            'name' => $this->sessionController->getSessionName($app),
-            'birthday' => $user->getBirthday(),
-            'idUser' => $this->sessionController->getSessionUserId($app),
+            'app'           => ['name' => $app['app.name']],
+            'name'          => $this->sessionController->getSessionName($app),
+            'birthday'      => $user->getBirthday(),
+            'idUser'        => $this->sessionController->getSessionUserId($app),
             'haveProfileImage' => $user->getProfileImage(),
-            'img' => '/profile_img/' . $this->sessionController->getSessionUserId($app) . '.jpg',
-            'logged' => false,
-            'data' => $TotaInfoDeFotos,
-            'errors' => $errors
+            'img'           => '/profile_img/' . $this->sessionController->getSessionUserId($app) . '.jpg',
+            'logged'        => false,
+            'data'          => $TotaInfoDeFotos,
+            'errors'        => $errors
         ));
     }
 
@@ -204,16 +205,16 @@ class RenderController
     {
         if ($errors == null) $errors = new FormError();
 
-        $idUser = $this->sessionController->getSessionUserId($app);
-        $profileImage = $this->getProfileImage($app, $idUser);
+        $idUser         = $this->sessionController->getSessionUserId($app);
+        $profileImage   = $this->getProfileImage($app, $idUser);
 
 
         return $app['twig']->render('uploadImage.twig', array(
-            'app' => ['name' => $app['app.name']],
-            'logged' => $this->sessionController->haveSession($app),
+            'app'       => ['name' => $app['app.name']],
+            'logged'    => $this->sessionController->haveSession($app),
             'profileImage' => $profileImage,
-            'name' => $this->sessionController->getSessionName($app),
-            'errors' => $errors
+            'name'      => $this->sessionController->getSessionName($app),
+            'errors'    => $errors
 
         ));
 
@@ -227,20 +228,20 @@ class RenderController
     public function renderImageView(Application $app, $id)
     {
         $imageViewController = new ImageViewController();
-        $db = Database::getInstance("pwgram");
-        $likesPdo = new PdoImageLikesRepository($db);
-        $commentsPdo = new PdoCommentRepository($db);
+
+        $likesPdo = $app['pdo'](PdoMapper::PDO_IMAGE_LIKE);
+        $commentsPdo = $app['pdo'](PdoMapper::PDO_COMMENT);
 
         $idUser = $this->sessionController->getSessionUserId($app);
 
 
-        $user = new PdoUserRepository($db);
-        $user->get($app, $idUser);
+        $user = $app['pdo'](PdoMapper::PDO_USER);
+        $user->get($idUser);
 
         $image = $imageViewController->prepareImage($app, $id);
         if ($image != false) {
 
-            $image->setLiked(!($likesPdo->likevalid($app, $image->getId(), $this->sessionController->getSessionUserId($app))));
+            $image->setLiked(!($likesPdo->likevalid($image->getId(), $this->sessionController->getSessionUserId($app))));
 
 
             $profileImage = $this->getProfileImage($app, $idUser);
@@ -253,18 +254,18 @@ class RenderController
 //                ));
 //            }
 
-            $image->setNumComments($commentsPdo->getTotalImageComments($app, $image->getId()));
+            $image->setNumComments($commentsPdo->getTotalImageComments($image->getId()));
 
             $dateFormatted = AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt()));
 
             //Image OK
-            return $app['twig']->render('image-view.twig', array(
-                'app' => ['name' => $app['app.name']],
-                'image' => $image,
-                'name' => $user->getName($app, $idUser),
-                'profileImage' => $profileImage,
-                'logged' => $idUser,
-                'date' => $dateFormatted
+            return $app['twig']->render('image-view.twig', array (
+                'app'           => ['name' => $app['app.name']],
+                'image'         => $image,
+                'name'          => $user->getName($idUser),
+                'profileImage'  => $profileImage,
+                'logged'        => $idUser,
+                'date'          => $dateFormatted
             ));
         } else { //Image not found
             $response = new Response();
@@ -283,24 +284,22 @@ class RenderController
      */
     public function renderUserProfile(Application $app, $id, $ordMode = 1, $currentUser = -1)
     {
-
-
         $profileImage = $this->getProfileImage($app, $id);
         $user = $this->getInfoUser($app, $id);
 
         $image = $this->getImagesUser($app, $id, $ordMode);
 
-        $pdo = new PdoImageRepository(Database::getInstance("pwgram"));
+        $pdo = $app['pdo'](PdoMapper::PDO_IMAGE);
 
-        $totalUserImages = $pdo->getTotalUserImages($app, $id);
+        $totalUserImages = $pdo->getTotalUserImages($id);
 
 
-        $pdoFollow = new PdoFollowRepository();
+        $pdoFollow = $app['pdo'](PdoMapper::PDO_FOLLOW);
 
         if ($currentUser == -1 && $this->sessionController->haveSession($app))
             $currentUser = $this->sessionController->getSessionUserId($app);
 
-        $followed = $pdoFollow->getIsFollowedBy($app, $currentUser, $id);
+        $followed = $pdoFollow->getIsFollowedBy($currentUser, $id);
 
 
         if ($this->sessionController->haveSession($app))
@@ -333,8 +332,8 @@ class RenderController
     public function renderUserImages(Application $app)
     {
 
-
         if ($this->sessionController->correctSession($app)) {
+
             $idUser = $this->sessionController->getSessionUserId($app);
             $profileImage = $this->getProfileImage($app, $idUser);
 
@@ -375,14 +374,13 @@ class RenderController
         if ($errors == null) $errors = new FormError();
 
         if ($this->sessionController->correctSession($app)) {
-            $db = Database::getInstance("pwgram");
-            $pdoImage = new PdoImageRepository($db);
 
+            $pdoImage = $app['pdo'](PdoMapper::PDO_IMAGE);
 
             $idUser = $this->sessionController->getSessionUserId($app);
             $profileImage = $this->getProfileImage($app, $idUser);
 
-            $image = $pdoImage->get($app, $idImage);
+            $image = $pdoImage->get($idImage);
 
             if ($image->isPrivate()) {
                 $private = 'checked';
@@ -411,30 +409,32 @@ class RenderController
     {
 
         if ($this->sessionController->correctSession($app)) {
-            $db = Database::getInstance("pwgram");
-            $commentsPdo = new PdoCommentRepository($db);
-            $userPdo = new PdoUserRepository($db);
-            $imagesPdo = new PdoImageRepository($db);
-            $idUser = $this->sessionController->getSessionUserId($app);
+
+            $commentsPdo    = $app['pdo'](PdoMapper::PDO_COMMENT);
+            $userPdo        = $app['pdo'](PdoMapper::PDO_USER);
+            $imagesPdo      = $app['pdo'](PdoMapper::PDO_IMAGE);
+            $idUser         = $this->sessionController->getSessionUserId($app);
 
 
             //Images array that will be displayed on the main page
-            $userImagesCommented = $imagesPdo->getAllImagesCommentedByAnUser($app, $idUser);
+            $userImagesCommented = $imagesPdo->getAllImagesCommentedByAnUser($idUser);
             $userImagesCommented = !$userImagesCommented ? [] : $userImagesCommented; // if false, return an empty array, if not return the public images
 
             // let's add all the comments for each image
             foreach ($userImagesCommented as $image) {
 
-                $comments = $commentsPdo->getImageCommentsFromUser($app, $image->getId(), $idUser);
+                $comments = $commentsPdo->getImageCommentsFromUser($image->getId(), $idUser);
 
                 if (!$comments) $comments = [];
                 $image->setComments($comments);
-                $userName = $userPdo->getName($app, $image->getFkUser());
+                $userName = $userPdo->getName($image->getFkUser());
                 $image->setUserName($userName);
             }
 
             $image = $this->getProfileImage($app, $idUser);
+
             if ($userImagesCommented != null) {
+
                 return $app['twig']->render('userComments.twig', array(
                     'app' => ['name' => $app['app.name']],
                     'name' => $this->sessionController->getSessionName($app),
@@ -467,10 +467,6 @@ class RenderController
     {
 
         if ($this->sessionController->correctSession($app)) {
-
-            $db = Database::getInstance("pwgram");
-            $commentContent = new PdoCommentRepository($db);
-
 
             $imageViewController = new ImageViewController();
 
@@ -524,10 +520,9 @@ class RenderController
 
     public function getProfileImage(Application $app, $idUser)
     {
-        $db = Database::getInstance("pwgram");
-        $pdoUser = new PdoUserRepository($db);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
 
-        if ($pdoUser->getProfileImage($app, $idUser)) {
+        if ($pdoUser->getProfileImage($idUser)) {
             return $idUser;
         }
         return "img_profile_default";
@@ -535,39 +530,35 @@ class RenderController
 
     public function getInfoUser(Application $app, $idUser)
     {
-        $db = Database::getInstance("pwgram");
-        $pdoUser = new PdoUserRepository($db);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
 
-        return $pdoUser->get($app, $idUser);
+        return $pdoUser->get($idUser);
     }
 
     public function getUserLikes(Application $app, $idUser)
     {
-        $db = Database::getInstance("pwgram");
-        $pdoUser = new PdoImageLikesRepository($db);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_IMAGE_LIKE);
 
-        return $pdoUser->getTotalUserLikes($app, $idUser);
+        return $pdoUser->getTotalUserLikes($idUser);
     }
 
     public function getUserComments(Application $app, $idUser)
     {
-        $db = Database::getInstance("pwgram");
-        $pdoUser = new PdoCommentRepository($db);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_COMMENT);
 
-        return $pdoUser->getTotalUserComments($app, $idUser);
+        return $pdoUser->getTotalUserComments($idUser);
     }
 
     public function getPublicImages(Application $app)
     {
-        $db = Database::getInstance("pwgram");
-        $pdoImage = new PdoImageRepository($db);
-        $pdoUser = new PdoUserRepository($db);
-        $pdoComment = new PdoCommentRepository($db);
+        $pdoImage   = $app['pdo'](PdoMapper::PDO_IMAGE);
+        $pdoUser    = $app['pdo'](PdoMapper::PDO_USER);
+        $pdoComment = $app['pdo'](PdoMapper::PDO_COMMENT);
 
         $publicImages = array();
 
         // Obtain all public images in db
-        $imagesFromDB = $pdoImage->getAll($app);
+        $imagesFromDB = $pdoImage->getAll();
         if ($imagesFromDB == 0) return false;
 
         foreach ($imagesFromDB as $imageFromDB) {
@@ -577,10 +568,10 @@ class RenderController
                 $image = new Image($imageFromDB['title'], $imageFromDB['created_at'], $imageFromDB['fk_user'], false, $imageFromDB['extension'],
                     $imageFromDB['visits'], $imageFromDB['likes'], $imageFromDB['id']);
 
-                $userName = $pdoUser->getName($app, $imageFromDB['fk_user']);
+                $userName = $pdoUser->getName($imageFromDB['fk_user']);
                 $image->setUserName($userName);
-                $image->setComments($pdoComment->getImageComments($app, $image->getId()));
-                $image->setNumComments($pdoComment->getTotalImageComments($app, $image->getId()));
+                $image->setComments($pdoComment->getImageComments($image->getId()));
+                $image->setNumComments($pdoComment->getTotalImageComments($image->getId()));
 
                 array_push($publicImages, $image);
             }
@@ -590,15 +581,10 @@ class RenderController
 
     public function getImagesUser(Application $app, $id, $ordMode)
     {
-
-        $db = Database::getInstance("pwgram");
-        $pdoImage = new PdoImageRepository($db);
-        $pdoUser = new PdoUserRepository($db);
-
-        $publicImages = array();
+        $pdoImage = $app['pdo'](PdoMapper::PDO_IMAGE);
 
         // Obtain all public images in db
-        $imagesFromDB = $pdoImage->getAllUserImagesNonPrivate($app, $id, $ordMode);
+        $imagesFromDB = $pdoImage->getAllUserImagesNonPrivate($id, $ordMode);
 
         return $imagesFromDB;
     }

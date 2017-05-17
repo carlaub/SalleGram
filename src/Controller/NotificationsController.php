@@ -2,36 +2,35 @@
 namespace pwgram\Controller;
 
 
-use pwgram\lib\Database\Database;
-use pwgram\Model\Entity\Notification;
-use pwgram\Model\Repository\PdoImageRepository;
-use pwgram\Model\Repository\PdoNotificationRepository;
-use pwgram\Model\Repository\PdoUserRepository;
-
+use pwgram\Model\Services\PdoMapper;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+
+/**
+ * Class NotificationsController
+ *
+ * This class manages everything in relation with the Notification
+ * system of the application.
+ *
+ * @package pwgram\Controller
+ */
 class NotificationsController {
-
-
 
     public function getUserNotifications(Application $app) {
 
         $sessionController = new SessionController();
 
-        $db = Database::getInstance("pwgram");
-        $pdoNotifications = new PdoNotificationRepository($db);
-        $pdoUser = new PdoUserRepository($db);
+        $pdoNotifications = $app['pdo'](PdoMapper::PDO_NOTIFICATION);
 
-
-        $notifications = $pdoNotifications->getAllUserNotifications($app, $sessionController->getSessionUserId($app));
+        $notifications = $pdoNotifications->getAllUserNotifications($sessionController->getSessionUserId($app));
 
         // Add Username who caused notification into each notification
         $this->insertUsernameTitle($app, $notifications);
 
         return $notifications;
     }
-
 
 
     /**
@@ -53,17 +52,16 @@ class NotificationsController {
             $idUser = $sessionController->getSessionUserId($app);
             $image = $render->getProfileImage($app, $idUser);
 
-            if(sizeof($userNotifications) == 0) {
-                return $app['twig']->render('homeWelcome.twig', array(
-                    'app'=> ['name' => $app['app.name']],
-                    'name'=> $sessionController->getSessionName($app),
-                    'img'=> $image,
-                    'logged'=> $sessionController->haveSession($app),
-                    'p'=> ' Aún no tienes ninguna notificación '
+            if (sizeof($userNotifications) == 0) {
+                return $app['twig']->render('homeWelcome.twig', array (
+
+                    'app'           => ['name' => $app['app.name']],
+                    'name'          => $sessionController->getSessionName($app),
+                    'img'           => $image,
+                    'logged'        => $sessionController->haveSession($app),
+                    'p'             => ' Aún no tienes ninguna notificación '
                 ));
             }
-
-
 
             $content = $app['twig']->render('notifications.twig',
                 [   'name'      => $sessionController->getSessionName($app),
@@ -93,16 +91,15 @@ class NotificationsController {
      */
     public function insertUsernameTitle($app, $notifications) {
 
-        $db = Database::getInstance("pwgram");
-        $pdoUser = new PdoUserRepository($db);
-        $pdoImage = new PdoImageRepository($db);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
+        $pdoImage = $app['pdo'](PdoMapper::PDO_IMAGE);
 
         foreach($notifications as $notification) {
             $idUserFrom = $notification->getFrom();
-            $username = $pdoUser->getName($app, $idUserFrom);
+            $username = $pdoUser->getName($idUserFrom);
 
             $imgId = $notification->getWhere();
-            $imgTitle = $pdoImage->getTitle($app, $imgId);
+            $imgTitle = $pdoImage->getTitle($imgId);
 
             $notification->setFromUsername($username);
            // if($imgTitle != null)
@@ -116,12 +113,14 @@ class NotificationsController {
      * Delete notification
      * @param $app
      * @param $id
+     *
+     * @return RedirectResponse
      */
     public function deleteNotification(Application $app, $id) {
-        $db = Database::getInstance("pwgram");
-        $pdoNotification = new PdoNotificationRepository($db);
 
-        $pdoNotification->remove($app, $id);
+        $pdoNotification = $app['pdo'](PdoMapper::PDO_NOTIFICATION);
+
+        $pdoNotification->remove($id);
 
         return $app->redirect('/notifications');
     }

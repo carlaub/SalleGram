@@ -59,13 +59,15 @@ class AppFormatDate
 
         if ($diff->d >= 1) {    // more than a day
 
+            $strDay = $diff->d == 1? " día " : " días ";
+
             if ($diff->h == 0)
-                $msg = "Publicado hace " . $diff->d . " días.";
+                $msg = "Publicado hace " . $diff->d . $strDay . ".";
 
             else if ($diff->h == 1)
-                $msg = "Publicado hace " . $diff->d . " días y " . $diff->h . " hora.";
+                $msg = "Publicado hace " . $diff->d . $strDay . "y " . $diff->h . " hora.";
 
-            else $msg = "Publicado hace " . $diff->d . " días y " . $diff->h . " horas.";
+            else $msg = "Publicado hace " . $diff->d . $strDay . "y " . $diff->h . " horas.";
         }
 
         else if ($diff->h > 0)
