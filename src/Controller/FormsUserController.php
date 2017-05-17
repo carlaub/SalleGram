@@ -87,7 +87,7 @@ class FormsUserController
         $emailManager = new EmailManager();
 
         //TODO: cambiar mail
-        $emailSentOK = $emailManager->sendEmail("albertpv95@icloud.com", $idUser);
+        $emailSentOK = $emailManager->sendEmail($newUser->getEmail(), $idUser);
 
         if ($emailSentOK) {
 

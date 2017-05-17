@@ -36,7 +36,7 @@ class EmailManager {
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
         
-        $result = mail("carlaurreablazquez@gmail.com", $affair, $this->emailBodyConstruct($idUser), $headers);
+        $result = mail($emailUser, $affair, $this->emailBodyConstruct($idUser), $headers);
 
         
         return $result;
