@@ -90,6 +90,8 @@ class FormsUserController
         $emailSentOK = $emailManager->sendEmail("albertpv95@icloud.com", $idUser);
 
         if ($emailSentOK) {
+
+            $app['monolog']->info(sprintf("User registered with id '%d', name '%s' and email '%s'", $idUser, $newUser->getUsername(), $newUser->getEmail()));
             return $app->redirect('/validation');
         }
         return $app['twig']->render('error.twig', array(
@@ -143,6 +145,9 @@ class FormsUserController
 
 
                 $sessionController->setSession($app, $userId);
+
+                $app['monolog']->info(sprintf("User with id '%d' and name '%s' logged", $userId, $userName));
+
                 return $app->redirect('/');
             }
         }
@@ -212,6 +217,8 @@ class FormsUserController
         $sessionController->setSession($app, $userUpdate->getId());
         // updates the database user row with the new data
         $pdo->update($userUpdate);
+
+        $app['monolog']->info(sprintf("The user with id '%d' has updated its profile", $userId));
 
         return $app->redirect('/');
 

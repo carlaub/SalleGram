@@ -20,6 +20,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
+/**
+ * Class CommentsController
+ *
+ * This class handles all the actions related with the comments made in the application.
+ * Then, the class contains methods to add, edit, remove and get comments.
+ *
+ * @package pwgram\Controller
+ */
 class CommentsController
 {
 
@@ -86,6 +94,7 @@ class CommentsController
                 ));
             }
             return $app -> redirect('/');
+
         } else {
             $renderController = new RenderController();
             $error = new FormError();

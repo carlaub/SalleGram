@@ -16,7 +16,8 @@
         "symfony/validator": "^3.2",
         "symfony/config": "^3.2",
         "symfony/translation": "^3.2",
-        "doctrine/dbal": "~2.2"
+        "doctrine/dbal": "~2.2",
+        "monolog/monolog": "^1.22"
 
     },
     "autoload": {

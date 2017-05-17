@@ -15,6 +15,10 @@ $app['objects_json_parser'] = function () {
 };
 
 
+$app->register(new Silex\Provider\MonologServiceProvider(), array (
+
+    'monolog.logfile'   => __DIR__ . '/../../var/log/prod.log',
+));
 
 
 $app->register(new PdoMapper());

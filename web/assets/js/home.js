@@ -73,9 +73,9 @@ $(document).ready(function() {
 
             var img = new Image("http://grup17.com/assets/img/profile_img/"+ comments[i].fkUser +".jpg");
 
-            res += '<p class="comment"> <strong class="name-image">';
-            if(img.height !== 0) res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/'+ comments[i].fkUser +'.jpg" height="20" width="20" >';
-            else res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/img_profile_default.jpg" height="20" width="20" >';
+            res += '<p class="comment vlimit"> <strong class="name-image">';
+            res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/'+ comments[i].fkUser +'.jpg" height="20" width="20" >';
+            //else res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/img_profile_default.jpg" height="20" width="20" >';
 
             res += comments[i].userName + " :";
             res += '</strong><small> ' + comments[i].content + '</small></p>';
@@ -132,7 +132,7 @@ $(document).ready(function() {
 
             $('#img-container').append(
 
-                '<div class=" col-sm-6 col-md-4"> <div class="thumbnail"> ' +
+                '<div class=" col-sm-6 col-md-4"> <div class="thumbnail limit-image"> ' +
                 '<a  href=' + hrefImageView + '><h2>' + element.title + '</h2></a>'
                 + '<img  src=' + imgAsset + ' height="400" width="300" >'
                 + '<div class="caption"> <div class="caption">'

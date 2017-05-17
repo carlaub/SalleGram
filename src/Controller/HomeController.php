@@ -50,6 +50,7 @@ class HomeController
                 foreach ($comments as $commentUser) {
 
                     $commentUser->setUserName($userPdo->getName($commentUser->getFkUser()));
+                    $commentUser->setFkUser(($this->getProfileImage($app, $commentUser->getFkUser())));//reutilitzo fk user per posar la foto
                 }
             }
 
@@ -75,6 +76,17 @@ class HomeController
             'total_public_images' => json_encode($pdo->getTotalOfPublicImages())
         ));
         //return json_encode($imagesDatesFormatted);
+    }
+
+    public function getProfileImage(Application $app, $idUser)
+    {
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
+
+        if ($pdoUser->getProfileImage($idUser)) {
+
+            return $idUser;
+        }
+        return "img_profile_default";
     }
 
 }
