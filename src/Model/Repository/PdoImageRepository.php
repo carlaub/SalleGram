@@ -9,6 +9,7 @@
 namespace pwgram\Model\Repository;
 
 
+use Doctrine\DBAL\Connection;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Image;
 use Silex\Application;
@@ -41,7 +42,11 @@ class PdoImageRepository implements PdoRepository
     private $db;
 
 
-    public function __construct(Database $db)
+    /**
+     * PdoImageRepository constructor.
+     * @param Database|Connection $db
+     */
+    public function __construct($db)
     {
         $this->db = $db;
     }
@@ -53,11 +58,11 @@ class PdoImageRepository implements PdoRepository
      *
      * @return bool         true if the image has been added correctly, false if not.
      */
-    public function add(Application $app, $row)
+    public function add($row)
     {
 
         //$query  = "INSERT INTO `Image`(`title`, `visits`, `private`, `created_at`, `likes`, `fk_user`) VALUES(?, ?, ?, ?, ?, ?)";
-        $app['db']->insert(PdoImageRepository::TABLE_NAME,
+        $this->db->insert(PdoImageRepository::TABLE_NAME,
             array(
                 'title'         =>  $row->getTitle(),
                 'visits'        =>  $row->getVisits(),
@@ -78,22 +83,29 @@ class PdoImageRepository implements PdoRepository
      *
      * @param int $id    The id of the image visited.
      */
-    public function incrementVisits(Application $app, $id) {
+    public function incrementVisits($id) {
 
-        $this->db->initTransaction(); // some day this will work, trust in me
+        $this->db->beginTransaction();
 
-        $image = $this->get($app, $id);
-        if (!$image) {              // I think this should never happen, but I am not sure
+        try {
 
-            echo "The operation could not be done, error getting the image from the database.";
-            $this->db->commitTransaction();
-            exit;
+            $image = $this->get($id);
+            if (!$image) {              // I think this should never happen, but I am not sure
+
+                echo "The operation could not be done, error getting the image from the database.";
+                $this->db->commitTransaction();
+                exit;
+            }
+
+            $image->setVisits($image->getVisits() + 1);
+
+            $this->update($image);
+            $this->db->commit();
         }
+        catch (Exception $e) {
 
-        $image->setVisits($image->getVisits() + 1);
-
-        $this->update($app, $image);
-        $this->db->commitTransaction();
+            $this->db->rollBack();
+        }
     }
 
     /**
@@ -104,28 +116,27 @@ class PdoImageRepository implements PdoRepository
      * @param int $id      The id of the image to update.
      * @param int $inc     Can be <b>negative</b>.
      */
-    public function updateLikes(Application $app, $id, $inc = 1) {
+    public function updateLikes($id, $inc = 1) {
 
-        $app['db']->beginTransaction();
+        $this->db->beginTransaction();
 
         try {
 
-            $image = $this->get($app, $id);
+            $image = $this->get($id);
             if (!$image) {              // i think this should never happen, but I am not sure
 
                 echo "The operation could not be done, error getting the image from the database.";
-                //$app['db']->commit();
                 exit;
             }
 
             $image->setLikes($image->getLikes() + $inc);
 
-            $this->update($app, $image);
-            $app['db']->commit();
+            $this->update($image);
+            $this->db->commit();
         }
         catch (Exception $e) {
 
-            $app['db']->rollBack();
+            $this->db->rollBack();
         }
     }
 
@@ -136,10 +147,10 @@ class PdoImageRepository implements PdoRepository
      * @return bool|Image An Image instance is returned if everything goes well,
      *                    false if the image could not be found.
      */
-    public function get(Application $app, $id)
+    public function get($id)
     {
         $query  = "SELECT * FROM `Image` WHERE id = ?";
-        $image = $app['db']->fetchAssoc(
+        $image = $this->db->fetchAssoc(
             $query,
             array(
                 $id
@@ -159,9 +170,9 @@ class PdoImageRepository implements PdoRepository
         );
     }
 
-    public function getAll(Application $app) {
+    public function getAll() {
         $query = "SELECT * FROM Image";
-        $result = $app['db']->fetchAll($query);
+        $result =$this->db->fetchAll($query);
 
         if(!$result) return 0; // Any image in DB
 
@@ -169,21 +180,21 @@ class PdoImageRepository implements PdoRepository
     }
 
 
-    public function getLastInsertedId(Application $app) {
+    public function getLastInsertedId() {
         $query = "SELECT LAST_INSERT_ID() as id";
-        $result = $app['db']->fetchAssoc($query);
+        $result = $this->db->fetchAssoc($query);
 
         if (!$result) return false;
 
         return $result['id'];
     }
 
-    public function getAllPublicImages(Application $app, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getAllPublicImages($offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
             $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY created_at DESC LIMIT ?";
-            $result = $app['db']->fetchAll(
+            $result =$this->db->fetchAll(
                 $query,
                 array(
                     (int) $limit
@@ -193,7 +204,7 @@ class PdoImageRepository implements PdoRepository
         }
         else {
             $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY created_at DESC LIMIT ?, ?";
-            $result = $app['db']->fetchAll(
+            $result = $this->db->fetchAll(
                 $query,
                 array(
                     (int) $offset,
@@ -208,9 +219,9 @@ class PdoImageRepository implements PdoRepository
         return $this->populateImages($result);
     }
 
-    public function getTotalOfPublicImages(Application $app) {
+    public function getTotalOfPublicImages() {
 
-        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Image WHERE private IS FALSE");
+        $result = $this->db->executeQuery("SELECT COUNT(*) AS total FROM Image WHERE private IS FALSE");
 
         if (!$result) return 0;
 
@@ -225,7 +236,7 @@ class PdoImageRepository implements PdoRepository
      * @param int $limit
      * @return array|bool
      */
-    public function getAllUserImages(Application $app, $id, $ordMode = 1, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getAllUserImages($id, $ordMode = 1, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
@@ -254,7 +265,7 @@ class PdoImageRepository implements PdoRepository
             }
 
 
-            $result = $app['db']->fetchAll(
+            $result = $this->db->fetchAll(
                 $query,
                 array(
                     $id
@@ -264,7 +275,7 @@ class PdoImageRepository implements PdoRepository
         else {
 
             $query = "SELECT * FROM Image WHERE fk_user = ? ORDER BY created_at DESC LIMIT ?, ?";
-            $result = $app['db']->fetchAll(
+            $result = $this->db->fetchAll(
                 $query,
                 array(
                     $id,
@@ -285,7 +296,7 @@ class PdoImageRepository implements PdoRepository
      * @param int $limit
      * @return array|bool
      */
-    public function getAllUserImagesNonPrivate(Application $app, $id, $ordMode = 1, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
+    public function getAllUserImagesNonPrivate($id, $ordMode = 1, $offset = 0, $limit = PdoRepository::MAX_RESULTS_LIMIT) {
 
         if ($offset == 0) {
 
@@ -314,7 +325,7 @@ class PdoImageRepository implements PdoRepository
             }
 
 
-            $result = $app['db']->fetchAll(
+            $result = $this->db->fetchAll(
                 $query,
                 array(
                     $id
@@ -324,7 +335,7 @@ class PdoImageRepository implements PdoRepository
         else {
 
             $query = "SELECT * FROM Image WHERE fk_user = ? AND private = 0 ORDER BY created_at DESC LIMIT ?, ?";
-            $result = $app['db']->fetchAll(
+            $result = $this->db->fetchAll(
                 $query,
                 array(
                     $id,
@@ -339,11 +350,11 @@ class PdoImageRepository implements PdoRepository
         return $this->populateImages($result);
     }
 
-    public function getAllImagesCommentedByAnUser(Application $app, $id) {
+    public function getAllImagesCommentedByAnUser($id) {
 
         //SELECT * FROM Image WHERE id IN (SELECT fk_image FROM Comment WHERE fk_user = 1);
         $query = "SELECT * FROM Image WHERE id IN (SELECT fk_image FROM Comment WHERE fk_user = ?)";
-        $result = $app['db']->fetchAll(
+        $result = $this->db->fetchAll(
             $query,
             array(
                 $id
@@ -361,11 +372,11 @@ class PdoImageRepository implements PdoRepository
      *
      * @return int                  The total of images of an user.
      */
-    public function getTotalUserImages(Application $app, $id) {
+    public function getTotalUserImages($id) {
 
         $query = "SELECT COUNT(*) as total FROM Image WHERE fk_user = ?";
 
-        $result = $app['db']->fetchAssoc(
+        $result = $this->db->fetchAssoc(
             $query,
             array(
                 $id
@@ -377,11 +388,11 @@ class PdoImageRepository implements PdoRepository
         return $result['total'];
     }
 
-    public function getMostVisitedImages(Application $app, $max = 5) {
+    public function getMostVisitedImages($max = 5) {
 
         $query = "SELECT * FROM Image WHERE private IS FALSE ORDER BY visits DESC LIMIT ?";
 
-        $result = $app['db']->fetchAll(
+        $result = $this->db->fetchAll(
             $query,
             array(
                 $max
@@ -399,10 +410,10 @@ class PdoImageRepository implements PdoRepository
      *
      * @param Image $row    An existing image with updated information.
      */
-    public function update(Application $app, $row)
+    public function update($row)
     {
         $query = "UPDATE `Image` SET title = ?, private = ?, likes = ?, visits = ? WHERE id = ?";
-        $result = $app['db']->executeUpdate(
+        $result = $this->db->executeUpdate(
             $query,
             array(
                 $row->getTitle(),
@@ -415,9 +426,9 @@ class PdoImageRepository implements PdoRepository
     }
 
 
-    public function length(Application $app)
+    public function length()
     {
-        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Image");
+        $result = $this->db->executeQuery("SELECT COUNT(*) AS total FROM Image");
 
         if (!$result) return 0;
 
@@ -432,9 +443,9 @@ class PdoImageRepository implements PdoRepository
      * @param $id
      * @return mixed
      */
-    public function getAuthor(Application $app, $id) {
+    public function getAuthor($id) {
         $query = "SELECT fk_user FROM Image WHERE id = ?";
-        $result = $app['db']->fetchAssoc(
+        $result = $this->db->fetchAssoc(
             $query,
             array(
                 $id
@@ -449,9 +460,9 @@ class PdoImageRepository implements PdoRepository
      * @param Application $app
      * @param $id
      */
-    public function getTitle(Application $app, $id) {
+    public function getTitle($id) {
         $query = "SELECT title FROM Image WHERE id = ?";
-        $result = $app['db']->fetchAssoc(
+        $result = $this->db->fetchAssoc(
             $query,
             array(
                 $id
@@ -467,9 +478,9 @@ class PdoImageRepository implements PdoRepository
      *
      * @param int $id   The id associated with the image to delete.
      */
-    public function remove(Application $app, $id)
+    public function remove($id)
     {
-        $app['db']->delete(PdoImageRepository::TABLE_NAME,
+        $this->db->delete(PdoImageRepository::TABLE_NAME,
             array(
                 'id' => $id
             ));

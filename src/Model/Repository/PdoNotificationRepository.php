@@ -9,6 +9,7 @@
 namespace pwgram\Model\Repository;
 
 
+use Doctrine\DBAL\Connection;
 use pwgram\lib\Database\Database;
 use pwgram\Model\Entity\Notification;
 use Silex\Application;
@@ -21,14 +22,18 @@ class PdoNotificationRepository implements PdoRepository
     private $db;
 
 
-    public function __construct(Database $db)
+    /**
+     * PdoNotificationRepository constructor.
+     * @param Database|Connection $db
+     */
+    public function __construct( $db)
     {
         $this->db = $db;
     }
 
-    public function add(Application $app, $row)
+    public function add($row)
     {
-        $app['db']->insert(PdoNotificationRepository::TABLE_NAME,
+        $this->db->insert(PdoNotificationRepository::TABLE_NAME,
                             array(
                                 'fk_user_dest'  =>  $row->getWho(),
                                 'fk_user_src'   =>  $row->getFrom(),
@@ -40,10 +45,10 @@ class PdoNotificationRepository implements PdoRepository
         //return $result !== false;
     }
 
-    public function get(Application $app, $id)
+    public function get($id)
     {
         $query  = "SELECT * FROM `Notification` WHERE id = ?";
-        $notification = $app['db']->fetchAssoc($query, array($id));
+        $notification = $this->db->fetchAssoc($query, array($id));
 
         if (!$notification) return false; // an error happened during the execution
 
@@ -62,11 +67,11 @@ class PdoNotificationRepository implements PdoRepository
      *
      * @return array    An array of notifications for the user or empty if no one has been found.
      */
-    public function getAllUserNotifications(Application $app, $id) {
+    public function getAllUserNotifications($id) {
         $notifications = [];
 
         $query  = "SELECT * FROM `Notification` WHERE fk_user_dest = ?";
-        $result = $app['db']->fetchAll($query, array($id));
+        $result = $this->db->fetchAll($query, array($id));
 
         if (!$result) return $notifications; // an error happened during the execution
 
@@ -88,10 +93,10 @@ class PdoNotificationRepository implements PdoRepository
         return $notifications;
     }
 
-    public function update(Application $app, $row)
+    public function update($row)
     {
         $query = "UPDATE `Notification` SET fk_user_dest = ?, fk_user_src = ?, `type` = ?, fk_image = ?, created_at = ? WHERE id = ?";
-        $res = $app['db']->executeUpdate(
+        $res = $this->db->executeUpdate(
             $query,
             array(
                 $row->getWho(),
@@ -105,11 +110,11 @@ class PdoNotificationRepository implements PdoRepository
     }
 
 
-    public function getNotificationsImage(Application $app, $id) {
+    public function getNotificationsImage($id) {
         $notifications = [];
 
         $query  = "SELECT * FROM `Notification` WHERE fk_image = ?";
-        $result = $app['db']->fetchAll($query, array($id));
+        $result = $this->db->fetchAll($query, array($id));
 
         if (!$result) return $notifications; // an error happened during the execution
 
@@ -134,17 +139,17 @@ class PdoNotificationRepository implements PdoRepository
 
 
 
-    public function remove(Application $app, $id)
+    public function remove($id)
     {
-        $app['db']->delete(PdoNotificationRepository::TABLE_NAME,
+        $this->db->delete(PdoNotificationRepository::TABLE_NAME,
             array(
                 'id' => $id
             ));
     }
 
-    public function length(Application $app)
+    public function length()
     {
-        $result = $app['db']->executeQuery("SELECT COUNT(*) AS total FROM Notification");
+        $result = $this->db->executeQuery("SELECT COUNT(*) AS total FROM Notification");
 
         if (!$result) return 0;
 

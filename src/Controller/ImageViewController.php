@@ -3,26 +3,30 @@
 namespace pwgram\Controller;
 
 use pwgram\lib\Database\Database;
+use pwgram\Model\Entity\Image;
 use pwgram\Model\Repository\PdoCommentRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
 use Silex\Application;
-
+use pwgram\Model\Services\PdoMapper;
 
 class ImageViewController {
 
     /**
      * Load required information in Image like comments and username
+     *
+     * @param Application $app
      * @param $idImage
+     *
+     * @return Image
      */
     public function prepareImage(Application $app, $idImage) {
-        $db = Database::getInstance("pwgram");
-        $pdoImage = new PdoImageRepository($db);
-        $pdoUser = new PdoUserRepository($db);
-        $pdoComents = new PdoCommentRepository($db);
 
+        $pdoImage   = $app['pdo'](PdoMapper::PDO_IMAGE);
+        $pdoUser    = $app['pdo'](PdoMapper::PDO_USER);
+        $pdoComents = $app['pdo'](PdoMapper::PDO_COMMENT);
 
-        $image = $pdoImage->get($app, $idImage);
+        $image = $pdoImage->get($idImage);
 
         // Image not found
         if(!$image) return false;
@@ -39,29 +43,22 @@ class ImageViewController {
 
 
         // Verify that the image exist
-        $image = $pdoImage->get($app, $idImage);
-
-
-
-
-
-
         // Image found
-        $image = $pdoImage->get($app, $idImage);//return doing this for the increment of visits
+        $image = $pdoImage->get($idImage);//return doing this for the increment of visits
         //Set Username
-        $image->setUserName($pdoUser->getName($app, $image->getFkUser()));
+        $image->setUserName($pdoUser->getName($image->getFkUser()));
         //Set Comment
-        $comments = $pdoComents->getImageComments($app, $idImage, 0, PdoCommentRepository::APP_MAX_COMMENTS_PAGINATED);
+        $comments = $pdoComents->getImageComments($idImage, 0, PdoCommentRepository::APP_MAX_COMMENTS_PAGINATED);
         if ($comments){
             //Set the name of username of the comment
             foreach ($comments as $commentUser) {
-                $commentUser->setUserName($pdoUser->getName($app, $commentUser->getFkUser()));
+
+                $commentUser->setUserName($pdoUser->getName($commentUser->getFkUser()));
 
                 $commentUser->setFkUser(($this->getProfileImage($app, $commentUser->getFkUser())));//reutilitzo fk user per posar la foto
             }
             $image->setComments($comments);
         }
-
 
 //        //Increment image visits
 //        $this->incrementVisits($app, $idImage, $pdoImage);
@@ -71,15 +68,15 @@ class ImageViewController {
 
     private function incrementVisits(Application $app, $idImage, PdoImageRepository $pdoImage) {
 
-        $pdoImage->incrementVisits($app, $idImage);
+
+        $pdoImage->incrementVisits($idImage);
     }
 
     public function getProfileImage(Application $app, $idUser)
     {
-        $db = Database::getInstance("pwgram");
-        $pdoUser = new PdoUserRepository($db);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
 
-        if ($pdoUser->getProfileImage($app, $idUser)) {
+        if ($pdoUser->getProfileImage($idUser)) {
             return $idUser;
         }
         return "img_profile_default";

@@ -64,7 +64,12 @@ $(document).ready(function() {
 
         for (var i = 0; i < comments.length; i++) {
 
+            var img = new Image("http://grup17.com/assets/img/profile_img/"+ comments[i].fkUser +".jpg");
+
             res += '<p class="comment"> <strong class="name-image">';
+            if(img.height !== 0) res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/'+ comments[i].fkUser +'.jpg" height="20" width="20" >';
+            else res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/img_profile_default.jpg" height="20" width="20" >';
+
             res += comments[i].userName + " :";
             res += '</strong><small> ' + comments[i].content + '</small></p>';
         }

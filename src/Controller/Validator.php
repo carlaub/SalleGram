@@ -9,6 +9,7 @@ use pwgram\Model\Entity\FormError;
 use pwgram\Model\Entity\User;
 use pwgram\Model\Repository\PdoUserRepository;
 use \DateTime;
+use pwgram\Model\Services\PdoMapper;
 use Silex\Application;
 
 /**
@@ -93,11 +94,10 @@ class Validator
 
         $this->validateUserEditableFields($user, $passwd2, $errors);
 
-        $db = Database::getInstance("pwgram");
-        $pdoUser = new PdoUserRepository($db);
+        $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
 
 
-        if (!$pdoUser->validateUnique($app, $user->getUsername(), $user->getEmail())){
+        if (!$pdoUser->validateUnique($user->getUsername(), $user->getEmail())){
             $errors->setUsernameRegisteredError(true);
         } else {
             $errors->setUsernameRegisteredError(false);
@@ -125,8 +125,8 @@ class Validator
         $this->validateUserEditableFields($userUpdate, $passwd2, $errors);
         if ($currentUserState->getUsername() !== $userUpdate->getUsername()) {
 
-            $db = Database::getInstance("pwgram");
-            $pdoUser = new PdoUserRepository($db);
+            $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
+
 
             if (!$pdoUser->validateUnique($app, $userUpdate->getUsername())) {
                 $errors->setUsernameRegisteredError(true);
@@ -175,9 +175,9 @@ class Validator
             $response['STATUS'] = 'KO';
         }
 
-        $db = Database::getInstance("pwgram");
-        $pdoUser = new PdoUserRepository($db);
-        $response = $pdoUser->validateUniqueExtra($user->getUsername(), $user->getEmail());
+        //$db = Database::getInstance("pwgram");
+        //$pdoUser = new PdoUserRepository($db);
+        //$response = $pdoUser->validateUniqueExtra($user->getUsername(), $user->getEmail());
 
         return $response;
     }

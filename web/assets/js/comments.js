@@ -37,7 +37,7 @@ $(document).ready(function() {
         return false;
     }
 
-    function renderComments(comments) {
+    function renderComments(comments, imageId) {
 
         var res = "";
 
@@ -45,14 +45,12 @@ $(document).ready(function() {
 
         for (var i = 0; i < comments.length; i++) {
 
-            var file = file;
-
             var img = new Image("http://grup17.com/assets/img/profile_img/"+ comments[i].fkUser +".jpg");
             //img.src = "http://grup17.com/assets/img/profile_img/"+ comments[i].fkUser +".jpg";
 
 
-            res += '<p class="limit"> ';
-            if(img.height != 0) res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/'+ comments[i].fkUser +'.jpg" height="20" width="20" >';
+            res += '<p class="comment"> ';
+            if(img.height !== 0) res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/'+ comments[i].fkUser +'.jpg" height="20" width="20" >';
             else res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/img_profile_default.jpg" height="20" width="20" >';
 
             res += '<strong class="name-image">';
@@ -74,7 +72,7 @@ $(document).ready(function() {
 
         $('#comments_list_' + imageId).append(
 
-            renderComments(comments)
+            renderComments(comments, imageId)
         );
 
         updateCommentsCount(imageId, loaded);
