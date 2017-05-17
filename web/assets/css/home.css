@@ -148,20 +148,20 @@ textarea {
     padding: 10px;
 }
 
-.limit{
-    max-width : 300px;
-    min-width : 300px;
-    display: block;
-    width : 300px;
+/*.limit{*/
+    /*max-width : 300px;*/
+    /*min-width : 300px;*/
+    /*display: block;*/
+    /*width : 300px;*/
 
-    text-overflow: ellipsis;
-    margin-right: 5px;
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-align: left;
-    font-size: 15px;
-}
+    /*text-overflow: ellipsis;*/
+    /*margin-right: 5px;*/
+    /*display: block;*/
+    /*overflow: hidden;*/
+    /*white-space: nowrap;*/
+    /*text-align: left;*/
+    /*font-size: 15px;*/
+/*}*/
 
 .vlimit{
     width : 279px;
