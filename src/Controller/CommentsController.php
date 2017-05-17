@@ -151,6 +151,7 @@ class CommentsController
 
             $user = $userPdo->get($app, $comment->getFkUser());
             $comment->setUserName($user->getUsername());
+            $comment->setFkUser(($this->getProfileImage($app, $comment->getFkUser())));//reutilitzo fk user per posar la foto
         }
 
         $result = array(
@@ -164,4 +165,16 @@ class CommentsController
 
         return json_encode($result);
     }
+
+    public function getProfileImage(Application $app, $idUser)
+    {
+        $db = Database::getInstance("pwgram");
+        $pdoUser = new PdoUserRepository($db);
+
+        if ($pdoUser->getProfileImage($app, $idUser)) {
+            return $idUser;
+        }
+        return "img_profile_default";
+    }
+
 }

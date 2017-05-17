@@ -8,15 +8,7 @@ $(document).ready(function() {
 
         if (r == true);
         else event.preventDefault();
-
     });
-
-
-
-
-
-
-
 });
 
 

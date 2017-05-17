@@ -47,17 +47,20 @@ $(document).ready(function() {
 
             var file = file;
 
-            var img = new Image("http://grup17.com/assets/img/profile_img/"+ comments[i].fkUser +".jpg");
-            //img.src = "http://grup17.com/assets/img/profile_img/"+ comments[i].fkUser +".jpg";
+            var img = new Image();
 
+            url = "http://grup17.com/assets/img/profile_img/"+ comments[i].fkUser +".jpg";
 
-            res += '<p class="limit"> ';
-            if(img.height != 0) res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/'+ comments[i].fkUser +'.jpg" height="20" width="20" >';
-            else res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/img_profile_default.jpg" height="20" width="20" >';
+            img.src = url;
+
+            //alert(JSON.stringify(comments[i], null, 4));
+            res += '<p class="limit">';
+
+            res += '<img class="img-circle" src="http://grup17.com/assets/img/profile_img/'+comments[i].fkUser+'.jpg" height="20" width="20" >';
 
             res += '<strong class="name-image">';
-            res += comments[i].userName + " :";
-            res += '</strong><small> ' + comments[i].content + '</small></p>';
+            res += comments[i].userName + " : ";
+            res += '</strong><small>' + comments[i].content + '</small></p>';
         }
 
         return res;
@@ -109,7 +112,7 @@ $(document).ready(function() {
     }
 
 
-   // $("#icon_load_more_comments").unbind('click').on('click', function (event) {
+    // $("#icon_load_more_comments").unbind('click').on('click', function (event) {
     $(document).unbind('click').on('click', '#icon_load_more_comments', function (event) {
 
         var imageId = $(event.target).data('var'); // gets the image id
