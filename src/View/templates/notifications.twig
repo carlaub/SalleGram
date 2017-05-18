@@ -1,5 +1,11 @@
 {% extends "base.twig" %}
 
+{% block meta %}
+    <meta name="title" content="Notificacions">
+    <meta name="description" content="Pàgina per mostrar les notificacions d'un usuari">
+{% endblock meta %}
+
+
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" type="text/css" href="{{ asset('notifications.css', 'css') }}">

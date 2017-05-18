@@ -6,6 +6,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <meta name="title" content="Base">
+        <meta name="description" content="Tiwg base del qual hereten els altres twig de l'aplicació">
+
+
+        {% block meta %}
+            <meta name="title" content="Base">
+            <meta name="description" content="Tiwg base del qual hereten els altres twig de l'aplicació">
+        {% endblock meta %}
+
 
         {% block stylesheets %}
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">

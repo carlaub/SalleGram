@@ -1,6 +1,10 @@
 {% extends "base.twig" %}
 
 {# Renders a list of users that the current user is following #}
+{% block meta %}
+    <meta name="title" content="Follows List">
+    <meta name="description" content="Llistat d'usuaris seguits per l'usuari actual">
+{% endblock meta %}
 
 {% block navbar %}
 
