@@ -4,11 +4,6 @@ use Silex\Application;
 
 use pwgram\Model\Services\PdoMapper;
 
-/**
- *
- * lliurament final
- *
- */
 
 $app = new Application();
 

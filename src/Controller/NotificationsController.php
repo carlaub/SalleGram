@@ -37,7 +37,6 @@ class NotificationsController {
      *
      */
     public function renderNotifications(Application $app) {
-        //TODO: comprovar que esta la sesion
 
         $sessionController  = new SessionController();
         $render             = new RenderController();
@@ -78,7 +77,6 @@ class NotificationsController {
             return $response;
 
         }
-        //TODO error 403
     }
 
 

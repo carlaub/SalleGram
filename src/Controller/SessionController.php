@@ -14,7 +14,6 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
 
 
-//TODO COOKIES
 
 
 
@@ -49,9 +48,6 @@ class SessionController
     }
     /**
      *
-     * TODO LLAMAR A ESTA FUCNION ANTES DE REENDERIZAR CUALQUIERA QUE NECESITE ESTAR LOGEADO ...
-     * TODO ... SI DEVUELVE FALSE REENDERIZAR /LOGIN
-     *
      * @param $app
      * @return bool
      */
@@ -64,7 +60,6 @@ class SessionController
                 return true;
             }
         }
-        //TODO error 403
         return false;
     }
 

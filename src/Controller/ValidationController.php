@@ -27,7 +27,6 @@ class validationController {
         $sessionController = new SessionController();
 
         $sessionController->setSession($app, $id);
-        //TODO: loggear usuario
         return $app['twig']->render('welcome.twig',array());
     }
 }

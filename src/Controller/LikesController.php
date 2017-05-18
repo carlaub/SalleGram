@@ -23,7 +23,6 @@ class LikesController {
         $userid = $this->sessionController->getSessionUserId($app);
         if (!$userid) {
 
-            // TODO 403?
 
             return $app['twig']->render('error.twig', array(
                 'message'=>"El like no se ha añadido, usario no conectado."

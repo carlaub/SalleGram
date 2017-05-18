@@ -314,7 +314,6 @@ class RenderController
         if ($this->sessionController->haveSession($app))
             $currentUser = $this->sessionController->getSessionUserId($app);
 
-        //TODO FALTA QUE LAS IMAGENES SE PUEDAN FILTRAR
 
         return $app['twig']->render('user-profile.twig', array(
             'app' => ['name' => $app['app.name']],
@@ -462,7 +461,6 @@ class RenderController
                 ));
             }
         } else return $app->redirect('/login');
-        //TODO error 403
 
     }
 

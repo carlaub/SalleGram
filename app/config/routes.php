@@ -93,17 +93,16 @@ $app->get('/unfollow-user/{user}/{who}', 'pwgram\\Controller\\FollowersControlle
 $app->get('/followers-posts', 'pwgram\\Controller\\FollowersController::renderFollowsList')->before($sessionControl);
 
 
-// TODO: DESCOMENTAR!!!!
-//$app->error(function (\Exception $e, $code) use ($app) {
-//
-//    $response = new Response();
-//    $content =  $app['twig']->render('error.twig',array(
-//        'message'=>"Contenido no disponible. Disculpe las molestias."
-//    ));
-//    $response->setContent($content);
-//    $response->setStatusCode(Response::HTTP_FORBIDDEN); // 403 code
-//    return $response;
-//});
+$app->error(function (\Exception $e, $code) use ($app) {
+
+    $response = new Response();
+    $content =  $app['twig']->render('error.twig',array(
+        'message'=>"Contenido no disponible. Disculpe las molestias."
+    ));
+    $response->setContent($content);
+    $response->setStatusCode(Response::HTTP_FORBIDDEN); // 403 code
+    return $response;
+});
 
 
 

@@ -141,10 +141,8 @@ class PdoImageLikesRepository implements PdoRepository
             )
         );
 
-        //TODO: check with the update
         if (!$result) return true;
 
-        //if ($results == null) return true; // User hasn't put like
 
         return false; // User put like
     }

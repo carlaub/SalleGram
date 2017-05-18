@@ -86,7 +86,7 @@ class FormsUserController
         //Send validation email
         $emailManager = new EmailManager();
 
-        //TODO: cambiar mail
+
         $emailSentOK = $emailManager->sendEmail($newUser->getEmail(), $idUser);
 
         if ($emailSentOK) {
