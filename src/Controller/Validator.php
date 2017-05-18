@@ -111,6 +111,7 @@ class Validator
      * Validates all editable fields an also checks that, if the user has changed its username,
      * this new username already does nor exists.
      *
+     * @param Application $app
      * @param User $currentUserState    The current user data, without the update.
      * @param User $userUpdate          The current user with data modifications.
      * @param string $passwd2           The password confirmation.
@@ -127,8 +128,7 @@ class Validator
 
             $pdoUser = $app['pdo'](PdoMapper::PDO_USER);
 
-
-            if (!$pdoUser->validateUnique($app, $userUpdate->getUsername())) {
+            if (!$pdoUser->validateUnique($userUpdate->getUsername())) {
                 $errors->setUsernameRegisteredError(true);
             } else {
                 $errors->setUsernameRegisteredError(false);

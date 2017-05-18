@@ -171,7 +171,9 @@ class FormsUserController
         $pdo = $app['pdo'](PdoMapper::PDO_USER);
 
 
+
         $userUpdate         = $this->getUserFromForm($request);
+
         $confirmPassword    = $request->request->get('confirm-password');
         $profileImage       = $request->files->get('image-path');
 
@@ -179,12 +181,15 @@ class FormsUserController
         $userId         = $this->sessionController->getSessionUserId($app);
         $currentUser    = $pdo->get($userId);
 
+
         $userUpdate->setEmail($currentUser->getEmail()); // data from db that does not change
         $userUpdate->setId($userId);
+
 
         $validator = new Validator();
 
         $errors = $validator->validateUserUpdate($app, $currentUser, $userUpdate, $confirmPassword);
+
 
 
         if ($profileImage != null) {
@@ -202,6 +207,8 @@ class FormsUserController
         $userUpdate->setPassword(crypt($userUpdate->getPassword(), '$2a$07$usesomadasdsadsadsadasdasdasdsadesillystringfors'));
         $userUpdate->setActive(true);
         //Image not null
+
+
         $errors = new FormError();
         if ($profileImage != null) {
             // Delete previous Image
