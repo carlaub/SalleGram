@@ -34,6 +34,7 @@ $app->post('/new-comment/{id}', 'pwgram\\Controller\\CommentsController::addComm
 
 $app->get('', 'pwgram\\Controller\\RenderController::renderHome');
 
+
 /*Basics, no logged user*/
 $app->get('/login', 'pwgram\\Controller\\RenderController::renderLogin');
 $app->get('/register', 'pwgram\\Controller\\RenderController::renderRegistration');

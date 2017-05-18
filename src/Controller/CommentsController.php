@@ -99,7 +99,10 @@ class CommentsController
             $renderController = new RenderController();
             $error = new FormError();
             $error->setCommentError(true);
-            return $renderController->renderHome($app, $error);
+
+            $this->sessionController->setError($app, $error);
+            //return $renderController->renderHome($app, $error);
+            return $app->redirect('/');
         }
 
     }
@@ -109,11 +112,14 @@ class CommentsController
         $userid = $this->sessionController->getSessionUserId($app);
         if (!$userid) {
 
-            // TODO 403
-
-            return $app['twig']->render('error.twig', array(
+            $response = new Response();
+            $content =  $app['twig']->render('error.twig', array(
                 'message'=>"El comentario no se ha añadido, usario no conectado."
             ));
+
+            $response->setContent($content);
+            $response->setStatusCode(Response::HTTP_FORBIDDEN); // 403 code
+            return $response;
         }
 
         $pdo = $app['pdo'](PdoMapper::PDO_COMMENT);
@@ -156,11 +162,14 @@ class CommentsController
         $userid = $this->sessionController->getSessionUserId($app);
         if (!$userid) {
 
-            // TODO 403
-
-            return $app['twig']->render('error.twig', array(
+            $response = new Response();
+            $content =  $app['twig']->render('error.twig', array(
                 'message'=>"El comentario no se ha añadido, usario no conectado."
             ));
+
+            $response->setContent($content);
+            $response->setStatusCode(Response::HTTP_FORBIDDEN); // 403 code
+            return $response;
         }
 
         $pdo = $app['pdo'](PdoMapper::PDO_COMMENT);

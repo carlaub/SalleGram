@@ -14,6 +14,7 @@ use pwgram\Model\Repository\PdoCommentRepository;
 use pwgram\Model\Repository\PdoImageLikesRepository;
 use pwgram\Model\Repository\PdoImageRepository;
 use pwgram\Model\Repository\PdoUserRepository;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -76,11 +77,18 @@ class RenderController
             array_push($imagesDatesFormatted, AppFormatDate::timeFromNowMessage(new \DateTime($image->getCreatedAt())));
         }
 
+        $error = $this->sessionController->getExistingError($app);
+        if ($error != null) $this->sessionController->clearError($app);
 
         $image = $this->getProfileImage($app, $this->sessionController->getSessionUserId($app));
-        if ($error == null) $error = new FormError();
+        if ($error == null) {
+
+
+            $error = new FormError();
+        }
 
         if ($publicImages != null) {
+
             return $app['twig']->render('home.twig', array(
                 'app'       => ['name' => $app['app.name']],
                 'name'      => $this->sessionController->getSessionName($app),
@@ -91,6 +99,7 @@ class RenderController
                 'is_most_visited_layout' => $mostVisitedLayout,
                 'errors'    => $error
             ));
+
         } else {
             return $app['twig']->render('homeWelcome.twig', array(
                 'app'   => ['name' => $app['app.name']],

@@ -91,6 +91,21 @@ class SessionController
 
     }
 
+    public function getExistingError(Application $app) {
+
+        return $app['session']->get('error');
+    }
+
+    public function setError(Application $app, $error) {
+
+        return $app['session']->set('error', $error);
+    }
+
+    public function clearError(Application $app) {
+
+        return $app['session']->set('error', null);
+    }
+
     public function closeSession(Application $app){
         $app['session']->clear();
     }

@@ -125,8 +125,7 @@ $(document).ready(function() {
             var hrefImageView = "/image-view/" + element.id;
             var hrefUserProfile = "/user-profile/" + element.fkUser + "/1";
 
-
-            var imgAsset = "assets/img/upload_img/" + element.id + '_400x300.jpg';
+            var imgAsset = "./assets/img/upload_img/" + element.id + '_400x300.jpg';
 
             var commentId = "comments_list_" + element.id;
 
